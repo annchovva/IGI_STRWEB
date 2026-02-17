@@ -1,2 +1,1 @@
-content 1
-new content
+Обновление файла
