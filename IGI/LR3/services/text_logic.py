@@ -1,22 +1,22 @@
 """
-Purpose: Text analysis functions
-Lab 3, Version 1.1
-Author: Gorbachova Anna
-Date: 21.03.2026
+Purpose: Text analysis functions,
+Lab 3, Version 1.1,
+Author: Gorbachova Anna,
+Date: 21.03.2026.
 """
 
-def count_non_whilespace_chars(text):
-    """Counts non-whitespace characters in a string"""
+def count_non_whitespace_chars(text):
+    """Counts non-whitespace characters in a string."""
     return sum(1 for char in text if not char.isspace())
 
 def get_clean_words(text):
-    """Getting text without punctuation marks"""
+    """Getting text without punctuation marks."""
     for char in ",.":
-        text = text.replace(char, " " if char == "-" else "")
+        text = text.replace(char, "")
     return text.split()
 
 def count_vowel_enders(words):
-    """Counting words ending with a vowel"""
+    """Counting words ending with a vowel."""
     vowels = "aeiouy"
     count = 0
     for word in words:
@@ -25,7 +25,7 @@ def count_vowel_enders(words):
     return count
         
 def get_average_length_words(words):
-    """Calculating the average word length and diaplaying such words"""
+    """Calculating the average word length and diaplaying such words."""
     total_len = sum(len(word) for word in words)
     avg_res = round(total_len / len(words))
 
@@ -37,6 +37,6 @@ def get_average_length_words(words):
     return avg_res, target_words  
 
 def get_every_fifth(words):
-    """Displaying every fifth word"""
+    """Displaying every fifth word."""
     return words[4::5]
           

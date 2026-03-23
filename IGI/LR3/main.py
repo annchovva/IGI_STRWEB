@@ -1,9 +1,8 @@
 """
-Purpose:
-Lab3 Task2
-Version 1.1
-Author: Gorbachova Anna
-Date: 21.03.2026
+Purpose: Function for executing program,
+Lab 3, Version 1.1,
+Author: Gorbachova Anna,
+Date: 21.03.2026.
 """
 import services.validate_input as input
 import modules.task1 as t1
@@ -13,7 +12,7 @@ import modules.task4 as t4
 import modules.task5 as t5
 
 def main():
-    """Main application loop"""
+    """Main application loop."""
     while True:
         print("-------Lab 3-------")
         print("| 1. Task1        |")

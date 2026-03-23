@@ -1,15 +1,15 @@
 """
-Purpose: Mathrmatical calculations (Taylor and average)
-Lab 3, Version 1.1
-Author: Gorbachova Anna
-Date: 21.03.2026
+Purpose: Mathrmatical calculations (Taylor and average),
+Lab 3, Version 1.1,
+Author: Gorbachova Anna,
+Date: 21.03.2026.
 """
 
 import math
-import services.validate_input as input
+import services.validate_input as i
 
 def calculate_decorator(func):
-    """Simple decorator that print massage before and after calculation"""
+    """Simple decorator that print massage before and after calculation."""
     def wrapper(*args, **kwargs):
         print(f"\n--- Starting calculation for x = {args[0]} ---")
         result = func(*args, **kwargs)
@@ -19,7 +19,7 @@ def calculate_decorator(func):
 
 @calculate_decorator
 def calculate_sin_taylor(x, eps):
-    """Calculate sin(x) using Taylor series"""
+    """Calculate sin(x) using Taylor series."""
     max_iter = 500
     x_norm = x % (2 * math.pi)
     term = x_norm
@@ -33,11 +33,11 @@ def calculate_sin_taylor(x, eps):
     return [x, n, series_sum, math.sin(x), eps]
 
 def run_average():
-    """Calculates average of numbers until 0 is entered"""
+    """Calculates average of numbers until 0 is entered."""
     total_sum = 0
     count = 0
     while True:
-        num = input.get_int("Input integer number: ")
+        num = i.get_int("Input integer number: ")
         if num == 0:
             break
         total_sum += num

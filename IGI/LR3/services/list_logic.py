@@ -1,25 +1,25 @@
 """
-Purpose: List processing logic and sequence 
-Lab 3, Version 1.1
-Author: Gorbachova Anna
-Date: 21.03.2026
+Purpose: List processing logic and sequence, 
+Lab 3, Version 1.1,
+Author: Gorbachova Anna,
+Date: 21.03.2026.
 """
 import random
-import services.validate_input as input
+import services.validate_input as i
 
 def list_generator(size):
-    """Generates a list of random floats"""
+    """Generates a list of random floats."""
     return [round(random.uniform(-10, 10), 2) for _ in range(size)]
 
 def input_list(size):
-    """Initializes list with user input"""
+    """Initializes list with user input."""
     lst = []
     for i in range(size):
-        lst.append(input.get_float(f"Enter element №{i}: "))
+        lst.append(i.get_float(f"Enter element №{i}: "))
     return lst    
 
 def max_element(lst):
-    """Returns the index of the maximum absolute element"""
+    """Returns the index of the maximum absolute element."""
     if not lst:
         return None
     max_idx = 0
@@ -29,7 +29,7 @@ def max_element(lst):
     return max_idx        
 
 def sum_after_positive(lst):
-    """Calculates sum of elements after the first positive value"""
+    """Calculates sum of elements after the first positive value."""
     if not lst:
         return None
     first_pos = -1

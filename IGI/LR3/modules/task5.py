@@ -1,17 +1,17 @@
 """
-Purpose: Function for executing Task 5
-Lab 3 Task 5, Version 1.1
-Author: Gorbachova Anna
-Date: 21.03.2026
+Purpose: Function for executing Task 5,
+Lab 3 Task 5, Version 1.1,
+Author: Gorbachova Anna,
+Date: 21.03.2026.
 """
 
-import services.validate_input as input
+import services.validate_input as i
 import services.list_logic as ls
 from modules.menu_logic import menu_for_tasks
 
 @menu_for_tasks
 def task5():
-    """Main business function for Task 5: Max element and Sum logic"""
+    """Main business function for Task 5: Max element and Sum logic."""
     my_list = input_method()
     print_list(my_list)
     max_idx = ls.max_element(my_list)
@@ -26,11 +26,11 @@ def task5():
         print(f"Sum after positive: {sum_after}")
 
 def input_method():
-    """Selecting a method for entering the list (manual input or generator)"""
-    size = input.get_int("List size: ", 1)
+    """Selecting a method for entering the list (manual input or generator)."""
+    size = i.get_int("List size: ", 1)
     print("1. Manual Input | 2. Generator")
     while True:
-        m = input.get_int("Choice: ")
+        m = i.get_int("Choice: ")
         if m == 1:
             return ls.input_list(size)
         elif m == 2:  
@@ -40,8 +40,8 @@ def input_method():
             continue
 
 def print_list(lst):
-    """Displaying the list"""
+    """Displaying the list."""
     print("\nList: ")
     formatted = [f"{x:g}" for x in lst] 
-    print(f"[{', '.join(formatted)} ]")
+    print(f"[{', '.join(formatted)}]")
  

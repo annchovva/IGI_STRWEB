@@ -1,16 +1,16 @@
 """
-Purpose: Function for executing Task 1
-Lab 3 Task 1, Version 1.1
-Author: Gorbachova Anna
-Date: 21.03.2026
+Purpose: Function for executing Task 1,
+Lab 3 Task 1, Version 1.1,
+Author: Gorbachova Anna,
+Date: 21.03.2026.
 """
 
 import services.math_logic as calc
-import services.validate_input as input
+import services.validate_input as i
 from modules.menu_logic import menu_for_tasks
 
 def print_table(all_data):
-    """Print the collected results in table"""
+    """Print the collected results in table."""
     print("\n" + "="*80)
     print(f"| {'x':^12} | {'n':^6} | {'F(x)':^16} | {'Math F(x)':^16} | {'eps':^10} |")
     print("-"*80)
@@ -21,9 +21,9 @@ def print_table(all_data):
 
 @menu_for_tasks
 def task1():
-    """Main business function for Task 2: Calculating sin(x) when entering x and epsilon""" 
-    x = input.get_float("Please enter x = ")
-    epsilon = input.get_float("Please enter eps = ", 0.1)
+    """Main business function for Task 2: Calculating sin(x) when entering x and epsilon.""" 
+    x = i.get_float("Please enter x = ")
+    epsilon = i.get_float("Please enter eps = ", 0.1, 0)
     res = calc.calculate_sin_taylor(x, epsilon)
     results_to_show = [res]
     print_table(results_to_show)      
