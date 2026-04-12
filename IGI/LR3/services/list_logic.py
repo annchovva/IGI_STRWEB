@@ -9,13 +9,14 @@ import services.validate_input as i
 
 def list_generator(size):
     """Generates a list of random floats."""
-    return [round(random.uniform(-10, 10), 2) for _ in range(size)]
+    for _ in range(size):
+        yield round(random.uniform(-10, 10), 2)
 
 def input_list(size):
     """Initializes list with user input."""
     lst = []
-    for i in range(size):
-        lst.append(i.get_float(f"Enter element №{i}: "))
+    for idx in range(size):
+        lst.append(i.get_float(f"Enter element №{idx}: "))
     return lst    
 
 def max_element(lst):

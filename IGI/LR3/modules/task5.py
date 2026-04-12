@@ -34,7 +34,7 @@ def input_method():
         if m == 1:
             return ls.input_list(size)
         elif m == 2:  
-            return ls.list_generator(size)
+            return list(ls.list_generator(size))
         else:
             print("Enter choice! (1 or 2): ")
             continue
