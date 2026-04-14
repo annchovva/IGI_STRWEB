@@ -1,8 +1,7 @@
 """
-Program Purpose: File operations and Archiving (Lab 2)
-Lab Number: 2
-Version: 1.3
-Developer: Gorbachova Anna 453504
+Program Purpose: File operations and Archiving
+Lab4, Task2, Version 1.0
+Author: Gorbachova Anna 453504
 Date: 12.04.2026
 """
 

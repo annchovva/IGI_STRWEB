@@ -1,9 +1,7 @@
 """
-Program Purpose: Text analysis using Regular Expressions (Lab 2)
-Lab Number: 2
-Lab Title: Text Analysis and Serialization
-Version: 1.3
-Developer: Gorbachova Anna 453504
+Program Purpose: Text analysis using Regular Expressions
+Lab4, Task1, Version 1.0
+Author: Gorbachova Anna 453504
 Date: 12.04.2026
 """
 
