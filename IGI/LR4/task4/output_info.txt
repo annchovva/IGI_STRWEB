@@ -1,0 +1,8 @@
+--- Triangle ---
+Side a: 6.00
+Angle B: 40.00°
+Angle C: 64.00°
+Color: pink
+Area: 10.72
+Label: my figure
+Static Check (Is Shape): True

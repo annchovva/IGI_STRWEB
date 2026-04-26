@@ -1,16 +1,16 @@
-Добро пожаловать в систему мониторинга сети! 
-Вы уже настроили свой основной шлюз? 
-Немедленно проверьте подключение к серверу! 
-Для доступа используйте следующий адрес: 00:1A:2B:3C:4D:5E. 
-Система обнаружила подозрительное устройство с адресом FF:EE:DD:CC:BB:AA. 
-Является ли адрес 01:23:45:67:89:Az корректным для вашей подсети? 
-В логах администратор оставил зашифрованные пометки: ;----[[[[[ и :-)))) . 
-Также были найдены странные символы: :[[[ и ;]] . 
-Но помните, что последовательности вроде ":-" или ";--" не являются смайликами. 
-Все системные логи хранятся в папке /var/log/. 
-Ожидайте завершения процесса... 
-Кто здесь главный системный администратор? 
-Срочно сохраните все данные! 
-на маленькую букву начинаются многие слова в этом техническом руководстве. 
-Каждое нечетное слово будет выделено программой. 
-Самоедлинноесловоэтоготекста находится в конце предложения.
+Welcome to the network monitoring system!
+Have you already configured your default gateway?
+Immediately check the connection to the server!
+To access, use the following address: 00:1A:2B:3C:4D:5E.
+The system has detected a suspicious device with the address FF:EE:DD:CC:BB:AA.
+Is the address 01:23:45:67:89:Az valid for your subnet?
+In the logs, the administrator left encrypted notes: ;----[[[[[ and :-)))) .
+Strange symbols were also found: :[[[ and ;]] .
+But remember, sequences like ":-" or ";--" are not smileys.
+All system logs are stored in the /var/log/ folder.
+Please wait for the process to complete...
+Who is the chief system administrator here?
+Urgently save all data!
+Many words in this technical guide begin with a lowercase letter.
+Every odd word will be highlighted by the program.
+Thelongestwordofthistextisattheendofthesentence.

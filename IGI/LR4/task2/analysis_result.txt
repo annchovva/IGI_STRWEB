@@ -1,0 +1,27 @@
+TEXT ANALYSIS REPORT
+
+--- SENTENCE STATISTICS ---
+Total sentences: 18
+  - Declarative (ending with '.'): 12
+  - Interrogative (ending with '?'): 3
+  - Imperative (ending with '!'): 3
+Average sentence length (word characters): 35.06
+
+--- WORD STATISTICS ---
+Total words: 127
+Average word length: 5.17 characters
+Longest word: 'Thelongestwordofthistextisattheendofthesentence' at position 127
+Every odd word: ['Welcome', 'the', 'monitoring', 'Have', 'already', 'your', 'gateway', 'check', 'connection', 'the', 'To', 'use', 'following', 'A', 'C', 'E', 'system', 'detected', 'suspicious', 'with', 'address', 'EE', 'CC', 'AA', 'the', 'Az', 'for', 'subnet', 'the', 'the', 'left', 'notes', 'Strange', 'were', 'found', 'But', 'sequences', 'or', 'not', 'All', 'logs', 'stored', 'the', 'log', 'Please', 'for', 'process', 'complete', 'is', 'chief', 'administrator', 'Urgently', 'all', 'Many', 'in', 'technical', 'begin', 'a', 'letter', 'odd', 'will', 'highlighted', 'the', 'Thelongestwordofthistextisattheendofthesentence']
+
+Words starting with lowercase: ['to', 'the', 'network', 'monitoring', 'system', 'you', 'already', 'configured', 'your', 'default', 'gateway', 'check', 'the', 'connection', 'to', 'the', 'server', 'access', 'use', 'the', 'following', 'address', 'system', 'has', 'detected', 'a', 'suspicious', 'device', 'with', 'the', 'address', 'the', 'address', 'valid', 'for', 'your', 'subnet', 'the', 'logs', 'the', 'administrator', 'left', 'encrypted', 'notes', 'and', 'symbols', 'were', 'also', 'found', 'and', 'remember', 'sequences', 'like', 'or', 'are', 'not', 'smileys', 'system', 'logs', 'are', 'stored', 'in', 'the', 'var', 'log', 'folder', 'wait', 'for', 'the', 'process', 'to', 'complete', 'is', 'the', 'chief', 'system', 'administrator', 'here', 'save', 'all', 'data', 'words', 'in', 'this', 'technical', 'guide', 'begin', 'with', 'a', 'lowercase', 'letter', 'odd', 'word', 'will', 'be', 'highlighted', 'by', 'the', 'program']
+
+Punctuation marks: ['!', '?', '!', ',', ':', ':', ':', ':', ':', ':', '.', ':', ':', ':', ':', ':', '.', ':', ':', ':', ':', ':', '?', ',', ':', ';', '-', '-', '-', '-', '[', '[', '[', '[', '[', ':', '-', ')', ')', ')', ')', '.', ':', ':', '[', '[', '[', ';', ']', ']', '.', ',', '"', ':', '-', '"', '"', ';', '-', '-', '"', '.', '/', '/', '/', '.', '.', '.', '.', '?', '!', '.', '.', '.']
+
+--- SMILEY ANALYSIS ---
+Smileys found: 4
+Smileys: [';----[[[[[', ':-))))', ':[[[', ';]]']
+
+--- MAC ADDRESS ANALYSIS ---
+MAC addresses found: 2
+  - 00:1A:2B:3C:4D:5E (valid: True)
+  - FF:EE:DD:CC:BB:AA (valid: True)

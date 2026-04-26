@@ -1,5 +1,5 @@
 """
-Program Purpose: Data serialization (CSV and Pickle) for Teacher objects
+Program Purpose: Save and load teacher workload data in CSV and Pickle formats.
 Lab4, Task1, Version 1.0
 Author: Gorbachova Anna 453504
 Date: 12.04.2026
@@ -7,48 +7,46 @@ Date: 12.04.2026
 import csv
 import pickle
 import os
-from typing import List
+from abc import ABC, abstractmethod
 from .models import Teacher  
 
-class BaseSerializer:
+class BaseSerializer(ABC):
     """Abstract base class for serialization."""
-    def __init__(self, filepath: str):
-        self.filepath = filepath
 
-    def save(self, records: List[Teacher]) -> None:
-        """Saves records to a file."""
-        raise NotImplementedError("Subclasses must implement save() method")
+    @abstractmethod
+    def save(self, records):
+        """Save records to a file."""
+        pass
 
-    def load(self) -> List[Teacher]:
-        """Loads records from a file. """
-        raise NotImplementedError("Subclasses must implement load() method")
-
+    @abstractmethod    
+    def load(self):
+        """Load records from a file."""
+        pass
 
 class CSVSerializer(BaseSerializer):
-    """Serializer for CSV format. Inherits from BaseSerializer."""
-    def __init__(self, filepath: str):
-        super().__init__(filepath) 
+    """Serializer for CSV format."""
+    filepath = "task1\data.csv"
 
-    def save(self, records: List[Teacher]) -> None:
-        """Saves Teacher objects to a CSV file."""
+    def save(self, records):
+        """Save records to CSV file."""
         try:
-            with open(self.filepath, mode='w', encoding='utf-8', newline='') as file:
+            with open(self.filepath, 'w', encoding='utf-8', newline="") as file:
                 writer = csv.writer(file, delimiter=';')
-                writer.writerow(['teacher_name', 'school_class', 'hours'])
+                writer.writerow(["teacher_name", "school_class", "hours"])
                 for record in records:
                     writer.writerow([record.teacher_name, record.school_class, record.hours])
             print(f"Successfully saved to CSV: {self.filepath}")
         except IOError as e:
             print(f"Error saving to CSV: {e}")
 
-    def load(self) -> List[Teacher]:
-        """Loads Teacher objects from a CSV file."""
+    def load(self):
+        """Load records from CSV file."""
         if not os.path.exists(self.filepath):
             return []
         
         records = []
         try:
-            with open(self.filepath, mode='r', encoding='utf-8') as file:
+            with open(self.filepath, 'r', encoding='utf-8', newline="") as file:
                 reader = csv.DictReader(file, delimiter=';')
                 for row in reader:
                     record = Teacher(
@@ -64,25 +62,24 @@ class CSVSerializer(BaseSerializer):
 
 class PickleSerializer(BaseSerializer):
     """Serializer for Pickle format."""
-    def __init__(self, filepath: str):
-        super().__init__(filepath)
+    filepath = "task1\data.pkl"
 
-    def save(self, records: List[Teacher]) -> None:
-        """Saves Teacher objects using pickle."""
+    def save(self, records):
+        """Save RECORDS to Pickle."""
         try:
-            with open(self.filepath, mode='wb') as file:
+            with open(self.filepath, 'wb') as file:
                 pickle.dump(records, file)
             print(f"Successfully saved to Pickle: {self.filepath}")
         except IOError as e:
             print(f"Error saving to Pickle: {e}")
 
-    def load(self) -> List[Teacher]:
-        """Loads Teacher objects using pickle."""
+    def load(self):
+        """Load records from Pickle."""
         if not os.path.exists(self.filepath):
             return []
             
         try:
-            with open(self.filepath, mode='rb') as file:
+            with open(self.filepath, 'rb') as file:
                 return pickle.load(file)
         except (IOError, pickle.PickleError) as e:
             print(f"Error loading Pickle: {e}")

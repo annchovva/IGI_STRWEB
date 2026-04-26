@@ -6,7 +6,6 @@ Date: 12.04.2026
 """
 
 import zipfile
-import os
 from pathlib import Path
 from typing import Dict, Any, List
 from datetime import datetime
@@ -14,12 +13,11 @@ from datetime import datetime
 
 class BasicFile:
     """Base class for file operations."""
-    
     def __init__(self, path: str):
         self._path = Path(path)
 
     def __str__(self) -> str:
-        """Magic method: string representation."""
+        """Method for string representation."""
         return f"File: {self._path.name}"
     
     @property
@@ -30,34 +28,15 @@ class BasicFile:
 
 class TextFileHandler(BasicFile):
     """Handler for text file operations."""
-    
     def read(self, encoding: str = 'utf-8') -> str:
-        """
-        Read text from file.
-        
-        Args:
-            encoding: File encoding
-            
-        Returns:
-            File content as string
-            
-        Raises:
-            FileNotFoundError: If file doesn't exist
-        """
+        """Read text from file."""
         if not self._path.exists():
             raise FileNotFoundError(f"File {self._path} not found")
         with open(self._path, 'r', encoding=encoding) as f:
             return f.read()
 
     def write(self, content: str, encoding: str = 'utf-8') -> None:
-        """
-        Write text to file.
-        
-        Args:
-            content: Text to write
-            encoding: File encoding
-        """
-        # Create parent directories if needed
+        """Write text to file."""
         self._path.parent.mkdir(parents=True, exist_ok=True)
         with open(self._path, 'w', encoding=encoding) as f:
             f.write(content)
@@ -65,45 +44,26 @@ class TextFileHandler(BasicFile):
 
 
 class ArchiveHandler(TextFileHandler):
-    """Handler for ZIP archive operations."""
-    
+    """Handler for ZIP archive operations."""   
     def __init__(self, path: str, zip_name: str):
-        """
-        Initialize ArchiveHandler.
-        
-        Args:
-            path: Path to file to archive
-            zip_name: Name of ZIP archive
-        """
+        """Initialize ArchiveHandler."""
         super().__init__(path)
         self._zip_name = Path(zip_name)
         if not self._zip_name.suffix == '.zip':
             self._zip_name = self._zip_name.with_suffix('.zip')
 
     def create_zip(self) -> str:
-        """
-        Create ZIP archive with the file.
-        
-        Returns:
-            Archive information string
-        """
-        # Ensure file exists
+        """Create ZIP archive with the file."""
         if not self._path.exists():
             raise FileNotFoundError(f"Cannot archive: {self._path} not found")
         
-        # Create archive
         with zipfile.ZipFile(self._zip_name, 'w', zipfile.ZIP_DEFLATED) as zf:
             zf.write(self._path, arcname=self._path.name)
         
         return self.get_archive_info_string()
     
     def get_archive_info(self) -> Dict[str, Any]:
-        """
-        Get detailed information about archived file.
-        
-        Returns:
-            Dictionary with archive file information
-        """
+        """Get detailed information about archived file."""
         if not self._zip_name.exists():
             raise FileNotFoundError(f"Archive {self._zip_name} not found")
         
@@ -118,12 +78,7 @@ class ArchiveHandler(TextFileHandler):
             }
     
     def get_archive_info_string(self) -> str:
-        """
-        Get formatted archive information as string.
-        
-        Returns:
-            Formatted archive information
-        """
+        """Get formatted archive information as string."""
         info = self.get_archive_info()
         return (f"Archived '{info['filename']}' | "
                 f"Original: {info['file_size']} bytes | "

@@ -1,12 +1,12 @@
 """
 Program Purpose: Text analysis using Regular Expressions
-Lab4, Task1, Version 1.0
+Lab4, Task2, Version 1.0
 Author: Gorbachova Anna 453504
 Date: 12.04.2026
 """
 
 import re
-from typing import List, Dict, Tuple, Any
+from typing import List, Tuple
 
 
 class TextAnalyzerMixin:
@@ -18,8 +18,7 @@ class TextAnalyzerMixin:
 
 
 class BaseAnalyzer:
-    """Base class demonstrating inheritance and polymorphism."""
-    
+    """Base class for text analysis."""   
     def __init__(self, raw_text: str):
         self._raw_text = raw_text
 
@@ -36,19 +35,17 @@ class BaseAnalyzer:
         self._raw_text = value
 
     def get_summary(self) -> str:
-        """Method for polymorphism - to be overridden."""
+        """Method for analysis summary."""
         return "Base Analysis Summary"
 
 
 class WordAnalyzer(BaseAnalyzer, TextAnalyzerMixin):
     """Analyzes word-level patterns."""
-    
-    # Pattern for words (supports apostrophes and hyphens)
-    WORD_RE = re.compile(r"[A-Za-zА-Яа-яЁё]+(?:['-][A-Za-zА-Яа-яЁё]+)?")
-    # Pattern for words starting with lowercase letter
-    LOWERCASE_RE = re.compile(r"\b[a-zа-яё][A-Za-zА-Яа-яЁё']*\b")
-    # Pattern for punctuation marks
+    WORD_RE = re.compile(r"[A-Za-z]+(?:['-][A-Za-z]+)?")
+    LOWERCASE_RE = re.compile(r"\b[a-z][A-Za-z'-]*\b")
     PUNCTUATION_RE = re.compile(r'[^\w\s]')
+    LETTER_PATTERN = re.compile(r"[A-Za-z]")
+    WORD_PATTERN = re.compile(r"\b[A-Za-z]+\b")
 
     def __init__(self, raw_text: str):
         super().__init__(raw_text)
@@ -56,15 +53,15 @@ class WordAnalyzer(BaseAnalyzer, TextAnalyzerMixin):
         self._words = self.WORD_RE.findall(self._text)
 
     def __len__(self) -> int:
-        """Magic method: returns number of words."""
+        """Method returns number of words."""
         return len(self._words)
 
     def __str__(self) -> str:
-        """Magic method: string representation."""
+        """Method string representation."""
         return f"WordAnalyzer with {len(self)} words"
 
     def get_summary(self) -> str:
-        """Polymorphism: overriding base method."""
+        """Method for counting the number of words."""
         return f"Word count: {len(self)}"
 
     def get_lowercase_words(self) -> List[str]:
@@ -76,12 +73,7 @@ class WordAnalyzer(BaseAnalyzer, TextAnalyzerMixin):
         return self.PUNCTUATION_RE.findall(self._text)
 
     def get_longest_word_info(self) -> Tuple[str, int]:
-        """
-        Get longest word and its position (1-based index).
-        
-        Returns:
-            Tuple of (longest_word, position)
-        """
+        """Get longest word and its position."""
         if not self._words:
             return ("", 0)
         longest = max(self._words, key=len)
@@ -89,129 +81,88 @@ class WordAnalyzer(BaseAnalyzer, TextAnalyzerMixin):
         return longest, position
 
     def get_odd_words(self) -> List[str]:
-        """Return words at odd positions (1st, 3rd, 5th, ...)."""
+        """Return words at odd positions."""
         return self._words[::2]
 
-    def get_avg_word_length(self) -> float:
-        """Calculate average word length in characters."""
-        if not self._words:
+    def count_avg_len_word(self) -> float:
+        """Count average word length in characters."""
+        words = self.WORD_PATTERN.findall(self._text)
+        if not words:
             return 0.0
-        return sum(len(w) for w in self._words) / len(self._words)
+        letters_count = len(self.LETTER_PATTERN.findall(self._text))
+        return letters_count / len(words)
 
 
 class SentenceAnalyzer(BaseAnalyzer):
     """Analyzes sentence types and statistics."""
-    
-    # Static attribute (Requirement 4)
     total_sentences_processed = 0
+    SENTENCE_PATTERN = re.compile(r"[.!?]")
+    QUESTION_PATTERN = re.compile(r"\?")
+    EXCLAMATION_PATTERN = re.compile(r"!")
+    DECLARATIVE_PATTERN = re.compile(r"\.")
+    LETTER_PATTERN = re.compile(r"[A-Za-z]")
 
     def __init__(self, raw_text: str):
         super().__init__(raw_text)
-        # Split sentences by . ! ? followed by space or end of string
-        self._sentences = re.split(r'(?<=[.!?])\s+', raw_text.strip())
-        SentenceAnalyzer.total_sentences_processed += len(self._sentences)
+        SentenceAnalyzer.total_sentences_processed += self.count_all_sentences()
 
     def __len__(self) -> int:
-        """Magic method: returns number of sentences."""
-        return len(self._sentences)
+        """Method returns number of sentences."""
+        return self.count_all_sentences()
 
     def get_summary(self) -> str:
-        """Polymorphism: overriding base method."""
+        """Method for counting the number of sentences."""
         return f"Sentence count: {len(self)}"
 
-    def get_counts_by_type(self) -> Dict[str, int]:
-        """
-        Count sentences by type.
-        
-        Returns:
-            Dictionary with 'decl' (declarative), 'int' (interrogative), 'imp' (imperative)
-        """
-        types = {"decl": 0, "int": 0, "imp": 0}
-        for s in self._sentences:
-            if s.endswith('?'):
-                types["int"] += 1
-            elif s.endswith('!'):
-                types["imp"] += 1
-            else:
-                types["decl"] += 1
-        return types
+    def count_all_sentences(self):
+        """Count all sentences in the text."""
+        return len(self.SENTENCE_PATTERN.findall(self.raw_text))
 
-    def get_avg_sentence_length(self, words: List[str]) -> float:
-        """
-        Calculate average sentence length in characters (word characters only).
-        
-        Args:
-            words: List of words from WordAnalyzer
-            
-        Returns:
-            Average sentence length
-        """
-        if not self._sentences:
+    def count_question_sentences(self):
+        """Count question sentences."""
+        return len(self.QUESTION_PATTERN.findall(self.raw_text))
+
+    def count_exclamation_sentences(self):
+        """Count exclamation sentences."""
+        return len(self.EXCLAMATION_PATTERN.findall(self.raw_text))
+
+    def count_declarative_sentences(self):
+        """Count declarative sentences."""
+        return len(self.DECLARATIVE_PATTERN.findall(self.raw_text))
+
+    def count_avg_len_sentence(self):
+        """Count average sentence length in characters."""
+        sentence_count = self.count_all_sentences()
+        if sentence_count == 0:
             return 0.0
-        total_word_chars = sum(len(w) for w in words)
-        return total_word_chars / len(self._sentences)
+        letters_count = len(self.LETTER_PATTERN.findall(self.raw_text))
+        return letters_count / sentence_count
 
 
 class SpecialPatternAnalyzer:
-    """Utility class for MAC addresses and Smileys."""
-    
-    # Pattern for MAC address (case-insensitive)
+    """Utility class for MAC addresses and smileys."""   
     MAC_PATTERN = re.compile(r'^[0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2}){5}$')
+    MAC_FIND_PATTERN = re.compile(r'[0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2}){5}')
+    SMILEY_PATTERN = re.compile(r'[:;]-*(?:\(+|\)+|\[+|\]+)')
     
-    # Pattern for finding MAC addresses in text
-    MAC_FIND_PATTERN = re.compile(r'[0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2}){5}', re.IGNORECASE)
-    
-    # Pattern for smileys: : or ;, then 0+ hyphens, then 1+ identical brackets
-    SMILEY_PATTERN = re.compile(r'[:;]-*([\(\)\[\]])\1*')
+    def __init__(self, text: str = ""):
+        self.text = text
     
     @classmethod
     def is_valid_mac(cls, mac: str) -> bool:
-        """
-        Check if string is a valid MAC address.
-        
-        Args:
-            mac: MAC address string
-            
-        Returns:
-            True if valid, False otherwise
-        """
+        """Check if string is a valid MAC address."""
         return bool(cls.MAC_PATTERN.match(mac.strip()))
     
     @classmethod
     def find_mac_addresses(cls, text: str) -> List[str]:
-        """
-        Find all MAC addresses in text.
-        
-        Args:
-            text: Text to search
-            
-        Returns:
-            List of found MAC addresses
-        """
-        return cls.MAC_FIND_PATTERN.findall(text)
-    
-    @classmethod
-    def count_smileys(cls, text: str) -> int:
-        """
-        Count smileys in text.
-        
-        Args:
-            text: Text to search
-            
-        Returns:
-            Number of smileys
-        """
-        return len(cls.SMILEY_PATTERN.findall(text))
+        """Find all MAC addresses in text."""
+        return [match.group() for match in cls.MAC_FIND_PATTERN.finditer(text)]
     
     @classmethod
     def find_smileys(cls, text: str) -> List[str]:
-        """
-        Find all smileys in text.
-        
-        Args:
-            text: Text to search
-            
-        Returns:
-            List of found smileys
-        """
+        """Find all smileys in text."""
         return [match.group() for match in cls.SMILEY_PATTERN.finditer(text)]
+
+    def count_smiles(self):
+        """Count smileys in the text."""
+        return len(self.SMILEY_PATTERN.findall(self.text))

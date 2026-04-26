@@ -7,26 +7,43 @@ Date: 12.04.2026
 
 import sys
 from services.validators import get_integer_input
-from task1.task1_main import run_task
+from task1.task1_main import run_task1
+from task2.task2_main import run_task2
+from task3.task3_main import run_task3
+from task4.task4_main import run_task4
+from task5.task5_main import run_task5
+from task6.task6_main import run_task6
 
 def main_menu():
     """Main menu of the application."""
     while True:
         print("\n" + "="*40)
-        print("   LABORATORY WORK №4: OBJECT-ORIENTED PROGRAMMING")
+        print("   LABORATORY WORK 4")
         print("   Developer: Gorbachova Anna")
         print("="*40)
-        print("1. Task 1: School Workload (Models, Serializers, OOP)")
-        print("2. Task 2: (To be implemented...)")
+        print("1. Task 1: School Workload")
+        print("2. Task 2: Text analysis")
+        print("3. Task 3: Math")
+        print("4. Task 4.")
+        print("5. Task 5.")
+        print("6. Task 6.")
         print("0. Exit")
         print("="*40)
 
-        choice = get_integer_input("Select task number: ", 0, 2)
+        choice = get_integer_input("Select task number: ", 0, 6)
 
         if choice == 1:
-            run_task()
+            run_task1()
         elif choice == 2:
-            print("Task 2 is not implemented yet. Come back later!")
+            run_task2()
+        elif choice == 3:
+            run_task3()  
+        elif choice == 4:
+            run_task4()   
+        elif choice == 5:
+            run_task5() 
+        elif choice == 6:
+            run_task6()                        
         elif choice == 0:
             print("Exiting the program. Goodbye!")
             sys.exit(0)
