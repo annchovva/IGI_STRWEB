@@ -5,16 +5,13 @@ Author: Gorbachova Anna 453504
 Date: 12.04.2026
 """
 
-from pathlib import Path
 from services.validators import get_integer_input, get_optional_int_input
 from task5.matrix_tools import MatrixProcessor
 
 def run_task5():
     """Main entry point."""
     while True:
-        print("\n" + "=" * 50)
         print("TASK 5: NUMPY MATRIX ANALYSIS")
-        print("=" * 50)
 
         try:
             rows = get_integer_input("Enter number of rows n: ", 1)

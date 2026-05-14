@@ -79,7 +79,6 @@ class WineReviewProcessor(AbstractDataProcessor, DataSummaryMixin):
         countries = self.df['country']
         print(f"Object type: {type(countries)}")
 
-        # 2. Extract first 8 elements using .iloc
         first_8_iloc = countries.iloc[:8]
         print("First 8 via .iloc:")
         print(first_8_iloc)
@@ -89,7 +88,6 @@ class WineReviewProcessor(AbstractDataProcessor, DataSummaryMixin):
         print("\nFirst 8 via .loc:")
         print(first_8_loc)     
 
-        # 3. Convert to list
         first_8_list = first_8_iloc.tolist()
         
         print("First 8 countries (as list):")
@@ -104,21 +102,16 @@ class WineReviewProcessor(AbstractDataProcessor, DataSummaryMixin):
         """
         print("\n--- Task B: Statistical Analysis ---")
         
-        # 1. Get info about dataframe
         self.show_basic_info(self.df)
 
-        # 2. Find max and min points (ignoring zero points if any)
         max_points = self.df['points'].max()
         min_points = self.df[self.df['points'] > 0]['points'].min()
 
         print(f"Max points found: {max_points}")
         print(f"Min points found: {min_points}")
 
-        # 3. Calculate average price for max points
-        # We dropna() to ensure mean is calculated only on valid price data
         avg_price_max = self.df[self.df['points'] == max_points]['price'].dropna().mean()
         
-        # 4. Calculate average price for min points
         avg_price_min = self.df[self.df['points'] == min_points]['price'].dropna().mean()
 
         if avg_price_min == 0 or pd.isna(avg_price_min):
@@ -138,7 +131,6 @@ class WineReviewProcessor(AbstractDataProcessor, DataSummaryMixin):
         self.task_a_series_operations()
         self.task_b_statistical_analysis()
 
-    # Magic Methods
     def __len__(self):
         """Returns the number of rows in the dataset."""
         return len(self.df)

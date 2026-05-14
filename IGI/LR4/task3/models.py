@@ -7,11 +7,10 @@ Date: 12.04.2026
 
 import math
 import statistics
-from typing import List
 
 class InfoMixin:
     """Mixin to provide descriptive info about the object."""
-    def get_info(self) -> str:
+    def get_info(self):
         return f"[INFO] Object of type: {self.__class__.__name__}"
 
 class BaseCalculator:
@@ -27,23 +26,23 @@ class BaseCalculator:
 
 class TaylorCalculator(BaseCalculator, InfoMixin):
     """Calculates Sin(x) using Taylor series."""
-    def __init__(self, epsilon: float):
+    def __init__(self, epsilon):
         super().__init__()
         self.epsilon = epsilon 
 
     @property
-    def epsilon(self) -> float:
+    def epsilon(self):
         """Getter for epsilon property."""
         return self._epsilon
 
     @epsilon.setter
-    def epsilon(self, value: float):
+    def epsilon(self, value):
         """Setter with validation (Requirement #9 - Exception handling)."""
         if value <= 0 or value > 0.1:
             raise ValueError("Epsilon must be between 0 and 0.1 for precision.")
         self._epsilon = value
 
-    def compute(self, x: float) -> tuple:
+    def compute(self, x):
         """Taylor series calculation."""
         max_iter = 500
         x_norm = x % (2 * math.pi)
@@ -60,7 +59,7 @@ class TaylorCalculator(BaseCalculator, InfoMixin):
 
 class SequenceAnalyzer:
     """Analyzes sequences for stats."""
-    def __init__(self, data: List[float]):
+    def __init__(self, data):
         self.data = data
 
     def __len__(self):

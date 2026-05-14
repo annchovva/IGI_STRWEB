@@ -151,10 +151,10 @@ class WorkloadCalculator:
     def teacher_workload(self, teacher_name):
         """Return workload for one teacher."""
         totals = self.total_by_teacher()
-        target = teacher_name.strip().casefold()
+        target = teacher_name.strip().lower()
 
         for name, hours in totals.items():
-            if name.casefold() == target:
+            if name.lower() == target:
                 return hours
         return 0
 

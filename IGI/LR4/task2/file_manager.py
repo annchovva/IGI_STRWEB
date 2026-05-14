@@ -7,35 +7,34 @@ Date: 12.04.2026
 
 import zipfile
 from pathlib import Path
-from typing import Dict, Any, List
 from datetime import datetime
 
 
 class BasicFile:
     """Base class for file operations."""
-    def __init__(self, path: str):
+    def __init__(self, path):
         self._path = Path(path)
 
-    def __str__(self) -> str:
+    def __str__(self):
         """Method for string representation."""
         return f"File: {self._path.name}"
     
     @property
-    def path(self) -> Path:
+    def path(self):
         """Getter for file path."""
         return self._path
 
 
 class TextFileHandler(BasicFile):
     """Handler for text file operations."""
-    def read(self, encoding: str = 'utf-8') -> str:
+    def read(self, encoding= 'utf-8'):
         """Read text from file."""
         if not self._path.exists():
             raise FileNotFoundError(f"File {self._path} not found")
         with open(self._path, 'r', encoding=encoding) as f:
             return f.read()
 
-    def write(self, content: str, encoding: str = 'utf-8') -> None:
+    def write(self, content, encoding= 'utf-8'):
         """Write text to file."""
         self._path.parent.mkdir(parents=True, exist_ok=True)
         with open(self._path, 'w', encoding=encoding) as f:
@@ -45,14 +44,14 @@ class TextFileHandler(BasicFile):
 
 class ArchiveHandler(TextFileHandler):
     """Handler for ZIP archive operations."""   
-    def __init__(self, path: str, zip_name: str):
+    def __init__(self, path, zip_name):
         """Initialize ArchiveHandler."""
         super().__init__(path)
         self._zip_name = Path(zip_name)
         if not self._zip_name.suffix == '.zip':
             self._zip_name = self._zip_name.with_suffix('.zip')
 
-    def create_zip(self) -> str:
+    def create_zip(self):
         """Create ZIP archive with the file."""
         if not self._path.exists():
             raise FileNotFoundError(f"Cannot archive: {self._path} not found")
@@ -62,7 +61,7 @@ class ArchiveHandler(TextFileHandler):
         
         return self.get_archive_info_string()
     
-    def get_archive_info(self) -> Dict[str, Any]:
+    def get_archive_info(self):
         """Get detailed information about archived file."""
         if not self._zip_name.exists():
             raise FileNotFoundError(f"Archive {self._zip_name} not found")
@@ -77,7 +76,7 @@ class ArchiveHandler(TextFileHandler):
                 "date_time": datetime(*info.date_time).strftime("%Y-%m-%d %H:%M:%S")
             }
     
-    def get_archive_info_string(self) -> str:
+    def get_archive_info_string(self):
         """Get formatted archive information as string."""
         info = self.get_archive_info()
         return (f"Archived '{info['filename']}' | "
@@ -85,7 +84,7 @@ class ArchiveHandler(TextFileHandler):
                 f"Compressed: {info['compress_size']} bytes | "
                 f"Ratio: {info['compression_ratio']}%")
     
-    def print_archive_info(self) -> None:
+    def print_archive_info(self):
         """Print formatted archive information to console."""
         print("\n" + "=" * 50)
         print("ARCHIVE INFORMATION")

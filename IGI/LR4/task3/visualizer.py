@@ -27,10 +27,7 @@ class ChartManager:
         plt.legend()
         plt.grid(True, alpha=0.3)
         
-        if y_taylor:
-            plt.annotate('Graph Start', xy=(x_list[0], y_taylor[0]), 
-                         xytext=(x_list[0]+1, y_taylor[0]+0.2),
-                         arrowprops=dict(facecolor='green', shrink=0.05))
+        plt.annotate("Сравнение ряда и функции", xy=(0.3, 0.3), xytext=(0.1, 0.8))
 
         folder = "task3"
         save_path = os.path.join(folder, filename)

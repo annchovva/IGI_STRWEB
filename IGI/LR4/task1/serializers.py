@@ -4,11 +4,12 @@ Lab4, Task1, Version 1.0
 Author: Gorbachova Anna 453504
 Date: 12.04.2026
 """
+
 import csv
 import pickle
 import os
 from abc import ABC, abstractmethod
-from .models import Teacher  
+from task1.models import Teacher  
 
 class BaseSerializer(ABC):
     """Abstract base class for serialization."""

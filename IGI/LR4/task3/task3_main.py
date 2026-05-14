@@ -1,9 +1,7 @@
 """
 Program Purpose: Orchestrator for Task 3 execution.
-Lab Number: 4
-Task Number: 3
-Program Version: 1.0
-Developer: Gorbachova Anna 453504
+Lab4, Task3, Version 1.0
+Author: Gorbachova Anna 453504
 Date: 12.04.2026
 """
 
@@ -17,14 +15,13 @@ def run_task3():
         print("\n--- TASK 3: MATHEMATICAL ANALYSIS ---")
         
         try:
-            # Inputs
             x_start = get_float_input("Enter Start X: ")
-            x_end = get_float_input("Enter End X: ", x_start)
-            step = get_float_input("Enter Step: ", 0, x_end - x_start)
+            x_end = get_float_input("Enter End X: ", x_start + 0.01)
+            step = get_float_input("Enter Step: ", 0.01, x_end - x_start)
             epsilon = get_float_input("Enter Epsilon (0 < eps <= 0.1): ")
 
             calc = TaylorCalculator(epsilon)
-            print(calc.get_info()) # Mixin call
+            print(calc.get_info()) 
 
             results = []
             current_x = x_start

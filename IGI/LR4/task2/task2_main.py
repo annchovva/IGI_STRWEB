@@ -11,7 +11,7 @@ from task2.text_analyzer import WordAnalyzer, SentenceAnalyzer, SpecialPatternAn
 from task2.file_manager import TextFileHandler, ArchiveHandler
 from services.validators import get_integer_input
 
-def run_analysis() -> None:
+def run_analysis():
     """Run text analysis with user input."""
     filename = "task2/text.txt"
     
