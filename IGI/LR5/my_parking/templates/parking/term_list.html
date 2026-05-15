@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Словарь терминов - {{ company_global.name|default:"Parking System" }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Иконки Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+
+    <header class="p-3 bg-dark text-white mb-5">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-between">
+                <a href="{% url 'home' %}" class="d-flex align-items-center fs-4 text-white text-decoration-none">
+                    {% if company_global.logo %}
+                        <img src="{{ company_global.logo.url }}" alt="Logo" width="40" height="40" class="me-2 rounded">
+                    {% else %}
+                        <span class="me-2">🅿️</span>
+                    {% endif %}
+                    {{ company_global.name|default:"Parking System" }}
+                </a>
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 ms-lg-4">
+                    <li><a href="{% url 'home' %}" class="nav-link px-2 text-white">Главная</a></li>
+                    <li><a href="{% url 'about' %}" class="nav-link px-2 text-white">О компании</a></li>
+                    <li><a href="{% url 'news_list' %}" class="nav-link px-2 text-white">Новости</a></li>
+                    <li><a href="{% url 'promo_list' %}" class="nav-link px-2 text-white">Акции</a></li>
+                    <li><a href="{% url 'term_list' %}" class="nav-link px-2 text-secondary">Ваши вопросы</a></li>
+                    <li><a href="{% url 'review_list' %}" class="nav-link px-2 text-white">Отзывы</a></li>
+                    <li><a href="{% url 'employee_list' %}" class="nav-link px-2 text-white">Контакты</a></li>
+                    <li><a href="{% url 'vacancy_list' %}" class="nav-link px-2 text-white">Вакансии</a></li>
+                    <li><a href="{% url 'privacy_policy' %}" class="nav-link px-2 text-white">Политика конфиденциальности</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <div class="d-flex align-items-center mb-4">
+                    <h1 class="fw-bold text-dark">Словарь терминов и FAQ</h1>
+                </div>
+                <p class="text-muted mb-5">Здесь вы найдете ответы на часто задаваемые вопросы и расшифровку основных понятий нашей системы парковки.</p>
+
+                {% if terms %}
+                <div class="accordion shadow-sm" id="accordionTerms">
+                    {% for term in terms %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading{{ term.id }}">
+                            <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ term.id }}">
+                                {{ term.term }}
+                            </button>
+                        </h2>
+                        <div id="collapse{{ term.id }}" class="accordion-collapse collapse" data-bs-parent="#accordionTerms">
+                            <div class="accordion-body bg-white">
+                                <div class="mb-3" style="font-size: 1.1rem; line-height: 1.6;">
+                                    {{ term.definition }}
+                                </div>
+                                <div class="text-end border-top pt-2">
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar3"></i> Добавлено: {{ term.added_at|date:"d.m.Y" }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-info shadow-sm">
+                    <i class="bi bi-info-circle me-2"></i> Словарь пока пуст. Мы скоро добавим новые термины!
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer mt-5 py-4 bg-white text-center border-top">
+        <div class="container">
+            <span class="text-muted">© 2024 {{ company_global.name|default:"Parking System" }}</span>
+        </div>
+    </footer>
+
+    <!-- Скрипты Bootstrap (обязательны для работы аккордеона) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
