@@ -86,6 +86,75 @@
             </div>
         </div>
 
+        {% if weather %}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <div class="card-body d-flex align-items-center justify-content-between p-4">
+                        <div class="d-flex align-items-center">
+                            <img src="http://openweathermap.org/img/wn/{{ weather.icon }}@2x.png" alt="icon" style="width: 70px;">
+                            <div class="ms-3">
+                                <h3 class="mb-0">{{ weather.temp }}°C в Минске</h3>
+                                <p class="mb-0 opacity-75">{{ weather.description }}</p>
+                            </div>
+                        </div>
+                        <div class="text-end d-none d-md-block" style="max-width: 400px;">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <span class="fst-italic">{{ weather_tip }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- БЛОК ВРЕМЕНИ И КАЛЕНДАРЯ -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm bg-light">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <!-- Секция Дат -->
+                            <div class="col-md-6">
+                                <p class="mb-1"><strong>Текущая дата (локальная):</strong> 
+                                <span class="badge bg-primary fs-6">({{ now_local|date:"d/m/Y" }})</span>
+                                </p>
+                                <p class="mb-1"><strong>Текущая дата (UTC):</strong> 
+                                <span class="badge bg-secondary fs-6">({{ now_utc|date:"d/m/Y" }})</span>
+                                </p>
+                                <p class="mb-0 text-muted small">
+                                    Таймзона: {{ TIME_ZONE|default:"Europe/Minsk" }} | Время: {{ now_local|date:"H:i:s" }}
+                                </p>
+                            </div>
+                            
+                            <!-- Секция Текстового календаря -->
+                            <div class="col-md-6 border-start d-none d-md-block">
+                                <small class="text-uppercase fw-bold text-muted d-block mb-1">Календарь на месяц:</small>
+                                <pre class="mb-0 text-center" style="font-family: 'Courier New', monospace; font-size: 0.75rem; background: #f8f9fa; line-height: 1;">
+        {{ text_calendar }}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+            
+            <div class="col-md-5">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-header bg-light fw-bold text-center small">КАЛЕНДАРЬ</div>
+                    <div class="card-body p-2 d-flex justify-content-center align-items-center">
+                        <!-- Тег <pre> обязателен для сохранения форматирования текстового календаря -->
+                        <pre class="mb-0" style="font-family: 'Courier New', monospace; font-size: 0.85rem; line-height: 1.2;">
+        {{ text_calendar }}
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <!-- КАРТОЧКА С КОЛИЧЕСТВОМ МАШИН -->
         <div class="row mb-5">
             <div class="col-12">

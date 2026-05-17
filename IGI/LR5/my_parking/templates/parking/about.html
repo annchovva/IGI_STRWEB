@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <title>О компании - Parking System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        #map { 
+            height: 400px; 
+            width: 100%; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 1;
+        }
+    </style>
 </head>
 <body class="bg-light">
 
@@ -54,6 +64,7 @@
                 
                 <div class="contact-info">
                     {% if company.address %}<p><strong>Адрес:</strong> {{ company.address }}</p>{% endif %}
+                    <div id="map"></div>
                     {% if company.email %}<p><strong>Email:</strong> {{ company.email }}</p>{% endif %}
                 </div>
             </div>
@@ -68,6 +79,27 @@
             <span class="text-muted">© 2024 {{ company.name|default:"Parking System" }}</span>
         </div>
     </footer>
+     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Координаты Galleria Minsk (пр-т Победителей, 9)
+            const lat = 53.9085;
+            const lng = 27.5485;
 
+            // Инициализация карты
+            const map = L.map('map').setView([lat, lng], 16);
+
+            // Добавляем слой карты (плитки)
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Добавляем маркер
+            const marker = L.marker([lat, lng]).addTo(map);
+            
+            // Текст во всплывающем окне
+            marker.bindPopup("<b>{{ company.name|default:'Parking System' }}</b><br>Лучший паркинг в городе!").openPopup();
+        });
+    </script>
 </body>
 </html>

@@ -56,7 +56,7 @@
                     </div>
                     <div class="card-footer bg-white border-top-0">
                         <small class="text-muted">{{ item.published_at|date:"d.m.Y" }}</small>
-                        <a href="#" class="btn btn-sm btn-outline-primary float-end">Читать далее</a>
+                        <a href="{% url 'news_detail' news_id=item.id %}" class="btn btn-sm btn-outline-primary float-end">Читать далее</a>
                     </div>
                 </div>
             </div>

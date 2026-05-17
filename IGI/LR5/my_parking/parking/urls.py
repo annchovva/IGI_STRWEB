@@ -1,5 +1,6 @@
 from django.urls import path, include
 from . import views
+from django.urls import path, re_path
 
 urlpatterns = [
     path('admin-panel/', views.admin_panel, name='admin_panel'),
@@ -7,6 +8,7 @@ urlpatterns = [
     path('services/', views.services_catalog, name='services_catalog'),
     path('', views.home, name='home'), # Главная страница
     path('news/', views.news_list, name='news_list'), # Страница новостей
+    re_path(r'^news/(?P<news_id>[0-9]+)/$', views.news_detail, name='news_detail'),
     path('about/', views.about, name='about'), # О компании
     path('terms/', views.term_list, name='term_list'), # Ваши вопросы
     path('contacts/', views.employee_list, name='employee_list'), # Сотрудники

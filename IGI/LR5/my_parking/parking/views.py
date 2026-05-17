@@ -1,19 +1,64 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.core.exceptions import PermissionDenied
-from django.db.models import Sum, Count, Q, F, Value, DecimalField
+from django.db.models import Sum, Count, Q, F, Value, DecimalField, Subquery, OuterRef, Avg
 from django.db.models.functions import Coalesce
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponseNotFound
 from .forms import ReviewForm, CarForm, CustomUserCreationForm, PriceUpdateForm, AccrualForm, PaymentForm
 from .models import News, CompanyInfo, Term, Employee, Vacancy, PromoCode, Review, Car, CustomUser, ParkingSpot, Accrual, Payment, Service, Category
-from datetime import datetime
+from datetime import datetime, date
+import requests
+import statistics
+import calendar
+from django.conf import settings
+import matplotlib
+matplotlib.use('Agg')  # Важно: используем неинтерактивный бэкенд для серверов
+import matplotlib.pyplot as plt
+import io
+import base64
 
 def home(request):
     # Берем последнюю новость
     latest_news = News.objects.first()
     cars_count = Car.objects.count()
+
+    now_utc = timezone.now()  # Текущее время в UTC
+    now_local = timezone.localtime(now_utc)  # Локальное время (из settings.TIME_ZONE)
+    
+    # Генерация текстового календаря на текущий месяц
+    cal = calendar.TextCalendar(calendar.MONDAY)
+    text_calendar = cal.formatmonth(now_local.year, now_local.month)
+
+    weather_data = None
+    weather_tip = ""
+    city = "Minsk"
+    api_key = "63026ab9f90f2307525287f3f1e967df" # Используйте свой ключ или этот (если он активен)
+    
+    try:
+        url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric&lang=ru"
+        response = requests.get(url, timeout=2) # Таймаут 2 сек, чтобы сайт не завис
+        if response.status_code == 200:
+            data = response.json()
+            temp = data['main']['temp']
+            weather_data = {
+                'temp': round(temp),
+                'description': data['weather'][0]['description'].capitalize(),
+                'icon': data['weather'][0]['icon']
+            }
+            
+            # Генерация совета на основе температуры
+            if temp > 25:
+                weather_tip = "Сегодня жарко. Ваша машина может перегреться, рекомендуем парковку в тени или крытый паркинг."
+            elif temp < -10:
+                weather_tip = "На улице мороз. Проверьте заряд аккумулятора перед поездкой."
+            elif 'осадки' in data['weather'][0]['description'] or 'дождь' in data['weather'][0]['description']:
+                weather_tip = "Ожидаются осадки. Будьте осторожны на дорогах и закройте люк."
+            else:
+                weather_tip = "Погода отличная для поездки!"
+    except:
+        weather_data = None
 
     if latest_news:
         latest_news.short_content = latest_news.content.split('.')[0] + '.'
@@ -21,7 +66,12 @@ def home(request):
     # Передаем эту новость в шаблон news
     context = {
         'news': latest_news,
-        'cars_count': cars_count
+        'cars_count': cars_count,
+        'weather': weather_data,
+        'weather_tip': weather_tip,
+        'now_utc': now_utc,
+        'now_local': now_local,
+        'text_calendar': text_calendar,
     }
 
     return render(request, 'parking/home.html', context)
@@ -35,6 +85,11 @@ def news_list(request):
         item.short_content = item.content.split('.')[0] + '.'
 
     return render(request, 'parking/news_list.html', {'news_items': all_news})
+
+def news_detail(request, news_id):
+    # Получаем новость по ID или выдаем 404, если не найдена
+    news = get_object_or_404(News, id=news_id)
+    return render(request, 'parking/news_detail.html', {'news': news})
 
 def about(request):
     # Первую запись
@@ -191,36 +246,51 @@ def admin_panel(request):
     }
     
     # Самый большой долг
+    user_accruals_sub = Accrual.objects.filter(car__owners=OuterRef('pk')).values('car__owners').annotate(
+        total=Sum('amount')
+    ).values('total')
+
+    user_payments_sub = Payment.objects.filter(car__owners=OuterRef('pk')).values('car__owners').annotate(
+        total=Sum('amount')
+    ).values('total')
+
     top_debtor = CustomUser.objects.filter(role='client').annotate(
-        total_accruals=Coalesce(Sum('cars__accruals__amount'), Value(0, output_field=DecimalField())),
-        total_payments=Coalesce(Sum('cars__payments__amount'), Value(0, output_field=DecimalField()))
+        total_accruals=Coalesce(Subquery(user_accruals_sub, output_field=DecimalField()), Value(0, output_field=DecimalField())),
+        total_payments=Coalesce(Subquery(user_payments_sub, output_field=DecimalField()), Value(0, output_field=DecimalField()))
     ).annotate(
         debt=F('total_accruals') - F('total_payments')
-    ).filter(debt__gt=0).order_by('-debt').first()
+    ).filter(debt__gt=0).order_by('-debt').first()    
 
     last_payment_date = "Нет платежей"
     if top_debtor:
         last_payment = Payment.objects.filter(car__owners=top_debtor).order_by('-date').first()
         if last_payment:
             last_payment_date = last_payment.date
-
+            
     # Общий долг за период
     t_accruals = Accrual.objects.filter(date__range=[params['start_date'], params['end_date']]).aggregate(Sum('amount'))['amount__sum'] or 0
     t_payments = Payment.objects.filter(date__range=[params['start_date'], params['end_date']]).aggregate(Sum('amount'))['amount__sum'] or 0
     total_debt = t_accruals - t_payments
-
+    
     # Несколько владельцев
     shared_cars = Car.objects.annotate(cnt=Count('owners')).filter(cnt__gt=1)
 
     # Минимальный долг за период
+    car_accruals_sub = Accrual.objects.filter(
+        car=OuterRef('pk'), 
+        date__range=[params['start_date'], params['end_date']]
+    ).values('car').annotate(total=Sum('amount')).values('total')
+
+    car_payments_sub = Payment.objects.filter(
+        car=OuterRef('pk'), 
+        date__range=[params['start_date'], params['end_date']]
+    ).values('car').annotate(total=Sum('amount')).values('total')
+
     min_debt_car = Car.objects.annotate(
-        period_debt=Coalesce(
-            Sum('accruals__amount', filter=Q(accruals__date__range=[params['start_date'], params['end_date']])), 
-            Value(0, output_field=DecimalField())
-        ) - Coalesce(
-            Sum('payments__amount', filter=Q(payments__date__range=[params['start_date'], params['end_date']])), 
-            Value(0, output_field=DecimalField())
-        )
+        period_accruals=Coalesce(Subquery(car_accruals_sub, output_field=DecimalField()), Value(0, output_field=DecimalField())),
+        period_payments=Coalesce(Subquery(car_payments_sub, output_field=DecimalField()), Value(0, output_field=DecimalField()))
+    ).annotate(
+        period_debt=F('period_accruals') - F('period_payments')
     ).order_by('period_debt').first()
 
     branded_cars = []
@@ -235,6 +305,62 @@ def admin_panel(request):
 
     spots_list = ParkingSpot.objects.all()
 
+    # Статистика по платежам
+    payments_qs = Payment.objects.values_list('amount', flat=True)
+    payments_list = list(payments_qs)
+    
+    stats_payments = {
+        'avg': round(statistics.mean(payments_list), 2) if payments_list else 0,
+        'median': round(statistics.median(payments_list), 2) if payments_list else 0,
+        'mode': 0
+    }
+    if payments_list:
+        try:
+            stats_payments['mode'] = statistics.mode(payments_list)
+        except statistics.StatisticsError:
+            stats_payments['mode'] = "Нет"
+
+    # Статистика по возрасту   
+    today = date.today()
+    birth_dates = CustomUser.objects.filter(role='client', birth_date__isnull=False).values_list('birth_date', flat=True)
+    ages = [today.year - bday.year - ((today.month, today.day) < (bday.month, bday.day)) for bday in birth_dates]
+    
+    stats_ages = {
+        'avg': round(statistics.mean(ages), 1) if ages else 0,
+        'median': statistics.median(ages) if ages else 0
+    }  
+
+    # Самая популярная марка
+    popular_brand_data = Car.objects.values('brand').annotate(count=Count('id')).order_by('-count').first()
+    popular_brand = popular_brand_data['brand'] if popular_brand_data else "—"
+
+    # Самая прибыльная  
+    profitable_brand_data = Car.objects.annotate(brand_revenue=Sum('payments__amount')).order_by('-brand_revenue').first()
+    profitable_brand = f"{profitable_brand_data.brand} ({profitable_brand_data.brand_revenue} руб.)" if profitable_brand_data and profitable_brand_data.brand_revenue else "—"   
+
+    # Визуализация
+    brand_revenue_qs = Car.objects.values('brand').annotate(
+        total_rev=Sum('payments__amount')
+    ).filter(total_rev__gt=0) # Берем только те, где есть доход
+
+    graphic = None
+    if brand_revenue_qs:
+        labels = [item['brand'] for item in brand_revenue_qs]
+        values = [float(item['total_rev']) for item in brand_revenue_qs]
+
+        fig, ax = plt.subplots(figsize=(6, 6))
+        ax.pie(values, labels=labels, autopct='%1.1f%%', startangle=140, shadow=True)
+        ax.set_title("Распределение доходов по маркам автомобилей")  
+
+        buffer = io.BytesIO()
+        plt.savefig(buffer, format='png')
+        buffer.seek(0)
+        image_png = buffer.getvalue()
+        buffer.close()
+        plt.close(fig) 
+
+        graphic = base64.b64encode(image_png).decode('utf-8')
+
     context = {
         **params, 
         'top_debtor': top_debtor,
@@ -244,14 +370,19 @@ def admin_panel(request):
         'shared_cars': shared_cars,
         'min_debt_car': min_debt_car, 
         'branded_cars': branded_cars,
+        'stats_payments': stats_payments,
+        'stats_ages': stats_ages,
+        'popular_brand': popular_brand,
+        'profitable_brand': profitable_brand,
+        'graphic': graphic,
     }
     return render(request, 'parking/admin_panel.html', context)
 
 @login_required
 def dashboard(request):
     user = request.user
-    
-    if user.role is 'staff':
+
+    if user.role == 'staff':
         if request.method == 'POST' and 'create_accrual' in request.POST:
             form = AccrualForm(request.POST)
             if form.is_valid():
@@ -311,6 +442,18 @@ def dashboard(request):
             'payment_form': form
         })
     
+def get_nbrb_rates():
+    try:
+        response = requests.get('https://www.nbrb.by/api/exrates/rates?periodicity=0', timeout=5)
+        if response.status_code == 200:
+            rates_data = response.json()
+            needed_cur = ['USD', 'EUR', 'RUB']
+            rates = {item['Cur_Abbreviation']: item for item in rates_data if item['Cur_Abbreviation'] in needed_cur}
+            return rates
+    except Exception:
+        return None
+    return None    
+
 def services_catalog(request):
     categories = Category.objects.all()
     services = Service.objects.all()

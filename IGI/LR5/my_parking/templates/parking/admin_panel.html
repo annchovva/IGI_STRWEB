@@ -231,6 +231,71 @@
         </div>
     </div>
 
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h6 class="text-muted small text-uppercase fw-bold">Платежи (чеки)</h6>
+                    <div class="mt-2">
+                        <div class="d-flex justify-content-between"><span>Средний:</span> <b>{{ stats_payments.avg }}</b></div>
+                        <div class="d-flex justify-content-between"><span>Медиана:</span> <b>{{ stats_payments.median }}</b></div>
+                        <div class="d-flex justify-content-between"><span>Мода:</span> <b>{{ stats_payments.mode }}</b></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h6 class="text-muted small text-uppercase fw-bold">Возраст клиентов</h6>
+                    <div class="mt-2">
+                        <div class="d-flex justify-content-between"><span>Средний:</span> <b>{{ stats_ages.avg }} лет</b></div>
+                        <div class="d-flex justify-content-between"><span>Медиана:</span> <b>{{ stats_ages.median }} лет</b></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100 bg-light">
+                <div class="card-body text-center">
+                    <h6 class="text-muted small text-uppercase fw-bold">Популярная марка</h6>
+                    <h4 class="mt-2 fw-bold text-primary">{{ popular_brand }}</h4>
+                    <small class="text-muted">чаще всего в системе</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100 bg-light">
+                <div class="card-body text-center">
+                    <h6 class="text-muted small text-uppercase fw-bold">Макс. прибыль</h6>
+                    <h4 class="mt-2 fw-bold text-success">{{ profitable_brand }}</h4>
+                    <small class="text-muted">приносит больше всего денег</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- СЕКЦИЯ С ДИАГРАММОЙ -->
+    {% if graphic %}
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-dark text-white fw-bold py-3 text-center">
+                    📊 Визуализация доходов по брендам
+                </div>
+                <div class="card-body text-center bg-white">
+                    <!-- Вывод изображения из base64 -->
+                    <img src="data:image/png;base64,{{ graphic }}" alt="Диаграмма доходов" class="img-fluid rounded shadow-sm" style="max-height: 500px;">
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+
+
     <footer class="footer mt-5 py-4 bg-white text-center border-top">
         <div class="container">
             <span class="text-muted">© 2024 {{ company_global.name|default:"Parking System" }} | 
