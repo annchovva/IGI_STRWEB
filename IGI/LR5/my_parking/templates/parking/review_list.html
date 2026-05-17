@@ -7,12 +7,18 @@
 </head>
 <body class="bg-light">
 
-    <!-- Шапка (как на других страницах) -->
     <header class="p-3 bg-dark text-white mb-5">
         <div class="container">
             <div class="d-flex flex-wrap align-items-center justify-content-between">
-                <a href="{% url 'home' %}" class="fs-4 text-white text-decoration-none">🅿️ {{ company_global.name|default:"Parking" }}</a>
-                <ul class="nav">
+                <a href="{% url 'home' %}" class="d-flex align-items-center fs-4 text-white text-decoration-none">
+                    {% if company_global.logo %}
+                        <img src="{{ company_global.logo.url }}" alt="Logo" width="40" height="40" class="me-2 rounded">
+                    {% else %}
+                        <span class="me-2">🅿️</span>
+                    {% endif %}
+                    {{ company_global.name|default:"Parking System" }}
+                </a>
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 ms-lg-4">
                     <li><a href="{% url 'home' %}" class="nav-link px-2 text-white">Главная</a></li>
                     <li><a href="{% url 'about' %}" class="nav-link px-2 text-white">О компании</a></li>
                     <li><a href="{% url 'news_list' %}" class="nav-link px-2 text-white">Новости</a></li>
@@ -29,7 +35,6 @@
 
     <main class="container">
         <div class="row">
-            <!-- Список отзывов -->
             <div class="col-md-8">
                 <h1 class="mb-4">Отзывы клиентов</h1>
                 
@@ -49,15 +54,23 @@
                 {% endfor %}
             </div>
 
-            <!-- Боковая панель: Форма добавления -->
             <div class="col-md-4">
                 <div class="card border-primary shadow-sm sticky-top" style="top: 20px;">
                     <div class="card-body">
                         <h4 class="card-title mb-3">Оставить отзыв</h4>
                         
-                        {% if user.is_authenticated %}
+                        {% if user.is_authenticated and not user.is_staff and not user.is_superuser %}
                             <form method="post">
                                 {% csrf_token %}
+                                {% if form.errors %}
+                                    <div class="alert alert-danger">
+                                        {% for field in form %}
+                                            {% for error in field.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
                                 <div class="mb-3">
                                     <label class="form-label">Ваша оценка</label>
                                     {{ form.rating }}
@@ -68,6 +81,8 @@
                                 </div>
                                 <button type="submit" class="btn btn-primary w-100">Отправить</button>
                             </form>
+                        {% elif user.is_staff or user.is_superuser %}   
+                            <p class="text-center">Раздел только для клиентов компании. Сотрудники не могут оставлять отзывы.</p>
                         {% else %}
                             <p class="text-center">Чтобы оставить отзыв, пожалуйста, войдите в систему.</p>
                             <a href="{% url 'login' %}" class="btn btn-outline-primary w-100 mb-2">Войти</a>

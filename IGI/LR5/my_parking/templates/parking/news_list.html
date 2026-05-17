@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Новости - Автопарковка</title>
-    <!-- Подключаем Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
@@ -53,7 +52,6 @@
                     
                     <div class="card-body">
                         <h5 class="card-title text-primary">{{ item.title }}</h5>
-                        <!-- Вывод одного предложения из views -->
                         <p class="card-text">{{ item.short_content }}</p>
                     </div>
                     <div class="card-footer bg-white border-top-0">
@@ -71,7 +69,6 @@
         </div>
     </div>
 
-    <!-- Футер для красоты -->
     <footer class="footer mt-5 py-3 bg-white text-center border-top">
         <div class="container">
             <span class="text-muted">© 2024 {{ company_global.name|default:"Parking System" }}</span>

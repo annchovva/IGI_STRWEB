@@ -1,11 +1,21 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from datetime import date
 
+# Специальные валидации
+phone_regex = RegexValidator(
+    regex=r'^\+375 \((25|29|33|44)\) \d{3}-\d{2}-\d{2}$',
+    message="Номер телефона должен быть в формате: +375 (29) XXX-XX-XX"
+)
+license_regex = RegexValidator(
+    regex=r'^[A-Z0-9\- ]+$',
+    message="Гос. номер может содержать только заглавные буквы, цифры и дефис"
+)
 
 class CustomUser(AbstractUser):
-    """Пользователь (клиент/сотрудник/админ)"""
+    """Пользователь"""
     
     ROLE_CHOICES = [
         ('client', 'Клиент'),
@@ -14,15 +24,16 @@ class CustomUser(AbstractUser):
     ]
     
     phone_number = models.CharField(
+        validators=[phone_regex],
         max_length=20,
         verbose_name="Номер телефона",
         help_text="Формат: +375 (29) XXX-XX-XX",
         null=True,
-        blank=True
+        blank=False
     )
     birth_date = models.DateField(
         null=True, 
-        blank=True, 
+        blank=False, 
         verbose_name="Дата рождения"
     )
     role = models.CharField(
@@ -40,33 +51,50 @@ class CustomUser(AbstractUser):
         super().clean()
         if self.birth_date:
             today = date.today()
+
+            if self.birth_date > today:
+                raise ValidationError({'birth_date': 'Дата не может быть в будущем.'})
+            
+            if self.birth_date.year < 1900:
+                raise ValidationError({'birth_date': 'Введите корректный год рождения.'})
+
             age = today.year - self.birth_date.year
             if (today.month, today.day) < (self.birth_date.month, self.birth_date.day):
                 age -= 1
+
             if age < 18:
                 raise ValidationError(
-                    {'birth_date': 'Возраст должен быть 18 лет или старше'}
+                    {'birth_date': 'Возраст должен быть 18 лет или старше.'}
                 )
     
     def save(self, *args, **kwargs):
+        if self.role == 'staff' or self.role == 'admin':
+            self.is_staff = True
+        else:
+            self.is_staff = False
+
+        if self.role == 'admin':
+            self.is_superuser = True        
+
         self.full_clean()
         super().save(*args, **kwargs)
     
     def __str__(self):
         return f"{self.username} ({self.get_role_display()})"
 
-
 class ParkingSpot(models.Model):
     """Парковочное место"""
     
     number = models.IntegerField(
         unique=True,
+        validators=[MinValueValidator(1), MaxValueValidator(999)],
         verbose_name="Номер места",
-        help_text="От 1 до 999"
+        help_text="Номера места от 1 до 999"
     )
     price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
+        validators=[MinValueValidator(0.01)],
         verbose_name="Цена за месяц"
     )
     is_occupied = models.BooleanField(
@@ -79,19 +107,12 @@ class ParkingSpot(models.Model):
         verbose_name_plural = "Парковочные места"
         ordering = ['number']
     
-    def clean(self):
-        if self.number < 1 or self.number > 999:
-            raise ValidationError(
-                {'number': 'Номер места должен быть от 1 до 999'}
-            )
-    
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
-    
+
     def __str__(self):
         return f"Место {self.number} ({self.price} руб.)"
-
 
 class Car(models.Model):
     """Автомобиль"""
@@ -107,11 +128,15 @@ class Car(models.Model):
     license_plate = models.CharField(
         max_length=15, 
         unique=True, 
+        validators=[license_regex],
         verbose_name="Гос. номер"
     )
     owners = models.ManyToManyField(
-        CustomUser, related_name='cars', 
+        CustomUser, 
+        limit_choices_to={'is_staff': False},
+        related_name='cars', 
         verbose_name="Владельцы"
+
     )
     current_spot = models.OneToOneField(
         ParkingSpot,
@@ -126,9 +151,27 @@ class Car(models.Model):
         verbose_name = "Автомобиль"
         verbose_name_plural = "Автомобили"
     
+    def save(self, *args, **kwargs):
+        if self.pk:
+            old_car = Car.objects.get(pk=self.pk)
+            if old_car.current_spot and old_car.current_spot != self.current_spot:
+                old_car.current_spot.is_occupied = False
+                old_car.current_spot.save()
+
+        if self.current_spot:
+            self.current_spot.is_occupied = True
+            self.current_spot.save()
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        if self.current_spot:
+            self.current_spot.is_occupied = False
+            self.current_spot.save()
+        super().delete(*args, **kwargs)
+
     def __str__(self):
         return f"{self.brand} {self.model_name} ({self.license_plate})"
-
 
 class Accrual(models.Model):
     """Начисление"""
@@ -141,6 +184,7 @@ class Accrual(models.Model):
     amount = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
+        validators=[MinValueValidator(0.01)],
         verbose_name="Сумма начисления"
     )
     date = models.DateField(
@@ -148,10 +192,12 @@ class Accrual(models.Model):
         verbose_name="Дата начисления"
     )
     month = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(12)],
         verbose_name="Месяц", 
         help_text="1-12"
     )
     year = models.PositiveIntegerField(
+        validators=[MinValueValidator(2020)],
         verbose_name="Год"
     )
     
@@ -161,9 +207,12 @@ class Accrual(models.Model):
         verbose_name = "Начисление"
         verbose_name_plural = "Начисления"
     
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"Начисление {self.car} за {self.month:02d}/{self.year}"
-
 
 class Payment(models.Model):
     """Платёж"""
@@ -176,6 +225,7 @@ class Payment(models.Model):
     amount = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
+        validators=[MinValueValidator(0.01)],
         verbose_name="Сумма платежа"
     )
     date = models.DateField(
@@ -188,12 +238,16 @@ class Payment(models.Model):
         verbose_name_plural = "Платежи"
         ordering = ['-date']
     
+    def save(self, *args, **kwargs): 
+        self.full_clean()
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"Платёж {self.amount} по авто {self.car}"
 
-
 class CompanyInfo(models.Model):
     """Информация о компании"""
+
     name = models.CharField(
         max_length=100, 
         verbose_name="Название компании"
@@ -230,9 +284,9 @@ class CompanyInfo(models.Model):
     def __str__(self):
         return self.name
 
-
 class News(models.Model):
     """Новости"""
+
     title = models.CharField(
         max_length=200, 
         verbose_name="Заголовок"
@@ -242,7 +296,8 @@ class News(models.Model):
     )
     image = models.ImageField(
         upload_to='news/', 
-        null=True, blank=True, 
+        null=True, 
+        blank=True, 
         verbose_name="Изображение"
     )
     published_at = models.DateTimeField(
@@ -258,9 +313,9 @@ class News(models.Model):
     def __str__(self):
         return self.title
 
-
 class Term(models.Model):
     """Словарь терминов"""
+
     term = models.CharField(
         max_length=100, 
         verbose_name="Термин"
@@ -276,14 +331,14 @@ class Term(models.Model):
     class Meta:
         verbose_name = "Термин"
         verbose_name_plural = "Словарь терминов"
-        ordering = ['term'] # Сортировка по алфавиту
+        ordering = ['term']
     
     def __str__(self):
         return self.term
 
-
 class Employee(models.Model):
     """Сотрудник"""
+
     photo = models.ImageField(
         upload_to='employees/', 
         null=True, 
@@ -314,9 +369,9 @@ class Employee(models.Model):
     def __str__(self):
         return f"{self.name} - {self.position}"
 
-
 class Vacancy(models.Model):
     """Вакансия"""
+
     title = models.CharField(
         max_length=100, 
         verbose_name="Название"
@@ -340,13 +395,14 @@ class Vacancy(models.Model):
     def __str__(self):
         return self.title
 
-
 class Review(models.Model):
     """Отзыв клиента"""
+
     author = models.ForeignKey(
         CustomUser, 
         on_delete=models.CASCADE, 
-        related_name='reviews'
+        related_name='reviews',
+        verbose_name="Автор отзыва"
     )
     rating = models.IntegerField(
         choices=[(i, str(i)) for i in range(1, 6)], 
@@ -363,14 +419,14 @@ class Review(models.Model):
     class Meta:
         verbose_name = "Отзыв"
         verbose_name_plural = "Отзывы"
-        ordering = ['-created_at'] # Сначала новые отзывы
+        ordering = ['-created_at'] 
     
     def __str__(self):
         return f"Отзыв от {self.author.username} (оценка: {self.rating})"
 
-
 class PromoCode(models.Model):
-    """Промокод/купон"""
+    """Промокод"""
+
     code = models.CharField(
         max_length=50, 
         unique=True, 
@@ -378,6 +434,7 @@ class PromoCode(models.Model):
     )
     discount_percent = models.IntegerField(
         verbose_name="Скидка %", 
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
         help_text="От 1 до 100"
     )
     valid_from = models.DateField(
@@ -396,8 +453,6 @@ class PromoCode(models.Model):
         verbose_name_plural = "Промокоды"
     
     def clean(self):
-        if self.discount_percent < 1 or self.discount_percent > 100:
-            raise ValidationError({'discount_percent': 'Скидка должна быть от 1 до 100%'})
         if self.valid_from > self.valid_until:
             raise ValidationError('Дата начала не может быть позже даты окончания')
     
@@ -408,3 +463,55 @@ class PromoCode(models.Model):
     def __str__(self):
         status = "Активен" if self.is_active else "Архив"
         return f"{self.code} ({self.discount_percent}%) - {status}"
+
+class Category(models.Model):
+    """Категории услуг"""
+    name = models.CharField(
+        max_length=100, 
+        verbose_name="Название категории"
+    )
+
+    class Meta:
+        verbose_name = "Категория услуг"
+        verbose_name_plural = "Категории услуг"
+
+    def __str__(self):
+        return self.name
+
+class Service(models.Model):
+    """Сами услуги"""
+
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE, 
+        related_name='services', 
+        verbose_name="Категория"
+    )
+    name = models.CharField(
+        max_length=100, 
+        verbose_name="Название услуги"
+    )
+    description = models.TextField(
+        verbose_name="Описание"
+    )
+    price = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        validators=[MinValueValidator(0)],
+        verbose_name="Цена"
+    )
+    is_additional = models.BooleanField(
+        default=False, 
+        verbose_name="Дополнительная услуга"
+    )
+
+    class Meta:
+        verbose_name = "Услуга"
+        verbose_name_plural = "Услуги"
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)    
+
+    def __str__(self):
+        return f"{self.name} ({self.price} руб.)"
