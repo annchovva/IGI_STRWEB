@@ -14,64 +14,67 @@ import statistics
 import calendar
 from django.conf import settings
 import matplotlib
-matplotlib.use('Agg')  # Важно: используем неинтерактивный бэкенд для серверов
+matplotlib.use('Agg')  
 import matplotlib.pyplot as plt
 import io
 import base64
+import time
+from datetime import timedelta
+import logging
+
+logger = logging.getLogger(__name__)
 
 def home(request):
     # Берем последнюю новость
     latest_news = News.objects.first()
     cars_count = Car.objects.count()
 
-    now_utc = timezone.now()  # Текущее время в UTC
-    now_local = timezone.localtime(now_utc)  # Локальное время (из settings.TIME_ZONE)
-    
-    # Генерация текстового календаря на текущий месяц
-    cal = calendar.TextCalendar(calendar.MONDAY)
-    text_calendar = cal.formatmonth(now_local.year, now_local.month)
-
+    # Подключение api погоды
     weather_data = None
     weather_tip = ""
     city = "Minsk"
-    api_key = "63026ab9f90f2307525287f3f1e967df" # Используйте свой ключ или этот (если он активен)
+    api_key = "ac47b35ecac07e4acea2b50059773524"
     
     try:
         url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric&lang=ru"
-        response = requests.get(url, timeout=2) # Таймаут 2 сек, чтобы сайт не завис
+        response = requests.get(url, timeout=5)
+        
         if response.status_code == 200:
+            logger.info(f"Weather API request successful for {city}")
             data = response.json()
             temp = data['main']['temp']
+            main_status = data['weather'][0]['main']
             weather_data = {
                 'temp': round(temp),
                 'description': data['weather'][0]['description'].capitalize(),
                 'icon': data['weather'][0]['icon']
             }
-            
-            # Генерация совета на основе температуры
-            if temp > 25:
-                weather_tip = "Сегодня жарко. Ваша машина может перегреться, рекомендуем парковку в тени или крытый паркинг."
+            # Сообщения по погоде
+            if main_status == 'Rain':
+                weather_tip = "Идет дождь. На нашей крытой парковке ваша машина останется сухой!"
+            elif main_status == 'Snow':
+                weather_tip = "Снегопад. На нашей парковке вам не придется чистить машину от снега!"
+            elif temp > 25:
+                weather_tip = "Сегодня жарко. Машина может перегреться."
             elif temp < -10:
-                weather_tip = "На улице мороз. Проверьте заряд аккумулятора перед поездкой."
-            elif 'осадки' in data['weather'][0]['description'] or 'дождь' in data['weather'][0]['description']:
-                weather_tip = "Ожидаются осадки. Будьте осторожны на дорогах и закройте люк."
+                weather_tip = "На улице мороз. Проверьте аккумулятор."
             else:
                 weather_tip = "Погода отличная для поездки!"
-    except:
+        else:
+            logger.error(f"Weather API returned status {response.status_code} for {city}")        
+
+    except Exception as e:
+        logger.error(f"Weather API error: {e}")
         weather_data = None
 
     if latest_news:
         latest_news.short_content = latest_news.content.split('.')[0] + '.'
 
-    # Передаем эту новость в шаблон news
     context = {
         'news': latest_news,
         'cars_count': cars_count,
         'weather': weather_data,
         'weather_tip': weather_tip,
-        'now_utc': now_utc,
-        'now_local': now_local,
-        'text_calendar': text_calendar,
     }
 
     return render(request, 'parking/home.html', context)
@@ -80,21 +83,67 @@ def news_list(request):
     # Забираем все новости из базы данных
     all_news = News.objects.all()
 
-    # Для вывода одного предложения
+    # Получаем таймзону
+    system_offset = -time.timezone 
+    tz_delta = timedelta(seconds=system_offset)
+
     for item in all_news:
-        item.short_content = item.content.split('.')[0] + '.'
+        # Для вывода одного предложения
+        if item.content:
+            item.short_content = item.content.split('.')[0] + '.'
+        else:
+            item.short_content = ""
+
+        # Выводим дату публикации, создания и изменения в локальном времени
+        if item.published_at:
+            item.published_at_local = item.published_at + tz_delta
+
+        if hasattr(item, 'created_at') and item.created_at:
+            item.created_at_local = item.created_at + tz_delta
+
+        if hasattr(item, 'updated_at') and item.updated_at:
+            item.updated_at_local = item.updated_at + tz_delta
 
     return render(request, 'parking/news_list.html', {'news_items': all_news})
 
 def news_detail(request, news_id):
     # Получаем новость по ID или выдаем 404, если не найдена
-    news = get_object_or_404(News, id=news_id)
-    return render(request, 'parking/news_detail.html', {'news': news})
+    item = get_object_or_404(News, id=news_id)
+
+    system_offset = -time.timezone 
+    tz_delta = timedelta(seconds=system_offset)
+
+
+    if item.published_at:
+        item.published_at_utc = item.published_at
+        item.published_at_local = item.published_at + tz_delta
+
+    if hasattr(item, 'created_at') and item.created_at:
+        item.created_at_local = item.created_at + tz_delta
+        item.created_at_utc = item.created_at
+
+    if hasattr(item, 'updated_at') and item.updated_at:
+        item.updated_at_local = item.updated_at + tz_delta
+        item.updated_at_utc = item.updated_at
+
+    return render(request, 'parking/news_detail.html', {'news': item})
 
 def about(request):
     # Первую запись
     company_data = CompanyInfo.objects.first()
-    return render(request, 'parking/about.html', {'company': company_data})
+
+    # Подключаем api яндекс карт
+    lon = "27.5485"
+    lat = "53.9085"
+    zoom = "16"
+
+    map_url = f"https://yandex.ru/map-widget/v1/?ll={lon},{lat}&z={zoom}&pt={lon},{lat},pm2rdm"
+
+    context = {
+        'company': company_data,
+        'map_url': map_url
+    }
+    return render(request, 'parking/about.html', context)
 
 def term_list(request):
     terms = Term.objects.all()
@@ -112,11 +161,15 @@ def vacancy_list(request):
     return render(request, 'parking/vacancy_list.html', {'vacancies': vacancies})
 
 def promo_list(request):
-    today = timezone.now().date()
+    system_offset = -time.timezone 
+    tz_delta = timedelta(seconds=system_offset)
+
+    now = timezone.now() + tz_delta
+    today = now.date()   
 
     active_promos = PromoCode.objects.filter(
         is_active=True,
-        valid_until__gte=today # Включая сегодняшнюю дату
+        valid_until__gte=today 
     ).order_by('-valid_until')
 
     archived_promos = PromoCode.objects.filter(
@@ -130,6 +183,12 @@ def promo_list(request):
 
 def review_list(request):
     reviews = Review.objects.all()
+
+    system_offset = -time.timezone
+    tz_delta = timedelta(seconds=system_offset)
+
+    for review in reviews:
+        review.created_at_local = review.created_at + tz_delta
 
     if request.method == 'POST':
         if request.user.is_authenticated and not request.user.is_staff and not request.user.is_superuser:
@@ -150,6 +209,7 @@ def review_list(request):
     })     
 
 # READ
+@login_required
 def car_index(request):
     if request.user.is_staff:
         cars = Car.objects.all()
@@ -160,6 +220,8 @@ def car_index(request):
 #CREATE
 @login_required
 def car_create(request):
+    logger.info(f"User {request.user.username} accessed car creation form")
+
     if request.method == 'POST':
         form = CarForm(request.POST, user=request.user)
         if form.is_valid():
@@ -167,7 +229,12 @@ def car_create(request):
             if not request.user.is_staff:
                 if request.user not in car.owners.all():
                     car.owners.add(request.user)
+            logger.info(f"Car created: {car.license_plate} by {request.user.username}")
+            messages.success(request, "Автомобиль успешно добавлен!")
             return redirect("car_index")
+        else:
+            logger.warning(f"Invalid car form by {request.user.username}: {form.errors}")
+            messages.error(request, "Ошибка при добавлении автомобиля")
     else:
         form = CarForm(user=request.user)
     return render(request, "parking/car_form.html", {"form": form, "title": "Добавить автомобиль"})
@@ -197,10 +264,13 @@ def car_delete(request, id):
     car = get_object_or_404(Car, id=id)
     
     if not request.user.is_staff and request.user not in car.owners.all():
+        logger.warning(f"Unauthorized car deletion attempt by {request.user.username} for car {car.license_plate}")
         raise PermissionDenied
 
     if request.method == 'POST':
+        logger.info(f"Car deleted: {car.license_plate} by {request.user.username}")
         car.delete()
+        messages.success(request, "Автомобиль удалён")
         return redirect('car_index')
     
     return redirect('car_index')
@@ -219,7 +289,7 @@ def register(request):
 def is_admin(user):
     return user.is_authenticated and user.is_superuser
 
-# Данные для панели администратора
+# Панель администратора
 @user_passes_test(is_admin, login_url='/accounts/login/')
 def admin_panel(request):
     # Изменение цены
@@ -341,7 +411,7 @@ def admin_panel(request):
     # Визуализация
     brand_revenue_qs = Car.objects.values('brand').annotate(
         total_rev=Sum('payments__amount')
-    ).filter(total_rev__gt=0) # Берем только те, где есть доход
+    ).filter(total_rev__gt=0) 
 
     graphic = None
     if brand_revenue_qs:
@@ -377,7 +447,7 @@ def admin_panel(request):
         'graphic': graphic,
     }
     return render(request, 'parking/admin_panel.html', context)
-
+        
 @login_required
 def dashboard(request):
     user = request.user
@@ -408,7 +478,7 @@ def dashboard(request):
             'accrual_form': form,
         }
         context['free_spots'] = context['total_spots'] - context['occupied_spots']
-        return render(request, 'dashboard_staff.html', context)
+        return render(request, 'parking/dashboard_staff.html', context)
 
     else:
         if request.method == 'POST' and 'make_payment' in request.POST:
@@ -437,23 +507,11 @@ def dashboard(request):
                 'balance': total_paid - total_accrued
             })
         
-        return render(request, 'dashboard_client.html', {
+        return render(request, 'parking/dashboard_client.html', {
             'cars_data': cars_data,
             'payment_form': form
         })
     
-def get_nbrb_rates():
-    try:
-        response = requests.get('https://www.nbrb.by/api/exrates/rates?periodicity=0', timeout=5)
-        if response.status_code == 200:
-            rates_data = response.json()
-            needed_cur = ['USD', 'EUR', 'RUB']
-            rates = {item['Cur_Abbreviation']: item for item in rates_data if item['Cur_Abbreviation'] in needed_cur}
-            return rates
-    except Exception:
-        return None
-    return None    
-
 def services_catalog(request):
     categories = Category.objects.all()
     services = Service.objects.all()
@@ -503,4 +561,4 @@ def services_catalog(request):
         'min_p_val': min_p,
         'max_p_val': max_p,
     }
-    return render(request, 'services_catalog.html', context)
+    return render(request, 'parking/services_catalog.html', context)

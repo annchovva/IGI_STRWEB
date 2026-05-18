@@ -24,13 +24,14 @@ class CustomUserAdmin(UserAdmin):
     list_display = ['username', 'email', 'phone_number', 'birth_date', 'role', 'is_staff']
     list_filter = ['role', 'is_staff']
 
+    # К стандартным полям добавляем свои 
     fieldsets = UserAdmin.fieldsets + (
         ("Дополнительная информация", {'fields' : ('phone_number', 'birth_date', 'role')}),
     )
     add_fieldsets = UserAdmin.add_fieldsets + (
         ("Дополнительная информация", {'fields': ('phone_number', 'birth_date', 'role')}),
     )
-    search_fields = ('username', 'role')
+    search_fields = ('username', 'email', 'phone_number', 'role')
 
 @admin.register(Car)
 class CarAdmin(admin.ModelAdmin):
@@ -40,7 +41,7 @@ class CarAdmin(admin.ModelAdmin):
 
     inlines = [AccrualInline, PaymentInline]
 
-    # Одним запросом
+    # Одним запросом все связные данные
     def get_queryset(self, request):
         return super().get_queryset(request).prefetch_related('owners').select_related('current_spot')
 
@@ -75,6 +76,7 @@ class AccrualAdmin(admin.ModelAdmin):
 class PaymentAdmin(admin.ModelAdmin):
     list_display = ('car', 'amount', 'date')
     list_filter = ('date', 'car__brand')       
+    search_fields = ('car__license_plate',) 
 
 @admin.register(News)
 class NewsAdmin(admin.ModelAdmin):
@@ -91,6 +93,7 @@ class EmployeeAdmin(admin.ModelAdmin):
 class ReviewAdmin(admin.ModelAdmin):
     list_display = ('author', 'rating', 'created_at')
     list_filter = ('rating', 'created_at')
+    search_fields = ('author',)
 
 @admin.register(PromoCode)
 class PromoCodeAdmin(admin.ModelAdmin):

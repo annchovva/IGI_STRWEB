@@ -1,61 +1,8 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Главная - Автопарковка</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .btn-custom {
-            width: 250px; 
-        }
-    </style>
-</head>
-<body>
+{% extends "base.html" %}
 
-    <header class="p-3 bg-dark text-white mb-5">
-        <div class="container">
-            <div class="d-flex flex-wrap align-items-center justify-content-between">
-            
-                <a href="{% url 'home' %}" class="d-flex align-items-center fs-4 text-white text-decoration-none">
-                    {% if company_global.logo %}
-                        <img src="{{ company_global.logo.url }}" alt="Logo" width="40" height="40" class="me-2 rounded">
-                    {% else %}
-                        <span class="me-2">🅿️</span>
-                    {% endif %}
-                
-                    {{ company_global.name|default:"Parking System" }}
-                </a>
+{% block title %}Главная - {{ company_global.name }}{% endblock %}
 
-                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 ms-lg-4">
-                    <li><a href="{% url 'home' %}" class="nav-link px-2 text-secondary">Главная</a></li>           
-                    <li><a href="{% url 'about' %}" class="nav-link px-2 text-white">О компании</a></li>
-                    <li><a href="{% url 'news_list' %}" class="nav-link px-2 text-white">Новости</a></li>
-                    <li><a href="{% url 'promo_list' %}" class="nav-link px-2 text-white">Акции</a></li>
-                    <li><a href="{% url 'term_list' %}" class="nav-link px-2 text-white">Ваши вопросы</a></li>
-                    <li><a href="{% url 'review_list' %}" class="nav-link px-2 text-white">Отзывы</a></li>
-                    <li><a href="{% url 'employee_list' %}" class="nav-link px-2 text-white">Контакты</a></li>
-                    <li><a href="{% url 'vacancy_list' %}" class="nav-link px-2 text-white">Вакансии</a></li>
-                    <li><a href="{% url 'privacy_policy' %}" class="nav-link px-2 text-white">Политика конфиденциальности</a></li>
-                </ul>
-
-                <div class="text-end">
-                    {% if user.is_authenticated %}    
-                        <span class="me-2 text-warning">Привет, {{ user.username }}!</span>
-                        <form action="{% url 'logout' %}" method="post" class="d-inline">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-outline-light btn-sm">Выйти</button>
-                        </form>
-                    {% else %}
-                        <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm me-2">Вход</a>
-                        <a href="{% url 'register' %}" class="btn btn-warning btn-sm">Регистрация</a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <main class="container mt-5">
+{% block content %}
         <div class="p-5 mb-4 bg-light rounded-3 border shadow-sm">
             <div class="container-fluid py-5 text-center">
                 <h1 class="display-5 fw-bold">Добро пожаловать на нашу парковку!</h1>
@@ -90,7 +37,7 @@
         <div class="row mb-4">
             <div class="col-12">
                 <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-                    <div class="card-body d-flex align-items-center justify-content-between p-4">
+                    <div class="card-body d-flex flex-wrap align-items-center justify-content-between p-4">
                         <div class="d-flex align-items-center">
                             <img src="http://openweathermap.org/img/wn/{{ weather.icon }}@2x.png" alt="icon" style="width: 70px;">
                             <div class="ms-3">
@@ -98,62 +45,18 @@
                                 <p class="mb-0 opacity-75">{{ weather.description }}</p>
                             </div>
                         </div>
-                        <div class="text-end d-none d-md-block" style="max-width: 400px;">
-                            <i class="bi bi-info-circle me-2"></i>
-                            <span class="fst-italic">{{ weather_tip }}</span>
+                        
+                        {# Убрали d-none d-md-block чтобы сообщение было видно всегда #}
+                        <div class="mt-3 mt-md-0 text-md-end">
+                            <span class="fst-italic" style="font-size: 1.1rem;">
+                                {{ weather_tip }}
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         {% endif %}
-
-        <!-- БЛОК ВРЕМЕНИ И КАЛЕНДАРЯ -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card border-0 shadow-sm bg-light">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <!-- Секция Дат -->
-                            <div class="col-md-6">
-                                <p class="mb-1"><strong>Текущая дата (локальная):</strong> 
-                                <span class="badge bg-primary fs-6">({{ now_local|date:"d/m/Y" }})</span>
-                                </p>
-                                <p class="mb-1"><strong>Текущая дата (UTC):</strong> 
-                                <span class="badge bg-secondary fs-6">({{ now_utc|date:"d/m/Y" }})</span>
-                                </p>
-                                <p class="mb-0 text-muted small">
-                                    Таймзона: {{ TIME_ZONE|default:"Europe/Minsk" }} | Время: {{ now_local|date:"H:i:s" }}
-                                </p>
-                            </div>
-                            
-                            <!-- Секция Текстового календаря -->
-                            <div class="col-md-6 border-start d-none d-md-block">
-                                <small class="text-uppercase fw-bold text-muted d-block mb-1">Календарь на месяц:</small>
-                                <pre class="mb-0 text-center" style="font-family: 'Courier New', monospace; font-size: 0.75rem; background: #f8f9fa; line-height: 1;">
-        {{ text_calendar }}</pre>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-            
-            <div class="col-md-5">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-header bg-light fw-bold text-center small">КАЛЕНДАРЬ</div>
-                    <div class="card-body p-2 d-flex justify-content-center align-items-center">
-                        <!-- Тег <pre> обязателен для сохранения форматирования текстового календаря -->
-                        <pre class="mb-0" style="font-family: 'Courier New', monospace; font-size: 0.85rem; line-height: 1.2;">
-        {{ text_calendar }}
-                        </pre>
-                    </div>
-                </div>
-            </div>
-        </div>
-
 
         <!-- КАРТОЧКА С КОЛИЧЕСТВОМ МАШИН -->
         <div class="row mb-5">
@@ -190,14 +93,5 @@
             </div>
         {% else %}
             <div class="alert alert-info">Пока новостей нет, но мы скоро их добавим!</div>
-        {% endif %}
-    </main>
-
-    <footer class="footer mt-auto py-3 bg-light text-center">
-        <div class="container">
-            <span class="text-muted">© 2024 {{ company_global.name|default:"Parking System" }}</span>
-        </div>
-    </footer>
-
-</body>
-</html>
+        {% endif %}    
+{% endblock %}

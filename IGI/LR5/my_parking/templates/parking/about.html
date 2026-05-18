@@ -1,105 +1,61 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>О компании - Parking System</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <style>
-        #map { 
-            height: 400px; 
-            width: 100%; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            z-index: 1;
-        }
-    </style>
-</head>
-<body class="bg-light">
+{% extends "base.html" %}
 
-    <header class="p-3 bg-dark text-white mb-5">
-        <div class="container">
-            <div class="d-flex flex-wrap align-items-center justify-content-between">
-            
-                <a href="{% url 'home' %}" class="d-flex align-items-center fs-4 text-white text-decoration-none">
-                    {% if company_global.logo %}
-                        <img src="{{ company_global.logo.url }}" alt="Logo" width="40" height="40" class="me-2 rounded">
-                    {% else %}
-                        <span class="me-2">🅿️</span>
-                    {% endif %}
-                
-                    {{ company_global.name|default:"Parking System" }}
-                </a>
+{% block title %}О компании - {{ company_global.name }}{% endblock %}
 
-                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 ms-lg-4">
-                    <li><a href="{% url 'home' %}" class="nav-link px-2 text-white">Главная</a></li>
-                    <li><a href="{% url 'about' %}" class="nav-link px-2 text-secondary">О компании</a></li>
-                    <li><a href="{% url 'news_list' %}" class="nav-link px-2 text-white">Новости</a></li>
-                    <li><a href="{% url 'promo_list' %}" class="nav-link px-2 text-white">Акции</a></li>
-                    <li><a href="{% url 'term_list' %}" class="nav-link px-2 text-white">Ваши вопросы</a></li>
-                    <li><a href="{% url 'review_list' %}" class="nav-link px-2 text-white">Отзывы</a></li>
-                    <li><a href="{% url 'employee_list' %}" class="nav-link px-2 text-white">Контакты</a></li>
-                    <li><a href="{% url 'vacancy_list' %}" class="nav-link px-2 text-white">Вакансии</a></li>
-                    <li><a href="{% url 'privacy_policy' %}" class="nav-link px-2 text-white">Политика конфиденциальности</a></li>
-                </ul>
-            </div>
-        </div>
-    </header>
-
-    <main class="container">
+{% block content %}
         {% if company %}
-        <div class="row align-items-center bg-white p-5 rounded shadow-sm">
-            <div class="col-md-4 text-center">
-                {% if company.main_logo %}
-                    <img src="{{ company.main_logo.url }}" alt="Логотип" class="img-fluid rounded mb-3" style="max-height: 250px;">
-                {% else %}
-                    <div class="p-5 bg-secondary text-white rounded">Логотип не загружен</div>
-                {% endif %}
-            </div>
-            <div class="col-md-8">
-                <h1 class="display-4 fw-bold text-dark">{{ company.name }}</h1>
-                <p class="lead mt-4" style="white-space: pre-line;">{{ company.description }}</p>
-                
-                <hr class="my-4">
-                
-                <div class="contact-info">
-                    {% if company.address %}<p><strong>Адрес:</strong> {{ company.address }}</p>{% endif %}
-                    <div id="map"></div>
-                    {% if company.email %}<p><strong>Email:</strong> {{ company.email }}</p>{% endif %}
+        <div class="card border-0 shadow-lg overflow-hidden" style="border-radius: 20px;">
+            <div class="row g-0">
+                <div class="col-lg-6 p-5 bg-white d-flex flex-column justify-content-center">
+                    {% if company.main_logo %}
+                        <div class="mb-4">
+                            <img src="{{ company.main_logo.url }}" 
+                                alt="Logo" 
+                                class="rounded shadow-sm" 
+                                style="max-height: 100px; width: auto; border: 1px solid #eee;">
+                        </div>
+                    {% endif %}
+
+                    <h1 class="h2 fw-bold text-dark mb-4" style="letter-spacing: -1px;">
+                        {{ company.name }}
+                    </h1>
+
+                    <p class="text-muted mb-4" style="white-space: pre-line; font-size: 1.05rem; line-height: 1.6; text-align: justify;">
+                        {{ company.description }}
+                    </p>
+
+                    <div class="contact-details mt-auto">
+                        <div class="d-flex align-items-center mb-3 p-3 rounded-3 bg-light border-start border-primary border-4">
+                            <div>
+                                <div class="text-muted small uppercase fw-bold" style="font-size: 0.7rem;">Наш адрес</div>
+                                <div class="fw-semibold">{{ company.address }}</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center p-3 rounded-3 bg-light border-start border-primary border-4">
+                            <div>
+                                <div class="text-muted small uppercase fw-bold" style="font-size: 0.7rem;">Электронная почта</div>
+                                <div class="fw-semibold">{{ company.email }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div style="position: relative; height: 100%; min-height: 450px;">
+                        <iframe 
+                            src="{{ map_url }}" 
+                            width="100%" 
+                            height="100%" 
+                            frameborder="0" 
+                            allowfullscreen="true" 
+                            style="display: block; position: absolute; top: 0; left: 0;">
+                        </iframe>
+                    </div>
                 </div>
             </div>
         </div>
         {% else %}
-        <div class="alert alert-warning">Информация о компании еще не добавлена в базу данных.</div>
+        <div class="alert alert-warning">Информация о компании еще не добавлена.</div>
         {% endif %}
-    </main>
-
-    <footer class="footer mt-5 py-3 bg-white text-center border-top">
-        <div class="container">
-            <span class="text-muted">© 2024 {{ company.name|default:"Parking System" }}</span>
-        </div>
-    </footer>
-     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Координаты Galleria Minsk (пр-т Победителей, 9)
-            const lat = 53.9085;
-            const lng = 27.5485;
-
-            // Инициализация карты
-            const map = L.map('map').setView([lat, lng], 16);
-
-            // Добавляем слой карты (плитки)
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors'
-            }).addTo(map);
-
-            // Добавляем маркер
-            const marker = L.marker([lat, lng]).addTo(map);
-            
-            // Текст во всплывающем окне
-            marker.bindPopup("<b>{{ company.name|default:'Parking System' }}</b><br>Лучший паркинг в городе!").openPopup();
-        });
-    </script>
-</body>
-</html>
+{% endblock %}

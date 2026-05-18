@@ -47,6 +47,7 @@ class CustomUser(AbstractUser):
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
     
+    # Валидация возраста 
     def clean(self):
         super().clean()
         if self.birth_date:
@@ -67,6 +68,7 @@ class CustomUser(AbstractUser):
                     {'birth_date': 'Возраст должен быть 18 лет или старше.'}
                 )
     
+    # Если роль = сотрудник - is_staff 
     def save(self, *args, **kwargs):
         if self.role == 'staff' or self.role == 'admin':
             self.is_staff = True
@@ -150,20 +152,26 @@ class Car(models.Model):
     class Meta:
         verbose_name = "Автомобиль"
         verbose_name_plural = "Автомобили"
+        ordering = ['license_plate']
     
+    # Изменение поля is_occupied в парковочном месте 
     def save(self, *args, **kwargs):
+        # Проверяем есть ли уже машина в бд
         if self.pk:
             old_car = Car.objects.get(pk=self.pk)
             if old_car.current_spot and old_car.current_spot != self.current_spot:
+                # Освобождаем старое место
                 old_car.current_spot.is_occupied = False
                 old_car.current_spot.save()
 
         if self.current_spot:
+            # Новое место помечаем как занятое
             self.current_spot.is_occupied = True
             self.current_spot.save()
         self.full_clean()
         super().save(*args, **kwargs)
 
+    # При удалении машины освобождаем место
     def delete(self, *args, **kwargs):
         if self.current_spot:
             self.current_spot.is_occupied = False
@@ -179,7 +187,8 @@ class Accrual(models.Model):
     car = models.ForeignKey(
         Car, 
         on_delete=models.CASCADE, 
-        related_name='accruals'
+        related_name='accruals',
+        verbose_name="Автомобиль"
     )
     amount = models.DecimalField(
         max_digits=10, 
@@ -202,6 +211,7 @@ class Accrual(models.Model):
     )
     
     class Meta:
+        # Чтобы нельзя было создать два начисления за один месяц
         unique_together = ['car', 'year', 'month']
         ordering = ['-year', '-month']
         verbose_name = "Начисление"
@@ -220,7 +230,8 @@ class Payment(models.Model):
     car = models.ForeignKey(
         Car, 
         on_delete=models.CASCADE, 
-        related_name='payments'
+        related_name='payments',
+        verbose_name="Автомобиль"
     )
     amount = models.DecimalField(
         max_digits=10, 
@@ -304,7 +315,14 @@ class News(models.Model):
         auto_now_add=True, 
         verbose_name="Дата публикации"
     )
-    
+    created_at = models.DateTimeField(
+        auto_now_add=True, 
+        verbose_name="Дата создания"
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True, 
+        verbose_name="Дата изменения"
+    )
     class Meta:
         ordering = ['-published_at']
         verbose_name = "Новость"
@@ -452,6 +470,7 @@ class PromoCode(models.Model):
         verbose_name = "Промокод"
         verbose_name_plural = "Промокоды"
     
+    # Проверяем корректность срока действия промокода
     def clean(self):
         if self.valid_from > self.valid_until:
             raise ValidationError('Дата начала не может быть позже даты окончания')
@@ -466,6 +485,7 @@ class PromoCode(models.Model):
 
 class Category(models.Model):
     """Категории услуг"""
+
     name = models.CharField(
         max_length=100, 
         verbose_name="Название категории"

@@ -91,8 +91,6 @@ class CustomUserCreationForm(UserCreationForm):
         birth_date = self.cleaned_data.get('birth_date')
         if birth_date:
             today = date.today()
-            # Математический расчет возраста:
-            # $$age = year_{now} - year_{birth} - (1 \text{ if } day_{now} < day_{birth} \text{ else } 0)$$
             age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
             
             if age < 18:
@@ -103,18 +101,12 @@ class CustomUserCreationForm(UserCreationForm):
                 raise ValidationError("Дата рождения не может быть в будущем.")
         return birth_date
 
-    # Валидация телефона (на случай, если RegexValidator в модели не сработает в форме)
+    # Валидация телефона 
     def clean_phone_number(self):
         phone = self.cleaned_data.get('phone_number')
-        # Простая проверка регуляркой: +375 и еще 9 цифр (упрощенно)
-        pattern = r'^\+375\s?\(?\d{2}\)?\s?\d{3}-?\d{2}-?\d{2}$'
+        pattern = r'^\+375 \((25|29|33|44)\) \d{3}-\d{2}-\d{2}$'
         if not re.match(pattern, phone):
             raise ValidationError("Введите номер в формате +375 (XX) XXX-XX-XX")
-        
-        # Проверка на уникальность телефона (если нужно)
-        if CustomUser.objects.filter(phone_number=phone).exists():
-            raise ValidationError("Пользователь с таким номером телефона уже зарегистрирован.")
-            
         return phone
 
     def __init__(self, *args, **kwargs):
