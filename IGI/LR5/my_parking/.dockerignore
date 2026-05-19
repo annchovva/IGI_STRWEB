@@ -29,10 +29,6 @@ Dockerfile
 docker-compose.yml
 .dockerignore
 
-# Статика (соберётся внутри контейнера)
-staticfiles/
-media/
-
 # Тесты и покрытие
 .coverage
 htmlcov/
