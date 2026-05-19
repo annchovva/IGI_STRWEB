@@ -24,5 +24,5 @@ COPY . .
 # Сбор статики
 RUN python manage.py collectstatic --noinput
 
-# Запуск Gunicorn (или оставить для разработки)
+# Запуск Gunicorn
 CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:8000"]
