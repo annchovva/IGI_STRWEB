@@ -3,48 +3,48 @@
 {% block title %}Новости - {{ company_global.name }}{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Наши новости</h1>
-        <div class="row row-cols-1 row-cols-md-3 g-4">
+<h1>Наши новости</h1>
+        <div>
             
             {% for item in news_items %}
-            <div class="col">
-                <div class="card h-100 shadow-sm border-0">
+            <div>
+                <div>
                     {% if item.image %}
-                        <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.title }}" style="height: 200px; object-fit: cover;">
+                        <img src="{{ item.image.url }}" alt="{{ item.title }}">
                     {% else %}
-                        <img src="https://via.placeholder.com/400x200?text=Нет+фото" class="card-img-top" alt="Нет фото">
+                        <img src="https://via.placeholder.com/400x200?text=Нет+фото" alt="Нет фото">
                     {% endif %}
                     
-                    <div class="card-body">
-                        <h5 class="card-title text-primary">{{ item.title }}</h5>
-                        <p class="card-text">{{ item.short_content }}</p>
+                    <div>
+                        <h5>{{ item.title }}</h5>
+                        <p>{{ item.short_content }}</p>
                     </div>
 
-                    <div class="card-footer bg-white border-top-0">
-                        <div class="card-footer bg-white border-top-0">
+                    <div>
+                        <div>
                             <div>
-                                <small class="text-muted d-block">
+                                <small>
                                     Опубликовано: {{ item.published_at_local|date:"d/m/Y H:i" }}
                                 </small>
                                 {% if item.created_at_local %}
-                                <small class="text-muted d-block">
+                                <small>
                                     Создано: {{ item.created_at_local|date:"d/m/Y H:i" }}
                                 </small>
                                 {% endif %}
                                 {% if item.updated_at_local %}
-                                <small class="text-muted d-block">
+                                <small>
                                     Обновлено: {{ item.updated_at_local|date:"d/m/Y H:i" }}
                                 </small>
                                 {% endif %}
                             </div>
-                            <a href="{% url 'news_detail' news_id=item.id %}" class="btn btn-sm btn-outline-primary mt-2">Читать далее →</a>
+                            <a href="{% url 'news_detail' news_id=item.id %}">Читать далее →</a>
                         </div>
                     </div>
                 </div>
             </div>
             {% empty %}
-            <div class="col-12">
-                <div class="alert alert-info">Новостей пока нет.</div>
+            <div>
+                <div>Новостей пока нет.</div>
             </div>
             {% endfor %}
 

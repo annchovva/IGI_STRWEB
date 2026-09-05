@@ -16,15 +16,15 @@ class ReviewForm(forms.ModelForm):
         model = Review
         fields = [ 'rating', 'text' ]
         widgets = {
-            'rating' : forms.Select(attrs={'class': 'form-select'}),
-            'text': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Напишите ваш отзыв здесь...'}),
+            'rating' : forms.Select(),
+            'text': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Напишите ваш отзыв здесь...'}),
         }
 
 # Добавление автомобиля (с разграничением прав)
 class CarForm(forms.ModelForm):
     owners = forms.ModelMultipleChoiceField(
         queryset=User.objects.filter(is_staff=False, role='client'),
-        widget=forms.SelectMultiple(attrs={'class': 'form-control'}),
+        widget=forms.SelectMultiple(),
         label="Совладельцы",
         required=False,
         error_messages={
@@ -36,10 +36,10 @@ class CarForm(forms.ModelForm):
         model = Car
         fields = [ 'brand', 'model_name', 'license_plate', 'owners', 'current_spot' ]
         widgets = {
-            'brand': forms.TextInput(attrs={'class': 'form-control'}),
-            'model_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'license_plate': forms.TextInput(attrs={'class': 'form-control'}),
-            'current_spot': forms.Select(attrs={'class': 'form-control'}),
+            'brand': forms.TextInput(),
+            'model_name': forms.TextInput(),
+            'license_plate': forms.TextInput(),
+            'current_spot': forms.Select(),
         }    
         error_messages = {
             'license_plate': {
@@ -69,14 +69,14 @@ class CarForm(forms.ModelForm):
 class CustomUserCreationForm(UserCreationForm):
     birth_date = forms.DateField(
         label="Дата рождения",
-        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+        widget=forms.DateInput(attrs={'type': 'date'}),
         help_text="Для регистрации вам должно быть больше 18 лет."
     )
     phone_number = forms.CharField(
         label="Номер телефона",
         max_length=20,
         help_text="Формат: +375 (XX) XXX-XX-XX",
-        widget=forms.TextInput(attrs={'placeholder': '+375 (__) ___-__-__', 'class': 'form-control'})
+        widget=forms.TextInput(attrs={'placeholder': '+375 (__) ___-__-__'})
     )
     class Meta(UserCreationForm.Meta):
         model = CustomUser
@@ -111,8 +111,6 @@ class CustomUserCreationForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            field.widget.attrs['class'] = 'form-control'  
         self.fields['password1'].help_text = "Пароль должен быть сложным."
       
 # Изменение цены
@@ -128,8 +126,6 @@ class PriceUpdateForm(forms.ModelForm):
             'required': "Поле не может быть пустым!"
         },
         widget=forms.NumberInput(attrs={
-            'class': 'form-control form-control-sm', 
-            'style': 'width: 100px; display: inline-block;',
             'step': '0.01',
             'min': '0.01'
         })
@@ -144,10 +140,10 @@ class AccrualForm(forms.ModelForm):
         model = Accrual
         fields = ['car', 'amount', 'month', 'year']
         widgets = {
-            'car': forms.Select(attrs={'class': 'form-select'}),
-            'amount': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'min': '0.01'}),
-            'month': forms.NumberInput(attrs={'class': 'form-control', 'min': 1, 'max': 12}),
-            'year': forms.NumberInput(attrs={'class': 'form-control', 'min': 2020, 'max': 2100}),
+            'car': forms.Select(),
+            'amount': forms.NumberInput(attrs={'step': '0.01', 'min': '0.01'}),
+            'month': forms.NumberInput(attrs={'min': 1, 'max': 12}),
+            'year': forms.NumberInput(attrs={'min': 2020, 'max': 2100}),
         }
 
     def clean_amount(self):
@@ -175,8 +171,8 @@ class PaymentForm(forms.ModelForm):
         model = Payment
         fields = ['car', 'amount']
         widgets = {
-            'car': forms.Select(attrs={'class': 'form-select'}),
-            'amount': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'min': '0.01'}),
+            'car': forms.Select(),
+            'amount': forms.NumberInput(attrs={'step': '0.01', 'min': '0.01'}),
         }
 
     def clean_amount(self):
