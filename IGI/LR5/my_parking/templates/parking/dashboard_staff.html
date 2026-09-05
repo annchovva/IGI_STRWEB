@@ -1,0 +1,191 @@
+{% extends "new_base.html" %}
+
+{% block title %}Панель сотрудника - {{ block.super }}{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated and user.is_staff %}
+        <h1 class="display-5 fw-bold mb-4">Отчеты и Продажи</h1>
+
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-success shadow-sm border-0">
+                    <div class="card-header bg-success text-white py-3">Общая выручка</div>
+                    <div class="card-body text-center d-flex flex-column justify-content-center">
+                        <div class="display-6 fw-bold text-success">{{ total_sales }} руб.</div>
+                        <p class="text-muted small mb-0">Всего принято платежей</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 border-primary shadow-sm border-0">
+                    <div class="card-header bg-primary text-white py-3">Загрузка парковки</div>
+                    <div class="card-body text-center">
+                        <div class="display-6 fw-bold text-primary">{{ occupied_spots }} / {{ total_spots }}</div>
+                        <p class="text-muted small mb-0">Мест занято. Свободно: <b>{{ free_spots }}</b></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 border-dark shadow-sm border-0">
+                    <div class="card-header bg-dark text-white py-3">База клиентов</div>
+                    <div class="card-body text-center d-flex flex-column justify-content-center">
+                        <div class="display-6 fw-bold text-dark">{{ clients.count }}</div>
+                        <p class="text-muted small mb-0">Активных пользователей</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-5 border-primary border-2">
+            <div class="card-body bg-white">
+                <h5 class="mb-3 text-primary fw-bold">Создать новое начисление</h5>
+                <form method="post" class="row g-3 align-items-end">
+                    {% csrf_token %}
+                    <div class="col-md-4">
+                        <label class="small fw-bold">Автомобиль:</label>
+                        {{ accrual_form.car }}
+                    </div>
+                    <div class="col-md-2">
+                        <label class="small fw-bold">Сумма (руб):</label>
+                        {{ accrual_form.amount }}
+                        {% if accrual_form.amount.errors %}
+                            <div class="text-danger small mt-1">{{ accrual_form.amount.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-2">
+                        <label class="small fw-bold">Месяц:</label>
+                        {{ accrual_form.month }}
+                        {% if accrual_form.month.errors %}
+                            <div class="text-danger small mt-1">{{ accrual_form.month.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-2">
+                        <label class="small fw-bold">Год:</label>
+                        {{ accrual_form.year }}
+                        {% if accrual_form.year.errors %}
+                            <div class="text-danger small mt-1">{{ accrual_form.year.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" name="create_accrual" class="btn btn-primary w-100 fw-bold">ОК</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="row g-4">
+            <div class="col-md-8">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-dark text-white py-3">
+                        <h5 class="mb-0">История операций</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="nav nav-tabs px-3 pt-2 bg-light" id="finTabs">
+                            <li class="nav-item">
+                                <button class="nav-link active py-2 small fw-bold text-uppercase" data-bs-toggle="tab" data-bs-target="#allAccs">Начисления</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link py-2 small fw-bold text-uppercase" data-bs-toggle="tab" data-bs-target="#allPays">Платежи</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" style="max-height: 450px; overflow-y: auto;">
+                            <div class="tab-pane fade show active" id="allAccs">
+                                <table class="table table-hover align-middle mb-0 small">
+                                    <thead class="table-light text-uppercase fw-bold">
+                                        <tr>
+                                            <th class="ps-3">Дата</th>
+                                            <th>Авто</th>
+                                            <th>Период</th>
+                                            <th class="text-end pe-3">Сумма</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for a in all_accruals %}
+                                        <tr>
+                                            <td class="ps-3">{{ a.date|date:"d.m.y" }}</td>
+                                            <td><b>{{ a.car.license_plate }}</b></td>
+                                            <td>{{ a.month }}/{{ a.year }}</td>
+                                            <td class="text-end pe-3 fw-bold">{{ a.amount }} р.</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane fade" id="allPays">
+                                <table class="table table-hover align-middle mb-0 small">
+                                    <thead class="table-light text-uppercase fw-bold">
+                                        <tr>
+                                            <th class="ps-3">Дата</th>
+                                            <th>Авто</th>
+                                            <th class="text-end pe-3">Сумма</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for p in all_payments %}
+                                        <tr>
+                                            <td class="ps-3">{{ p.date|date:"d.m.y" }}</td>
+                                            <td><b>{{ p.car.license_plate }}</b></td>
+                                            <td class="text-end pe-3 text-success fw-bold">+{{ p.amount }} р.</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-secondary text-white py-3">
+                        <h5 class="mb-0">Реестр клиентов</h5>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0 small">
+                            <thead class="table-light fw-bold text-uppercase">
+                                <tr>
+                                    <th class="ps-3">Логин</th>
+                                    <th class="text-center">Машин</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for client in clients %}
+                                <tr>
+                                    <td class="ps-3">
+                                        <strong>{{ client.username }}</strong><br>
+                                        <span class="text-muted" style="font-size: 0.8rem;">{{ client.phone_number|default:"-" }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge rounded-pill bg-light text-dark border px-3">{{ client.cars.count }}</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% else %}
+    <div class="container mt-5 pt-5 text-center">
+        <div class="alert alert-danger shadow-lg d-inline-block px-5">
+            <h4 class="alert-heading">Доступ запрещен!</h4>
+            <p>У вас нет прав сотрудника для просмотра этой страницы.</p>
+            <hr>
+            <a href="{% url 'home' %}" class="btn btn-danger">Вернуться назад</a>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

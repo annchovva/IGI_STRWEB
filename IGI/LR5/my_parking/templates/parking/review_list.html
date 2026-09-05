@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Отзывы - {{ company_global.name }}{% endblock %}
+
+{% block content %}
+        <div class="row">
+            <div class="col-md-8">
+                <h1 class="mb-4">Отзывы клиентов</h1>
+                
+                {% for review in reviews %}
+                <div class="card mb-3 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+                            <strong class="text-primary">{{ review.author.get_full_name|default:review.author.username }}</strong>
+                            <span class="badge bg-warning text-dark">Оценка: {{ review.rating }}/5</span>
+                        </div>
+                        <p class="card-text">{{ review.text }}</p>
+                        <small class="text-muted">{{ review.created_at_local|date:"d E Y в H:i" }}</small>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted">Отзывов пока нет. Будьте первым!</p>
+                {% endfor %}
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-primary shadow-sm sticky-top" style="top: 20px;">
+                    <div class="card-body">
+                        <h4 class="card-title mb-3">Оставить отзыв</h4>
+                        
+                        {% if user.is_authenticated and not user.is_staff and not user.is_superuser %}
+                            <form method="post">
+                                {% csrf_token %}
+                                {% if form.errors %}
+                                    <div class="alert alert-danger">
+                                        {% for field in form %}
+                                            {% for error in field.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="mb-3">
+                                    <label class="form-label">Ваша оценка</label>
+                                    {{ form.rating }}
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Текст отзыва</label>
+                                    {{ form.text }}
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Отправить</button>
+                            </form>
+                        {% elif user.is_staff or user.is_superuser %}   
+                            <p class="text-center">Раздел только для клиентов компании. Сотрудники не могут оставлять отзывы.</p>
+                        {% else %}
+                            <p class="text-center">Чтобы оставить отзыв, пожалуйста, войдите в систему.</p>
+                            <a href="{% url 'login' %}" class="btn btn-outline-primary w-100 mb-2">Войти</a>
+                            <a href="{% url 'register' %}" class="btn btn-link w-100 btn-sm">Зарегистрироваться</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}

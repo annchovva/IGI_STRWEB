@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Ваши вопросы - {{ company_global.name }}{% endblock %}
+
+{% block content %}
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <div class="d-flex align-items-center mb-4">
+                    <h1 class="fw-bold text-dark">Словарь терминов и FAQ</h1>
+                </div>
+                <p class="text-muted mb-5">Здесь вы найдете ответы на часто задаваемые вопросы и расшифровку основных понятий нашей системы парковки.</p>
+
+                {% if terms %}
+                <div class="accordion shadow-sm" id="accordionTerms">
+                    {% for term in terms %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading{{ term.id }}">
+                            <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ term.id }}">
+                                {{ term.term }}
+                            </button>
+                        </h2>
+                        <div id="collapse{{ term.id }}" class="accordion-collapse collapse" data-bs-parent="#accordionTerms">
+                            <div class="accordion-body bg-white">
+                                <div class="mb-3" style="font-size: 1.1rem; line-height: 1.6;">
+                                    {{ term.definition }}
+                                </div>
+                                <div class="text-end border-top pt-2">
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar3"></i> Добавлено: {{ term.added_at|date:"d.m.Y" }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-info shadow-sm">
+                    <i class="bi bi-info-circle me-2"></i> Словарь пока пуст. Мы скоро добавим новые термины!
+                </div>
+                {% endif %}
+            </div>
+        </div>
+{% endblock %}

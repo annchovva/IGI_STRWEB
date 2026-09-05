@@ -1,0 +1,112 @@
+{% extends "new_base.html" %}
+
+{% block title %}Личный кабинет - {{ block.super }}{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}    
+        <h1 class="display-5 fw-bold mb-4">Мой транспорт и счета</h1>
+
+        <div class="card shadow-sm mb-4 border-success border-2">
+            <div class="card-body bg-white">
+                <h5 class="mb-3 text-success fw-bold">Быстрая оплата</h5>
+                <form method="post" class="row g-3 align-items-end">
+                    {% csrf_token %}
+                    <div class="col-md-5">
+                        <label class="small fw-bold">Выберите автомобиль:</label>
+                        {{ payment_form.car }}
+                    </div>
+                    <div class="col-md-4">
+                        <label class="small fw-bold">Сумма платежа (руб.):</label>
+                        {{ payment_form.amount }}
+                        {% if payment_form.amount.errors %}
+                            <div class="text-danger small mt-1">{{ payment_form.amount.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" name="make_payment" class="btn btn-success w-100 fw-bold">Внести оплату</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="row g-4">
+            {% for item in cars_data %}
+            <div class="col-md-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-primary text-white py-3 d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">🚗 {{ item.car.brand }} {{ item.car.model_name }} — <b>{{ item.car.license_plate }}</b></h5>
+                        <div class="fs-5">
+                            Баланс: <span class="fw-bold {% if item.balance < 0 %}text-warning{% endif %}">{{ item.balance }} руб.</span>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="row g-0">
+                            <div class="col-md-6 border-end">
+                                <div class="p-3 bg-light border-bottom small fw-bold text-uppercase text-muted">История начислений</div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0 small">
+                                        <thead class="table-light">
+                                            <tr><th>Период</th><th>Дата</th><th>Сумма</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for acc in item.accruals %}
+                                            <tr>
+                                                <td>{{ acc.month }}/{{ acc.year }}</td>
+                                                <td>{{ acc.date|date:"d.m.Y" }}</td>
+                                                <td class="fw-bold">{{ acc.amount }} руб.</td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr><td colspan="3" class="text-center py-3 text-muted">Нет начислений</td></tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-3 bg-light border-bottom small fw-bold text-uppercase text-muted">Последние платежи</div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0 small">
+                                        <thead class="table-light">
+                                            <tr><th>Дата</th><th>Статус</th><th>Сумма</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for pay in item.payments %}
+                                            <tr>
+                                                <td>{{ pay.date|date:"d.m.Y" }}</td>
+                                                <td><span class="badge bg-success-subtle text-success border border-success-subtle">Проведен</span></td>
+                                                <td class="fw-bold text-success">+{{ pay.amount }} руб.</td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr><td colspan="3" class="text-center py-3 text-muted">Платежей не найдено</td></tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="card p-5 text-center border-0 shadow-sm">
+                    <p class="text-muted mb-0">У вас пока нет зарегистрированных транспортных средств.</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% else %}
+    <script>window.location.href = "{% url 'login' %}";</script>
+{% endif %}
+{% endblock %}

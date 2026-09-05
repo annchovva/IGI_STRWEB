@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}О компании - {{ company_global.name }}{% endblock %}
+
+{% block content %}
+        {% if company %}
+        <div class="card border-0 shadow-lg overflow-hidden" style="border-radius: 20px;">
+            <div class="row g-0">
+                <div class="col-lg-6 p-5 bg-white d-flex flex-column justify-content-center">
+                    {% if company.main_logo %}
+                        <div class="mb-4">
+                            <img src="{{ company.main_logo.url }}" 
+                                alt="Logo" 
+                                class="rounded shadow-sm" 
+                                style="max-height: 100px; width: auto; border: 1px solid #eee;">
+                        </div>
+                    {% endif %}
+
+                    <h1 class="h2 fw-bold text-dark mb-4" style="letter-spacing: -1px;">
+                        {{ company.name }}
+                    </h1>
+
+                    <p class="text-muted mb-4" style="white-space: pre-line; font-size: 1.05rem; line-height: 1.6; text-align: justify;">
+                        {{ company.description }}
+                    </p>
+
+                    <div class="contact-details mt-auto">
+                        <div class="d-flex align-items-center mb-3 p-3 rounded-3 bg-light border-start border-primary border-4">
+                            <div>
+                                <div class="text-muted small uppercase fw-bold" style="font-size: 0.7rem;">Наш адрес</div>
+                                <div class="fw-semibold">{{ company.address }}</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center p-3 rounded-3 bg-light border-start border-primary border-4">
+                            <div>
+                                <div class="text-muted small uppercase fw-bold" style="font-size: 0.7rem;">Электронная почта</div>
+                                <div class="fw-semibold">{{ company.email }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div style="position: relative; height: 100%; min-height: 450px;">
+                        <iframe 
+                            src="{{ map_url }}" 
+                            width="100%" 
+                            height="100%" 
+                            frameborder="0" 
+                            allowfullscreen="true" 
+                            style="display: block; position: absolute; top: 0; left: 0;">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-warning">Информация о компании еще не добавлена.</div>
+        {% endif %}
+{% endblock %}

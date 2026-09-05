@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Главная - {{ company_global.name }}{% endblock %}
+
+{% block content %}
+        <div class="p-5 mb-4 bg-light rounded-3 border shadow-sm">
+            <div class="container-fluid py-5 text-center">
+                <h1 class="display-5 fw-bold">Добро пожаловать на нашу парковку!</h1>
+                <p class="fs-4 text-muted">Мы обеспечиваем надежное хранение вашего автомобиля 24/7.</p>
+                
+                <div class="d-flex flex-wrap justify-content-center gap-3 mt-4">
+                    {% if user.is_authenticated %}
+                        {% if user.role == 'client' %}
+                            <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg btn-custom shadow">Личный кабинет</a> 
+                            <a href="{% url 'car_index' %}" class="btn btn-outline-success btn-lg btn-custom shadow-sm">Управлять моими авто</a>
+                        {% elif user.role == 'staff' %}
+                            <a href="{% url 'dashboard' %}" class="btn btn-warning btn-lg btn-custom shadow">Панель сотрудника</a>
+                            <a href="{% url 'car_index' %}" class="btn btn-outline-success btn-lg btn-custom shadow-sm">Управление автомобилями</a> 
+                        {% elif user.role == 'admin' %}
+                            <a href="{% url 'admin_panel' %}" class="btn btn-warning btn-lg btn-custom shadow">Панель администратора</a>
+                            <a href="{% url 'car_index' %}" class="btn btn-outline-success btn-lg btn-custom shadow-sm">Управление автомобилями</a>
+                        {% endif %}
+                        
+                    {% else %}
+                        <div class="alert alert-warning w-100">
+                            Чтобы управлять своими автомобилями, пожалуйста, войдите в систему.
+                        </div>
+                        <a href="{% url 'services_catalog' %}" class="btn btn-primary btn-lg btn-custom shadow">Наши услуги</a>
+                        <a href="{% url 'login' %}" class="btn btn-primary btn-lg btn-custom shadow">Войти в кабинет</a>
+                        <a href="{% url 'register' %}" class="btn btn-outline-dark btn-lg btn-custom shadow-sm">Стать клиентом</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% if weather %}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <div class="card-body d-flex flex-wrap align-items-center justify-content-between p-4">
+                        <div class="d-flex align-items-center">
+                            <img src="http://openweathermap.org/img/wn/{{ weather.icon }}@2x.png" alt="icon" style="width: 70px;">
+                            <div class="ms-3">
+                                <h3 class="mb-0">{{ weather.temp }}°C в Минске</h3>
+                                <p class="mb-0 opacity-75">{{ weather.description }}</p>
+                            </div>
+                        </div>
+                        
+                        {# Убрали d-none d-md-block чтобы сообщение было видно всегда #}
+                        <div class="mt-3 mt-md-0 text-md-end">
+                            <span class="fst-italic" style="font-size: 1.1rem;">
+                                {{ weather_tip }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- КАРТОЧКА С КОЛИЧЕСТВОМ МАШИН -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card bg-primary text-white text-center shadow">
+                    <div class="card-body py-4">
+                        <h2 class="display-4 fw-bold mb-0">{{ cars_count|default:"0" }}</h2>
+                        <p class="lead mb-0">автомобилей сейчас в нашей системе</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Вывод последней новости -->
+        <h2 class="mb-4">Последняя новость</h2>
+
+        {% if news %}
+            <div class="card shadow-sm mb-5">
+                <div class="row g-0">
+                    {% if news.image %}
+                    <div class="col-md-4">
+                        <img src="{{ news.image.url }}" class="img-fluid rounded-start" alt="{{ news.title }}" style="height: 100%; object-fit: cover;">
+                    </div>
+                    {% endif %}
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">{{ news.title }}</h5>
+                            <p class="card-text">{{ news.short_content }}</p>
+                            <p class="text-muted" style="font-size: 0.8rem;">Опубликовано: {{ news.published_at|date:"d.m.Y" }}</p>
+                            <a href="{% url 'news_list' %}" class="btn btn-outline-primary">Все новости</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-info">Пока новостей нет, но мы скоро их добавим!</div>
+        {% endif %}    
+{% endblock %}

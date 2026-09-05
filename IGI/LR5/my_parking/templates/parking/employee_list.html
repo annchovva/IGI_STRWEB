@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Контакты - {{ company_global.name }}{% endblock %}
+
+{% block content %}
+        <div class="text-center mb-5">
+            <h1 class="display-5 fw-bold text-dark">Наша команда</h1>
+            <p class="lead text-muted">Свяжитесь с нашими специалистами для решения любого вопроса</p>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for person in employees %}
+            <div class="col">
+                <div class="card h-100 shadow-sm employee-card">
+                    {% if person.photo %}
+                        <img src="{{ person.photo.url }}" class="card-img-top employee-photo" alt="{{ person.name }}">
+                    {% else %}
+                        <div class="bg-secondary text-white d-flex align-items-center justify-content-center employee-photo">
+                            <i class="bi bi-person-fill" style="font-size: 5rem;"></i>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold mb-1">{{ person.name }}</h5>
+                        <p class="text-primary mb-3">{{ person.position }}</p>
+                        
+                        <div class="contact-links mt-3 border-top pt-3">
+                            <p class="mb-2">
+                                <a href="tel:{{ person.phone }}" class="text-decoration-none text-dark">
+                                    <i class="bi bi-telephone-fill text-muted me-2"></i> {{ person.phone }}
+                                </a>
+                            </p>
+                            <p class="mb-0">
+                                <a href="mailto:{{ person.email }}" class="text-decoration-none text-dark">
+                                    <i class="bi bi-envelope-fill text-muted me-2"></i> {{ person.email }}
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <div class="alert alert-info">Список сотрудников временно пуст.</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="mt-5 p-4 bg-white rounded shadow-sm">
+            <h3 class="fw-bold mb-4">Общие контакты</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong><i class="bi bi-geo-alt-fill me-2"></i>Адрес:</strong> {{ company_global.address|default:"Не указан" }}</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p><strong><i class="bi bi-mailbox me-2"></i>Общий Email:</strong> {{ company_global.email|default:"info@parkingsystem.ru" }}</p>
+                </div>
+            </div>
+        </div>
+{% endblock %}
