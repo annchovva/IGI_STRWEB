@@ -2,12 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.core.exceptions import PermissionDenied
 from django.db.models import Sum, Count, Q, F, Value, DecimalField, Subquery, OuterRef, Avg
-from django.db.models.functions import Coalesce
+from django.db.models.functions import Coalesce, Replace
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponseNotFound
-from .forms import ReviewForm, CarForm, CustomUserCreationForm, PriceUpdateForm, AccrualForm, PaymentForm
-from .models import News, CompanyInfo, Term, Employee, Vacancy, PromoCode, Review, Car, CustomUser, ParkingSpot, Accrual, Payment, Service, Category
+from .forms import ReviewForm, CarForm, CustomUserCreationForm, PriceUpdateForm, AccrualForm, PaymentForm, CheckoutForm
+from .models import News, CompanyInfo, Term, Employee, Vacancy, PromoCode, Review, Car, CustomUser, ParkingSpot, Accrual, Payment, Service, Category, Partner, Banner
 from datetime import datetime, date
 import requests
 import statistics
@@ -21,6 +21,9 @@ import base64
 import time
 from datetime import timedelta
 import logging
+import re
+from decimal import Decimal
+from django.views.decorators.http import require_POST
 
 logger = logging.getLogger(__name__)
 
@@ -28,6 +31,13 @@ def home(request):
     # Берем последнюю новость
     latest_news = News.objects.first()
     cars_count = Car.objects.count()
+
+    featured_services = (
+        Service.objects.select_related('category').all()[:6]
+    )
+
+    partners = Partner.objects.filter(is_active=True)
+    banners = Banner.objects.filter(is_active=True)
 
     # Подключение api погоды
     weather_data = None
@@ -75,6 +85,9 @@ def home(request):
         'cars_count': cars_count,
         'weather': weather_data,
         'weather_tip': weather_tip,
+        'featured_services': featured_services,
+        'partners': partners,
+        'banners': banners,
     }
 
     return render(request, 'parking/home.html', context)
@@ -130,7 +143,7 @@ def news_detail(request, news_id):
 
 def about(request):
     # Первую запись
-    company_data = CompanyInfo.objects.first()
+    company_data = CompanyInfo.objects.prefetch_related('history_items').first()
 
     # Подключаем api яндекс карт
     lon = "27.5485"
@@ -306,13 +319,27 @@ def admin_panel(request):
                 messages.error(request, error.as_text())
             return redirect('admin_panel')    
 
-    # Для фильтрации
+    # Разрешаем сортировку только по известным полям.
+    allowed_user_sort_fields = {
+        'username',
+        '-username',
+        'birth_date',
+        '-birth_date',
+    }
+
+    requested_user_sort = request.GET.get('user_sort', 'username')
+    if requested_user_sort not in allowed_user_sort_fields:
+        requested_user_sort = 'username'
+
     params = {
         'start_date': request.GET.get('start_date', '2020-01-01'),
-        'end_date': request.GET.get('end_date', datetime.now().strftime('%Y-%m-%d')),
-        'user_search': request.GET.get('user_search', ''),
-        'user_sort': request.GET.get('user_sort', 'username'),
-        'brand': request.GET.get('brand', ''),
+        'end_date': request.GET.get(
+            'end_date',
+            datetime.now().strftime('%Y-%m-%d')
+        ),
+        'user_search': request.GET.get('user_search', '').strip(),
+        'user_sort': requested_user_sort,
+        'brand': request.GET.get('brand', '').strip(),
     }
     
     # Самый большой долг
@@ -331,7 +358,7 @@ def admin_panel(request):
         debt=F('total_accruals') - F('total_payments')
     ).filter(debt__gt=0).order_by('-debt').first()    
 
-    last_payment_date = "Нет платежей"
+    last_payment_date = None
     if top_debtor:
         last_payment = Payment.objects.filter(car__owners=top_debtor).order_by('-date').first()
         if last_payment:
@@ -367,11 +394,42 @@ def admin_panel(request):
     if params['brand']:
         branded_cars = Car.objects.filter(brand__icontains=params['brand']).prefetch_related('owners')
 
-    # Список клиентов
+    # Список клиентов. Для поиска телефона удаляем из сохранённого номера
+    # пробелы и знаки форматирования, чтобы запросы вида 291234567 тоже работали.
     clients_list = CustomUser.objects.filter(role='client')
     if params['user_search']:
-        clients_list = clients_list.filter(Q(username__icontains=params['user_search']) | Q(phone_number__icontains=params['user_search']))
+        normalized_phone = F('phone_number')
+        for character in ('+', ' ', '(', ')', '-'):
+            normalized_phone = Replace(
+                normalized_phone,
+                Value(character),
+                Value('')
+            )
+
+        clients_list = clients_list.annotate(
+            normalized_phone=normalized_phone
+        )
+
+        search_filter = Q(username__icontains=params['user_search'])
+        phone_digits = re.sub(r'\D', '', params['user_search'])
+
+        if phone_digits:
+            search_filter |= Q(normalized_phone__icontains=phone_digits)
+
+        clients_list = clients_list.filter(search_filter)
+
     clients_list = clients_list.order_by(params['user_sort'])
+
+    username_sort = (
+        '-username'
+        if params['user_sort'] == 'username'
+        else 'username'
+    )
+    birth_date_sort = (
+        '-birth_date'
+        if params['user_sort'] == 'birth_date'
+        else 'birth_date'
+    )
 
     spots_list = ParkingSpot.objects.all()
 
@@ -434,8 +492,11 @@ def admin_panel(request):
     context = {
         **params, 
         'top_debtor': top_debtor,
+        'last_payment_date': last_payment_date,
         'total_debt': total_debt,
         'clients_list': clients_list,
+        'username_sort': username_sort,
+        'birth_date_sort': birth_date_sort,
         'spots_list': spots_list,
         'shared_cars': shared_cars,
         'min_debt_car': min_debt_car, 
@@ -562,3 +623,300 @@ def services_catalog(request):
         'max_p_val': max_p,
     }
     return render(request, 'parking/services_catalog.html', context)
+
+def service_detail(request, service_id):
+    """Отображение полной информации об услуге."""
+
+    service = get_object_or_404(
+        Service.objects.select_related('category'),
+        id=service_id,
+    )
+
+    return render(
+        request,
+        'parking/service_detail.html',
+        {
+            'service': service,
+        },
+    )
+
+@require_POST
+def add_to_cart(request, service_id):
+    """Добавление одной единицы услуги в сессионную корзину."""
+
+    service = get_object_or_404(
+        Service,
+        id=service_id,
+    )
+
+    cart = request.session.get('cart', {})
+
+    service_key = str(service.id)
+
+    current_quantity = cart.get(service_key, 0)
+    cart[service_key] = min(current_quantity + 1, 99)
+
+    request.session['cart'] = cart
+    request.session.modified = True
+
+    messages.success(
+        request,
+        f'Услуга «{service.name}» добавлена в корзину.',
+    )
+
+    return redirect(
+        'service_detail',
+        service_id = service.id,
+    )
+
+def cart_detail(request):
+    """Отображение содержимого сессионной корзины."""
+
+    context = build_cart_context(request)
+
+    return render(
+        request,
+        'parking/cart_detail.html',
+        context,
+    )
+
+@require_POST
+def cart_increase(request, service_id):
+    """Увеличение количества услуги в корзине."""
+
+    service = get_object_or_404(
+        Service,
+        id=service_id,
+    )
+
+    cart = request.session.get('cart', {})
+    service_key = str(service.id)
+
+    if service_key not in cart:
+        messages.error(
+            request,
+            'Эта услуга отсутствует в корзине.',
+        )
+        return redirect('cart_detail')
+
+    try:
+        current_quantity = int(cart[service_key])
+    except (TypeError, ValueError):
+        current_quantity = 1
+
+    if current_quantity >= 99:
+        messages.warning(
+            request,
+            'Количество одной услуги не может превышать 99.',
+        )
+    else:
+        cart[service_key] = current_quantity + 1
+        request.session['cart'] = cart
+        request.session.modified = True
+
+    return redirect('cart_detail')
+
+@require_POST
+def cart_decrease(request, service_id):
+    """Уменьшение количества услуги в корзине."""
+
+    service = get_object_or_404(
+        Service,
+        id=service_id,
+    )
+
+    cart = request.session.get('cart', {})
+    service_key = str(service.id)
+
+    if service_key not in cart:
+        messages.error(
+            request,
+            'Эта услуга отсутствует в корзине.',
+        )
+        return redirect('cart_detail')
+
+    try:
+        current_quantity = int(cart[service_key])
+    except (TypeError, ValueError):
+        current_quantity = 1
+
+    if current_quantity > 1:
+        cart[service_key] = current_quantity - 1
+    else:
+        del cart[service_key]
+
+        messages.success(
+            request,
+            f'Услуга «{service.name}» удалена из корзины.',
+        )
+
+    request.session['cart'] = cart
+    request.session.modified = True
+
+    return redirect('cart_detail')
+
+@require_POST
+def cart_remove(request, service_id):
+    """Полное удаление услуги из корзины."""
+
+    service = get_object_or_404(
+        Service,
+        id=service_id,
+    )
+
+    cart = request.session.get('cart', {})
+    service_key = str(service.id)
+
+    if service_key in cart:
+        del cart[service_key]
+
+        request.session['cart'] = cart
+        request.session.modified = True
+
+        messages.success(
+            request,
+            f'Услуга «{service.name}» удалена из корзины.',
+        )
+    else:
+        messages.error(
+            request,
+            'Эта услуга уже отсутствует в корзине.',
+        )
+
+    return redirect('cart_detail')
+
+def build_cart_context(request):
+    """Формирование содержимого и итогов корзины."""
+
+    raw_cart = request.session.get('cart', {})
+    normalized_cart = {}
+
+    for raw_service_id, raw_quantity in raw_cart.items():
+        service_key = str(raw_service_id)
+
+        if not service_key.isdigit():
+            continue
+
+        try:
+            quantity = int(raw_quantity)
+        except (TypeError, ValueError):
+            quantity = 1
+
+        quantity = max(1, min(quantity, 99))
+        normalized_cart[service_key] = quantity
+
+    service_ids = [
+        int(service_id)
+        for service_id in normalized_cart
+    ]
+
+    services = (
+        Service.objects
+        .filter(id__in=service_ids)
+        .select_related('category')
+        .order_by('name')
+    )
+
+    cart_items = []
+    cleaned_cart = {}
+    total_price = Decimal('0.00')
+
+    for service in services:
+        service_key = str(service.id)
+        quantity = normalized_cart[service_key]
+        item_total = service.price * quantity
+
+        cleaned_cart[service_key] = quantity
+
+        cart_items.append({
+            'service': service,
+            'quantity': quantity,
+            'item_total': item_total,
+        })
+
+        total_price += item_total
+
+    if cleaned_cart != raw_cart:
+        request.session['cart'] = cleaned_cart
+        request.session.modified = True
+
+    return {
+        'cart_items': cart_items,
+        'cart_items_count': sum(
+            item['quantity']
+            for item in cart_items
+        ),
+        'total_price': total_price,
+    }
+
+@login_required
+def checkout(request):
+    """Отображение и обработка учебной оплаты."""
+
+    cart_context = build_cart_context(request)
+
+    if not cart_context['cart_items']:
+        messages.error(
+            request,
+            'Нельзя оплатить пустую корзину.',
+        )
+        return redirect('cart_detail')
+
+    if request.method == 'POST':
+        form = CheckoutForm(request.POST)
+
+        if form.is_valid():
+            paid_total = cart_context['total_price']
+
+            logger.info(
+                'Demo service order paid by user=%s, total=%s',
+                request.user.username,
+                paid_total,
+            )
+
+            request.session['last_order_total'] = str(
+                paid_total
+            )
+            request.session['cart'] = {}
+            request.session.modified = True
+
+            return redirect('payment_success')
+    else:
+        initial_data = {
+            'full_name': request.user.get_full_name(),
+            'email': request.user.email,
+            'phone': request.user.phone_number,
+        }
+
+        form = CheckoutForm(initial=initial_data)
+
+    context = {
+        **cart_context,
+        'form': form,
+    }
+
+    return render(
+        request,
+        'parking/checkout.html',
+        context,
+    )
+
+
+@login_required
+def payment_success(request):
+    """Страница успешного завершения учебной оплаты."""
+
+    paid_total = request.session.get(
+        'last_order_total'
+    )
+
+    if paid_total is None:
+        return redirect('services_catalog')
+
+    return render(
+        request,
+        'parking/payment_success.html',
+        {
+            'paid_total': paid_total,
+        },
+    )

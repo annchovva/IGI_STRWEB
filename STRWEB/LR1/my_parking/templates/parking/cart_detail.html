@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Корзина —
+    {{ company_global.name|default:"Автопарковка" }}
+{% endblock %}
+
+{% block meta_description %}
+    Корзина выбранных услуг автомобильной парковки
+{% endblock %}
+
+{% block meta_keywords %}
+    корзина, заказ услуг, услуги парковки
+{% endblock %}
+
+{% block og_title %}
+    Корзина услуг
+{% endblock %}
+
+{% block og_description %}
+    Выбранные услуги автомобильной парковки
+{% endblock %}
+
+{% block content %}
+        <nav aria-label="Навигационная цепочка">
+            <ol>
+                <li>
+                    <a href="{% url 'home' %}">
+                        Главная
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'services_catalog' %}">
+                        Услуги
+                    </a>
+                </li>
+
+                <li aria-current="page">
+                    Корзина
+                </li>
+            </ol>
+        </nav>
+
+        <section aria-labelledby="cart-title">
+            <header>
+                <h1 id="cart-title">
+                    Корзина услуг
+                </h1>
+
+                <p>
+                    Общее количество выбранных услуг:
+                    <strong>{{ cart_items_count }}</strong>
+                </p>
+            </header>
+
+            {% if messages %}
+                <section aria-label="Системные сообщения">
+                    {% for message in messages %}
+                        <p role="status">
+                            {{ message }}
+                        </p>
+                    {% endfor %}
+                </section>
+            {% endif %}
+
+            {% if cart_items %}
+                <table>
+                    <caption>
+                        Список выбранных услуг
+                    </caption>
+
+                    <thead>
+                        <tr>
+                            <th id="cart-service" scope="col">
+                                Услуга
+                            </th>
+
+                            <th id="cart-category" scope="col">
+                                Категория
+                            </th>
+
+                            <th id="cart-price" scope="col">
+                                Цена за единицу
+                            </th>
+
+                            <th id="cart-quantity" scope="col">
+                                Количество
+                            </th>
+
+                            <th id="cart-subtotal" scope="col">
+                                Стоимость
+                            </th>
+
+                            <th id="cart-actions" scope="col">
+                                Действия
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in cart_items %}
+                            <tr>
+                                <td headers="cart-service">
+                                    <a href="{% url 'service_detail' item.service.id %}">
+                                        {{ item.service.name }}
+                                    </a>
+                                </td>
+
+                                <td headers="cart-category">
+                                    {{ item.service.category.name }}
+                                </td>
+
+                                <td headers="cart-price">
+                                    <data value="{{ item.service.price }}">
+                                        {{ item.service.price|floatformat:2 }}
+                                        руб.
+                                    </data>
+                                </td>
+
+                                <td headers="cart-quantity">
+                                    {{ item.quantity }}
+                                </td>
+
+                                <td headers="cart-subtotal">
+                                    <data value="{{ item.item_total }}">
+                                        {{ item.item_total|floatformat:2 }}
+                                        руб.
+                                    </data>
+                                </td>
+
+                                <td headers="cart-actions">
+                                    <form method="post" action="{% url 'cart_decrease' item.service.id %}">
+                                        {% csrf_token %}
+
+                                        <button type="submit" aria-label="Уменьшить количество услуги {{ item.service.name }}">
+                                            −
+                                        </button>
+                                    </form>
+
+                                    <form method="post" action="{% url 'cart_increase' item.service.id %}">
+                                        {% csrf_token %}
+
+                                        <button type="submit" aria-label="Увеличить количество услуги {{ item.service.name }}">
+                                            +
+                                        </button>
+                                    </form>
+
+                                    <form method="post" action="{% url 'cart_remove' item.service.id %}">
+                                        {% csrf_token %}
+
+                                        <button type="submit">
+                                            Удалить из корзины
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+
+                     <tfoot>
+                        <tr>
+                            <th id="cart-total-label" scope="row" colspan="5">
+                                Итоговая стоимость
+                            </th>
+
+                            <td headers="cart-total-label">
+                                <data value="{{ total_price }}">
+                                    <strong>
+                                        {{ total_price|floatformat:2 }}
+                                        руб.
+                                    </strong>
+                                </data>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <nav aria-label="Действия с заказом">
+                    <p>
+                        <a href="{% url 'services_catalog' %}">
+                            Продолжить выбор услуг
+                        </a>
+                    </p>
+
+                    <p>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'checkout' %}">
+                                Перейти к оплате
+                            </a>
+                        {% else %}
+                            <a href="{% url 'login' %}?next={% url 'checkout' %}">
+                                Войти для оплаты
+                            </a>
+                        {% endif %}
+                    </p>
+                </nav>
+            {% else %}
+                <p role="status">
+                    Ваша корзина пока пуста.
+                </p>
+
+                <p>
+                    <a href="{% url 'services_catalog' %}">
+                        Перейти в каталог услуг
+                    </a>
+                </p>
+            {% endif %}
+        </section>
+{% endblock %}

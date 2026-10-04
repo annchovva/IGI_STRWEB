@@ -1,66 +1,99 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Вход - Автопарковка</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-    <header>
-        <div>
-            <a href="{% url 'home' %}">
-                {% if company_global.logo %}
-                    <img src="{{ company_global.logo.url }}" alt="Logo" width="40" height="40">
-                {% else %}
-                    <span>🅿️</span>
-                {% endif %}
-                {{ company_global.name|default:"Parking System" }}
-            </a>    
-        </div>
-    </header>
+{% block title %}
+    Вход — {{ company_global.name|default:"Автопарковка" }}
+{% endblock %}
 
-    <main>
-        <div>
-            <div>
-                <div>
-                    <div>
-                        <h2>Вход в кабинет</h2>
-                        
-                        <form method="post">
-                            {% csrf_token %}
-                            
-                            {% if form.errors %}
-                                <div>Неверный логин или пароль</div>
-                            {% endif %}
+{% block meta_description %}
+    Вход в личный кабинет клиента автомобильной парковки.
+{% endblock %}
 
-                            <div>
-                                <label>Логин</label>
-                                <input type="text" name="username" placeholder="Введите ваш логин" required>
-                            </div>
-                            
-                            <div>
-                                <label>Пароль</label>
-                                <input type="password" name="password" placeholder="******" required>
-                            </div>
+{% block meta_keywords %}
+    вход, личный кабинет, клиент парковки
+{% endblock %}
 
-                            <button type="submit">Войти</button>
-                        </form>
+{% block og_title %}
+    Вход в личный кабинет
+{% endblock %}
 
-                        <div>
-                            <p>Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a></p>
-                            <a href="/">Назад на главную</a>
-                        </div>
-                    </div>
-                </div>
+{% block og_description %}
+    Авторизация в системе автомобильной парковки.
+{% endblock %}
+
+{% block content %}
+    <section aria-labelledby="login-title">
+        <header>
+            <h1 id="login-title">Вход в личный кабинет</h1>
+            <p>
+                Введите логин и пароль, указанные при регистрации.
+            </p>
+        </header>
+
+        {% if form.errors %}
+            <div role="alert">
+                <strong>Не удалось выполнить вход.</strong>
+                Проверьте правильность логина и пароля.
             </div>
-        </div>
-    </main>
+        {% endif %}
 
-    <footer>
-        <div>
-            <span>© 2024 {{ company_global.name|default:"Parking System" }}</span>
-        </div>
-    </footer>
+        {% if next %}
+            <p>
+                Для просмотра запрошенной страницы необходимо войти в учётную запись.
+            </p>
+        {% endif %}
 
-</body>
-</html>
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <fieldset>
+                <legend>Данные для входа</legend>
+                <p>
+                    <label for="id_username">Логин</label>
+                    <input
+                        type="text"
+                        id="id_username"
+                        name="username"
+                        value="{{ form.username.value|default:'' }}"
+                        minlength="1"
+                        maxlength="150"
+                        autocomplete="username"
+                        required
+                        autofocus
+                    >
+                </p>
+                <p>
+                    <label for="id_password">Пароль</label>
+
+                    <input
+                        type="password"
+                        id="id_password"
+                        name="password"
+                        autocomplete="current-password"
+                        required
+                    >
+                </p>
+                {% if next %}
+                    <input
+                        type="hidden"
+                        name="next"
+                        value="{{ next }}"
+                    >
+                {% endif %}
+            </fieldset>
+            <button type="submit">Войти</button>
+        </form>
+
+        <nav aria-label="Дополнительная навигация страницы входа">
+            <p>
+                Нет учётной записи?
+                <a href="{% url 'register' %}">
+                    Зарегистрироваться
+                </a>
+            </p>
+            <p>
+                <a href="{% url 'home' %}">
+                    Вернуться на главную страницу
+                </a>
+            </p>
+        </nav>
+    </section>
+{% endblock %}

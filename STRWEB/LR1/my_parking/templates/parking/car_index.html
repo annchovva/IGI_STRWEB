@@ -1,66 +1,162 @@
-{% extends "new_base.html" %}
+{% extends "base.html" %}
 
-{% block title %}Автомобили - {{ block.super }}{% endblock %}
+{% block title %}
+    {% if user.is_staff %}
+        Управление автомобилями
+    {% else %}
+        Мои автомобили
+    {% endif %}
+    — {{ company_global.name|default:"Автопарковка" }}
+{% endblock %}
+
+{% block meta_description %}
+    Просмотр и управление автомобилями, зарегистрированными в системе парковки
+{% endblock %}
+
+{% block meta_keywords %}
+    автомобили, транспорт, парковка, управление автомобилями
+{% endblock %}
+
+{% block og_title %}
+    Автомобили в системе парковки
+{% endblock %}
+
+{% block og_description %}
+    Список зарегистрированных автомобилей и их парковочных мест
+{% endblock %}
 
 {% block content %}
-        <div>
-            <div>
-                <div>
-                    <h1>
-                        {% if user.is_staff %}Управление всеми авто{% else %}Мои автомобили{% endif %}
-                    </h1>
-                    <p>
-                        {% if user.is_staff %}Просмотр и редактирование авто всех клиентов.{% else %}Список ваших транспортных средств.{% endif %}
-                    </p>
-                </div>
-                <a href="{% url 'car_create' %}">+ Добавить машину</a>
-            </div>
-        </div>
+    <section aria-labelledby="cars-title">
+        <header>
+            <h1 id="cars-title">
+                {% if user.is_staff %}
+                    Управление всеми автомобилями
+                {% else %}
+                    Мои автомобили
+                {% endif %}
+            </h1>
 
-        <div>
-            <div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Бренд и модель</th>
-                            <th>Гос. номер</th>
-                            <th>Владельцы</th>
-                            <th>Место</th>
-                            <th>Действия</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for car in cars %}
-                        <tr>
-                            <td>{{ car.brand }} {{ car.model_name }}</td>
-                            <td><span>{{ car.license_plate }}</span></td>
-                            <td>
-                                {% for owner in car.owners.all %}
-                                    <span>{{ owner.username }}</span>
-                                {% endfor %}
-                            </td>
-                            <td>
-                                {% if car.current_spot %}
-                                    <span>📍 {{ car.current_spot }}</span>
-                                {% else %}
-                                    <span>Не припаркована</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <a href="{% url 'car_edit' car.id %}">Изменить</a>
-                                <form action="{% url 'car_delete' car.id %}" method="POST">
-                                    {% csrf_token %}
-                                    <button type="submit" onclick="return confirm('Удалить этот автомобиль?')">Удалить</button>
-                                </form>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="5">Список пуст.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+            <p>
+                {% if user.is_staff %}
+                    Просмотр и редактирование автомобилей всех клиентов.
+                {% else %}
+                    Список ваших транспортных средств.
+                {% endif %}
+            </p>
+
+            <p>
+                <a href="{% url 'car_create' %}">
+                    Добавить автомобиль
+                </a>
+            </p>
+        </header>
+
+        {% if messages %}
+            <section aria-label="Системные сообщения">
+                {% for message in messages %}
+                    <p role="status">
+                        {{ message }}
+                    </p>
+                {% endfor %}
+            </section>
+        {% endif %}
+
+        <table>
+            <caption>
+                {% if user.is_staff %}
+                    Все автомобили, зарегистрированные в системе
+                {% else %}
+                    Автомобили текущего пользователя
+                {% endif %}
+            </caption>
+
+            <thead>
+                <tr>
+                    <th scope="col">
+                        Бренд и модель
+                    </th>
+                    <th scope="col">
+                        Государственный номер
+                    </th>
+                    <th scope="col">
+                        Владельцы
+                    </th>
+                    <th scope="col">
+                        Парковочное место
+                    </th>
+                    <th scope="col">
+                        Действия
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for car in cars %}
+                    <tr>
+                        <th scope="row">
+                            {{ car.brand }} {{ car.model_name }}
+                        </th>
+
+                        <td>
+                            {{ car.license_plate }}
+                        </td>
+
+                        <td>
+                            {% if car.owners.all %}
+                                <ul>
+                                    {% for owner in car.owners.all %}
+                                        <li>
+                                            {{ owner.username }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                Владелец не указан
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if car.current_spot %}
+                                {{ car.current_spot }}
+                            {% else %}
+                                Автомобиль не припаркован
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <a href="{% url 'car_edit' car.id %}">
+                                Изменить
+                                <span>
+                                    {{ car.license_plate }}
+                                </span>
+                            </a>
+
+                            <form
+                                action="{% url 'car_delete' car.id %}"
+                                method="post"
+                            >
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    onclick="return confirm('Удалить этот автомобиль?')"
+                                >
+                                    Удалить
+                                    <span>
+                                        {{ car.license_plate }}
+                                    </span>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">
+                            Автомобили пока не добавлены.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
 {% endblock %}

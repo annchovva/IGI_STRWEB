@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Оплата заказа —
+    {{ company_global.name|default:"Автопарковка" }}
+{% endblock %}
+
+{% block meta_description %}
+    Страница учебной оплаты услуг автомобильной парковки
+{% endblock %}
+
+{% block meta_keywords %}
+    оплата услуг, заказ, автомобильная парковка
+{% endblock %}
+
+{% block og_title %}
+    Оплата заказа
+{% endblock %}
+
+{% block og_description %}
+    Подтверждение и учебная оплата выбранных услуг
+{% endblock %}
+
+{% block content %}
+        <nav aria-label="Навигационная цепочка">
+            <ol>
+                <li>
+                    <a href="{% url 'home' %}">
+                        Главная
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'services_catalog' %}">
+                        Услуги
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'cart_detail' %}">
+                        Корзина
+                    </a>
+                </li>
+
+                <li aria-current="page">
+                    Оплата
+                </li>
+            </ol>
+        </nav>
+
+        <section aria-labelledby="checkout-title">
+            <header>
+                <h1 id="checkout-title">
+                    Оплата заказа
+                </h1>
+            </header>
+
+            <section aria-labelledby="order-summary-title">
+                <h2 id="order-summary-title">
+                    Состав заказа
+                </h2>
+
+                <ul>
+                    {% for item in cart_items %}
+                        <li>
+                            {{ item.service.name }}:
+
+                            {{ item.quantity }} ×
+                            {{ item.service.price|floatformat:2 }}
+                            руб. =
+
+                            <strong>
+                                {{ item.item_total|floatformat:2 }}
+                                руб.
+                            </strong>
+                        </li>
+                    {% endfor %}
+                </ul>
+
+                <p>
+                    Итоговая стоимость:
+                    <strong>
+                        {{ total_price|floatformat:2 }}
+                        руб.
+                    </strong>
+                </p>
+            </section>
+
+            <section aria-labelledby="payment-data-title">
+                <h2 id="payment-data-title">
+                    Данные плательщика
+                </h2>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div role="alert">
+                            {% for error in form.non_field_errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <fieldset>
+                        <legend>
+                            Контактные данные 
+                        </legend>
+
+                        <p>
+                            <label for="{{ form.full_name.id_for_label }}">
+                                {{ form.full_name.label }}
+                            </label>
+
+                            {{ form.full_name }}
+
+                            {% for error in form.full_name.errors %}
+                                <span role="alert">
+                                    {{ error }}
+                                </span>
+                            {% endfor %}
+                        </p>
+
+                        <p>
+                            <label for="{{ form.email.id_for_label }}">
+                                {{ form.email.label }}
+                            </label>
+
+                            {{ form.email }}
+
+                            {% for error in form.email.errors %}
+                                <span role="alert">
+                                    {{ error }}
+                                </span>
+                            {% endfor %}
+                        </p>
+
+                        <p>
+                            <label for="{{ form.phone.id_for_label }}">
+                                {{ form.phone.label }}
+                            </label>
+
+                            {{ form.phone }}
+
+                            {% for error in form.phone.errors %}
+                                <span role="alert">
+                                    {{ error }}
+                                </span>
+                            {% endfor %}
+                        </p>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>
+                            Данные банковской карты
+                        </legend>
+
+                        <p>
+                            <label for="{{ form.card_number.id_for_label }}">
+                                {{ form.card_number.label }}
+                            </label>
+
+                            {{ form.card_number }}
+
+                            {% for error in form.card_number.errors %}
+                                <span role="alert">
+                                    {{ error }}
+                                </span>
+                            {% endfor %}
+                        </p>
+
+                        <p>
+                            <label for="{{ form.expiry_month.id_for_label }}">
+                                {{ form.expiry_month.label }}
+                            </label>
+
+                            {{ form.expiry_month }}
+
+                            {% for error in form.expiry_month.errors %}
+                                <span role="alert">
+                                    {{ error }}
+                                </span>
+                            {% endfor %}
+                        </p>
+
+                        <p>
+                            <label for="{{ form.expiry_year.id_for_label }}">
+                                {{ form.expiry_year.label }}
+                            </label>
+
+                            {{ form.expiry_year }}
+
+                            {% for error in form.expiry_year.errors %}
+                                <span role="alert">
+                                    {{ error }}
+                                </span>
+                            {% endfor %}
+                        </p>
+
+                        <p>
+                            <label for="{{ form.cvv.id_for_label }}">
+                                {{ form.cvv.label }}
+                            </label>
+
+                            {{ form.cvv }}
+
+                            {% for error in form.cvv.errors %}
+                                <span role="alert">
+                                    {{ error }}
+                                </span>
+                            {% endfor %}
+                        </p>
+                    </fieldset>
+
+                    <p>
+                        {{ form.agreement }}
+
+                        <label for="{{ form.agreement.id_for_label }}">
+                            {{ form.agreement.label }}
+                        </label>
+
+                        {% for error in form.agreement.errors %}
+                            <span role="alert">
+                                {{ error }}
+                            </span>
+                        {% endfor %}
+                    </p>
+
+                    <p>
+                        <button type="submit">
+                            Оплатить
+                            {{ total_price|floatformat:2 }}
+                        </button>
+                    </p>
+                </form>
+            </section>
+
+            <p>
+                <a href="{% url 'cart_detail' %}">
+                    Вернуться в корзину
+                </a>
+            </p>
+        </section>
+{% endblock %}

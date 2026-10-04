@@ -67,6 +67,27 @@ class CarForm(forms.ModelForm):
 
 # Форма регистрации
 class CustomUserCreationForm(UserCreationForm):
+    field_order = (
+        'username',
+        'email',
+        'phone_number',
+        'birth_date',
+        'password1',
+        'password2',
+        'privacy_agreement',
+    )
+
+    privacy_agreement = forms.BooleanField(
+        label="Я принимаю политику конфиденциальности",
+        required=True,
+        error_messages={
+            "required": (
+                "Для регистрации необходимо принять "
+                "политику конфиденциальности."
+            )
+        }
+    )
+
     birth_date = forms.DateField(
         label="Дата рождения",
         widget=forms.DateInput(attrs={'type': 'date'}),
@@ -80,7 +101,7 @@ class CustomUserCreationForm(UserCreationForm):
     )
     class Meta(UserCreationForm.Meta):
         model = CustomUser
-        fields = ('username', 'email', 'phone_number', 'birth_date')
+        fields = ('username', 'email', 'phone_number', 'birth_date', 'privacy_agreement', )
 
         help_texts = {
             'username': "Используйте буквы, цифры и символы @/./+/-/_.",
@@ -186,3 +207,187 @@ class PaymentForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if user:
             self.fields['car'].queryset = user.cars.all()              
+
+class CheckoutForm(forms.Form):
+    """Форма учебной оплаты заказа."""
+
+    current_year = date.today().year
+
+    month_choices = [
+        (str(month), f'{month:02d}')
+        for month in range(1, 13)
+    ]
+
+    year_choices = [
+        (str(year), str(year))
+        for year in range(current_year, current_year + 11)
+    ]
+
+    full_name = forms.CharField(
+        max_length=150,
+        label='Имя плательщика',
+        widget=forms.TextInput(
+            attrs={
+                'autocomplete': 'name',
+                'placeholder': 'Иван Иванов',
+            }
+        ),
+    )
+
+    email = forms.EmailField(
+        label='Электронная почта',
+        widget=forms.EmailInput(
+            attrs={
+                'autocomplete': 'email',
+                'placeholder': 'user@example.com',
+            }
+        ),
+    )
+
+    phone = forms.RegexField(
+        regex=r'^\+375 \(\d{2}\) \d{3}-\d{2}-\d{2}$',
+        label='Номер телефона',
+        error_messages={
+            'invalid': (
+                'Введите номер в формате '
+                '+375 (29) 123-45-67.'
+            ),
+        },
+        widget=forms.TextInput(
+            attrs={
+                'autocomplete': 'tel',
+                'placeholder': '+375 (29) 123-45-67',
+            }
+        ),
+    )
+
+    card_number = forms.CharField(
+        min_length=16,
+        max_length=19,
+        label='Номер карты',
+        widget=forms.TextInput(
+            attrs={
+                'inputmode': 'numeric',
+                'autocomplete': 'cc-number',
+                'placeholder': 'Введите 16 цифр',
+                'pattern': '[0-9]{16}',
+                'maxlength': '16',
+                'oninput': (
+                    "this.value = this.value"
+                    ".replace(/[^0-9]/g, '')"
+                    ".slice(0,16);"
+                ),
+            }
+        ),
+    )
+
+    expiry_month = forms.ChoiceField(
+        choices=month_choices,
+        label='Месяц окончания действия',
+    )
+
+    expiry_year = forms.ChoiceField(
+        choices=year_choices,
+        label='Год окончания действия',
+    )
+
+    cvv = forms.CharField(
+        min_length=3,
+        max_length=3,
+        label='Защитный код CVV',
+        widget=forms.TextInput(
+            attrs={
+                'inputmode': 'numeric',
+                'autocomplete': 'cc-csc',
+                'placeholder': '123',
+                'pattern': '[0-9]{3}',
+                'oninput': (
+                    "this.value = this.value"
+                    ".replace(/[^0-9]/g, '')"
+                    ".slice(0,3);"
+                ),
+            }
+        ),
+    )
+
+    agreement = forms.BooleanField(
+        required=True,
+        label=(
+            'Я подтверждаю правильность данных '
+            'и согласен с условиями оплаты'
+        ),
+    )
+
+    def clean_card_number(self):
+        """Проверка номера карты алгоритмом Луна."""
+
+        card_number = self.cleaned_data['card_number']
+
+        if not card_number.isdigit():
+            raise forms.ValidationError(
+                'Номер карты должен содержать только цифры.'
+            )
+
+        if len(card_number) != 16:
+            raise forms.ValidationError(
+                'Номер карты должен содержать 16 цифр.'
+            )
+
+        digits = [
+            int(character)
+            for character in card_number
+        ]
+
+        checksum = 0
+        parity = len(digits) % 2
+
+        for index, digit in enumerate(digits):
+            if index % 2 == parity:
+                digit *= 2
+
+                if digit > 9:
+                    digit -= 9
+
+            checksum += digit
+
+        if checksum % 10 != 0:
+            raise forms.ValidationError(
+                'Введён некорректный номер карты.'
+            )
+
+        return card_number
+
+    def clean_cvv(self):
+        """CVV должен состоять из трёх цифр."""
+
+        cvv = self.cleaned_data['cvv']
+
+        if not cvv.isdigit():
+            raise forms.ValidationError(
+                'CVV должен состоять из трёх цифр.'
+            )
+
+        return cvv
+
+    def clean(self):
+        """Проверка срока действия карты."""
+
+        cleaned_data = super().clean()
+
+        expiry_month = cleaned_data.get('expiry_month')
+        expiry_year = cleaned_data.get('expiry_year')
+
+        if not expiry_month or not expiry_year:
+            return cleaned_data
+
+        today = date.today()
+        month = int(expiry_month)
+        year = int(expiry_year)
+
+        if year == today.year and month < today.month:
+            self.add_error(
+                'expiry_month',
+                'Срок действия карты уже истёк.',
+            )
+
+        return cleaned_data

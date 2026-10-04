@@ -1,87 +1,142 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ news.title }} - Автопарковка</title>
-</head>
-<body>
-    <div>
-        <div>
-            <div>
-                <div>
-                    <span>
-                        <strong>User TZ:</strong> {{ tz_user }} 
-                        <span>{{ date_local }} {{ time_local }}</span>
-                    </span>
-                    <span>
-                        <strong>UTC:</strong> 
-                        <span>{{ date_utc }} {{ time_utc }}</span>
-                    </span>
-                </div>
+{% extends "base.html" %}
 
-                <div>
-                    <span>
-                        <i>Последнее обновление данных:</i> 
-                        <span>{{ last_data_update }}</span>
-                    </span>
-                    
-                    <details>
-                        <summary>📅 Календарь</summary>
-                        <div>
-                            <pre>{{ text_calendar_global }}</pre>
-                        </div>
-                    </details>
-                </div>    
-            </div>
+{% block title %}
+    {{ news.title }} — {{ company_global.name|default:"Автопарковка" }}
+{% endblock %}
+
+{% block meta_description %}
+    {{ news.content|striptags|truncatechars:160 }}
+{% endblock %}
+
+{% block meta_keywords %}
+    новости, парковка, автомобили, {{ news.title }}
+{% endblock %}
+
+{% block og_title %}
+    {{ news.title }}
+{% endblock %}
+
+{% block og_description %}
+    {{ news.content|striptags|truncatechars:160 }}
+{% endblock %}
+
+{% block og_type %}
+    article
+{% endblock %}
+
+{% block content %}
+    <article
+        itemscope
+        itemtype="https://schema.org/NewsArticle"
+    >
+        <header>
+            <h1 itemprop="headline">
+                {{ news.title }}
+            </h1>
+
+            <meta
+                itemprop="description"
+                content="{{ news.content|striptags|truncatechars:160 }}"
+            >
+
+            <span
+                itemprop="publisher"
+                itemscope
+                itemtype="https://schema.org/Organization"
+            >
+                <meta
+                    itemprop="name"
+                    content="{{ company_global.name|default:'Автопарковка' }}"
+                >
+            </span>
+        </header>
+
+        {% if news.image %}
+            <figure>
+                <img
+                    src="{{ news.image.url }}"
+                    alt="Изображение к новости «{{ news.title }}»"
+                    loading="lazy"
+                    itemprop="image"
+                >
+                <figcaption>
+                    Иллюстрация к новости «{{ news.title }}»
+                </figcaption>
+            </figure>
+        {% endif %}
+
+        <div itemprop="articleBody">
+            {{ news.content|linebreaks }}
         </div>
-    </div>
 
+        <section aria-labelledby="local-news-time">
+            <h2 id="local-news-time">
+                Время в часовом поясе {{ tz_user }}
+            </h2>
 
-    <header>
-        <div>
-            <a href="{% url 'news_list' %}">Назад к новостям</a>
-        </div>
-    </header>
+            <dl>
+                <dt>Опубликовано</dt>
+                <dd>
+                    <time
+                        datetime="{{ news.published_at_local|date:'Y-m-d\TH:i:s' }}"
+                        itemprop="datePublished"
+                    >
+                        {{ news.published_at_local|date:"d.m.Y H:i" }}
+                    </time>
+                </dd>
 
-    <div>
-        <div>
-            <div>
-                <article>
-                    {% if news.image %}
-                        <img src="{{ news.image.url }}" alt="{{ news.title }}">
-                    {% endif %}
-                    <div>
-                        <h1>{{ news.title }}</h1>
-                        <hr>
-                        <div>
-                            {{ news.content }}
-                        </div>
-                        <div>
-                        <div>
-                            <div>
-                                <h6>🕐 Ваш часовой пояс: {{ tz_user }}</h6>
-                                <p>
-                                    <strong>Опубликовано:</strong> {{ news.published_at_local|date:"d/m/Y H:i" }}<br>
-                                    <strong>Создано:</strong> {{ news.created_at_local|date:"d/m/Y H:i" }}<br>
-                                    <strong>Обновлено:</strong> {{ news.updated_at_local|date:"d/m/Y H:i" }}
-                                </p>
-                            </div>
-                            <div>
-                                <h6>🌍 Всемирное время (UTC)</h6>
-                                <p>
-                                    <strong>Опубликовано:</strong> {{ news.published_at_utc|date:"d/m/Y H:i" }}<br>
-                                    <strong>Создано:</strong> {{ news.created_at_utc|date:"d/m/Y H:i" }}<br>
-                                    <strong>Обновлено:</strong> {{ news.updated_at_utc|date:"d/m/Y H:i" }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <a href="{% url 'news_list' %}">← Ко всем новостям</a>
-                    </div>
-                </article>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
+                <dt>Создано</dt>
+                <dd>
+                    <time datetime="{{ news.created_at_local|date:'Y-m-d\TH:i:s' }}">
+                        {{ news.created_at_local|date:"d.m.Y H:i" }}
+                    </time>
+                </dd>
+
+                <dt>Обновлено</dt>
+                <dd>
+                    <time
+                        datetime="{{ news.updated_at_local|date:'Y-m-d\TH:i:s' }}"
+                        itemprop="dateModified"
+                    >
+                        {{ news.updated_at_local|date:"d.m.Y H:i" }}
+                    </time>
+                </dd>
+            </dl>
+        </section>
+
+        <section aria-labelledby="utc-news-time">
+            <h2 id="utc-news-time">
+                Всемирное время UTC
+            </h2>
+
+            <dl>
+                <dt>Опубликовано</dt>
+                <dd>
+                    <time datetime="{{ news.published_at_utc|date:'Y-m-d\TH:i:s\Z' }}">
+                        {{ news.published_at_utc|date:"d.m.Y H:i" }}
+                    </time>
+                </dd>
+
+                <dt>Создано</dt>
+                <dd>
+                    <time datetime="{{ news.created_at_utc|date:'Y-m-d\TH:i:s\Z' }}">
+                        {{ news.created_at_utc|date:"d.m.Y H:i" }}
+                    </time>
+                </dd>
+
+                <dt>Обновлено</dt>
+                <dd>
+                    <time datetime="{{ news.updated_at_utc|date:'Y-m-d\TH:i:s\Z' }}">
+                        {{ news.updated_at_utc|date:"d.m.Y H:i" }}
+                    </time>
+                </dd>
+            </dl>
+        </section>
+
+        <p>
+            <a href="{% url 'news_list' %}">
+                ← Вернуться ко всем новостям
+            </a>
+        </p>
+    </article>
+{% endblock %}

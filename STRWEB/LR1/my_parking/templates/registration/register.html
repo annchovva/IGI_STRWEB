@@ -1,65 +1,124 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Регистрация - Автопарковка</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-    <header>
-        <div>
-            <a href="{% url 'home' %}">
-                {% if company_global.logo %}
-                    <img src="{{ company_global.logo.url }}" alt="Logo" width="40" height="40">
-                {% else %}
-                    <span>🅿️</span>
-                {% endif %}
-                {{ company_global.name|default:"Parking System" }}
-            </a>    
-        </div>
-    </header>
+{% block title %}
+    Регистрация — {{ company_global.name|default:"Автопарковка" }}
+{% endblock %}
 
-    <main>
-        <div>
-            <div>
-                <div>
-                    <div>
-                        <h2>Создать аккаунт</h2>
-                        
-                        <form method="post">
-                            {% csrf_token %}
-                            
-                            {% for field in form %}
-                                <div>
-                                    <label>{{ field.label }}</label>
-                                    {{ field }}
-                                    {% if field.help_text %}
-                                        <div>{{ field.help_text }}</div>
-                                    {% endif %}
-                                    {% for error in field.errors %}
-                                        <div>{{ error }}</div>
-                                    {% endfor %}
-                                </div>
-                            {% endfor %}
+{% block meta_description %}
+    Регистрация нового клиента автомобильной парковки.
+{% endblock %}
 
-                            <button type="submit">Зарегистрироваться</button>
-                        </form>
+{% block meta_keywords %}
+    регистрация, новый клиент, аккаунт, парковка
+{% endblock %}
 
-                        <div>
-                            <p>Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p>
-                            <a href="/">На главную</a>
-                        </div>
-                    </div>
-                </div>
+{% block og_title %}
+    Регистрация клиента парковки
+{% endblock %}
+
+{% block og_description %}
+    Создание учётной записи для управления автомобилями услугами.
+{% endblock %}
+
+{% block content %}
+    <section aria-labelledby="registration-title">
+        <header>
+            <h1 id="registration-title">Регистрация клиента</h1>
+            <p>
+                Создайте учётную запись для управления автомобилями, платежами и услугами парковки.
+            </p>
+        </header>
+
+        {% if form.non_field_errors %}
+            <div role="alert">
+                <strong>Форма содержит ошибки.</strong>
+                <ul>
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
             </div>
-        </div>
-    </main>
+        {% endif %}
 
-    <footer>
-        <div>
-            <span>© 2024 {{ company_global.name|default:"Parking System" }}</span>
-        </div>
-    </footer>
+        <form method="post" action="{% url 'register' %}">
+            {% csrf_token %}
 
-</body>
-</html>
+            <fieldset>
+                <legend>Персональные данные</legend>
+                {% for field in form %}
+                    <div>
+                        {% if field.name == "privacy_agreement" %}
+                            {{ field }}
+
+                            <label for="{{ field.id_for_label }}">
+                                Я принимаю
+                            </label>
+
+                            <a
+                                href="{% url 'privacy_policy' %}"
+                                target="_blank"
+                                rel="noopener"
+                            >
+                                политику конфиденциальности
+                            </a>
+
+                            <span aria-hidden="true">*</span>
+                        {% else %}
+                            <label for="{{ field.id_for_label }}">
+                                {{ field.label }}
+                                {% if field.field.required %}
+                                    <span aria-hidden="true">*</span>
+                                {% endif %}
+                            </label>
+
+                            {{ field }}
+                        {% endif %}
+
+                        {% if field.help_text %}
+                            <div id="{{ field.id_for_label }}_help">
+                                <small>
+                                    {{ field.help_text|safe }}
+                                </small>
+                            </div>
+                        {% endif %}
+
+                        {% if field.errors %}
+                            <div role="alert">
+                                <ul>
+                                    {% for error in field.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </fieldset>
+
+            <p>
+                Поля, отмеченные символом
+                <span aria-hidden="true">*</span>,
+                обязательны для заполнения.
+            </p>
+
+            <button type="submit">
+                Зарегистрироваться
+            </button>
+        </form>
+
+        <nav aria-label="Дополнительная навигация страницы регистрации">
+            <p>
+                Уже зарегистрировались?
+                <a href="{% url 'login' %}">
+                    Войти
+                </a>
+            </p>
+
+            <p>
+                <a href="{% url 'home' %}">
+                    Вернуться на главную страницу
+                </a>
+            </p>
+        </nav>
+    </section>
+{% endblock %}

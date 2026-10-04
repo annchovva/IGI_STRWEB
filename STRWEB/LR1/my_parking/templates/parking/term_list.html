@@ -1,40 +1,110 @@
 {% extends "base.html" %}
 
-{% block title %}Ваши вопросы - {{ company_global.name }}{% endblock %}
+{% block title %}
+    Вопросы и термины —
+    {{ company_global.name|default:"Автопарковка" }}
+{% endblock %}
+
+{% block meta_description %}
+    Ответы на часто задаваемые вопросы
+    и определения основных терминов
+    автомобильной парковки
+{% endblock %}
+
+{% block meta_keywords %}
+    вопросы о парковке, термины,
+    ответы клиентам, автомобильная парковка
+{% endblock %}
+
+{% block og_title %}
+    Вопросы и термины
+{% endblock %}
+
+{% block og_description %}
+    Словарь терминов и ответы
+    на вопросы клиентов парковки
+{% endblock %}
 
 {% block content %}
-        <div>
-            <div>
-                <div>
-                    <h1>Словарь терминов и FAQ</h1>
-                </div>
-                <p>Здесь вы найдете ответы на часто задаваемые вопросы и расшифровку основных понятий нашей системы парковки.</p>
+    <section
+        aria-labelledby="terms-title"
+        itemscope
+        itemtype="https://schema.org/FAQPage"
+    >
+        <header>
+            <h1 id="terms-title">
+                Словарь терминов и часто задаваемые вопросы
+            </h1>
 
-                {% if terms %}
-                <div>
+            <p>
+                Здесь представлены определения основных понятий
+                и ответы на вопросы о работе парковки.
+            </p>
+        </header>
+
+        {% if terms %}
+            <section aria-labelledby="terms-list-title">
+                <h2 id="terms-list-title">
+                    Вопросы и определения
+                </h2>
+
+                <ol>
                     {% for term in terms %}
-                    <details>
-                        <summary>{{ term.term }}</summary>
-                        <div>
-                            <div>
-                                <div>
-                                    {{ term.definition }}
-                                </div>
-                                <div>
-                                    <small>
-                                        <i></i> Добавлено: {{ term.added_at|date:"d.m.Y" }}
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-                    </details>
+                        <li>
+                            <article
+                                id="term-{{ term.id }}"
+                                itemprop="mainEntity"
+                                itemscope
+                                itemtype="https://schema.org/Question"
+                            >
+                                <details>
+                                    <summary>
+                                        <h3>
+                                            <dfn itemprop="name">
+                                                {{ term.term }}
+                                            </dfn>
+                                        </h3>
+                                    </summary>
+
+                                    <div
+                                        itemprop="acceptedAnswer"
+                                        itemscope
+                                        itemtype="https://schema.org/Answer"
+                                    >
+                                        <p itemprop="text">
+                                            {{ term.definition|linebreaksbr }}
+                                        </p>
+                                    </div>
+
+                                    <footer>
+                                        <p>
+                                            Добавлено:
+
+                                            <time
+                                                datetime="{{ term.added_at|date:'Y-m-d' }}"
+                                            >
+                                                {{ term.added_at|date:"d.m.Y" }}
+                                            </time>
+                                        </p>
+
+                                        <p>
+                                            <a href="#term-{{ term.id }}">
+                                                Постоянная ссылка
+                                                на этот термин
+                                            </a>
+                                        </p>
+                                    </footer>
+                                </details>
+                            </article>
+                        </li>
                     {% endfor %}
-                </div>
-                {% else %}
-                <div>
-                    <i></i> Словарь пока пуст. Мы скоро добавим новые термины!
-                </div>
-                {% endif %}
-            </div>
-        </div>
+                </ol>
+            </section>
+        {% else %}
+            <p role="status">
+                Словарь пока пуст.
+                Новые термины будут добавлены позднее.
+            </p>
+        {% endif %}
+    </section>
 {% endblock %}

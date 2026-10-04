@@ -70,13 +70,18 @@ class CustomUser(AbstractUser):
     
     # Если роль = сотрудник - is_staff 
     def save(self, *args, **kwargs):
-        if self.role == 'staff' or self.role == 'admin':
+        # Стандартный суперпользователь Django всегда является
+        # администратором и сотрудником в прикладной системе.
+        if self.is_superuser:
+            self.role = 'admin'
+            self.is_staff = True
+        elif self.role == 'admin':
+            self.is_superuser = True
+            self.is_staff = True
+        elif self.role == 'staff':
             self.is_staff = True
         else:
             self.is_staff = False
-
-        if self.role == 'admin':
-            self.is_superuser = True        
 
         self.full_clean()
         super().save(*args, **kwargs)
@@ -114,7 +119,7 @@ class ParkingSpot(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Место {self.number} ({self.price} руб.)"
+        return f"Место {self.number} ({self.price:.2f} руб.)"
 
 class Car(models.Model):
     """Автомобиль"""
@@ -287,6 +292,34 @@ class CompanyInfo(models.Model):
         verbose_name="Электронная почта", 
         blank=True
     )
+    requisites = models.TextField(
+        blank=True,
+        verbose_name='Реквизиты компании',
+    )
+    certificate = models.ImageField(
+        upload_to='company/', 
+        verbose_name="Cертификат",
+        blank=True, 
+        null=True
+    )
+    video = models.FileField(
+        upload_to='company/video/',
+        blank=True,
+        null=True,
+        verbose_name='Видео о компании',
+    )
+    audio = models.FileField(
+        upload_to='company/audio/',
+        blank=True,
+        null=True,
+        verbose_name='Аудиозапись о компании',
+    )
+    document = models.FileField(
+        upload_to='company/documents/',
+        blank=True,
+        null=True,
+        verbose_name='Документ для скачивания',
+    )
 
     class Meta:
         verbose_name = "Информация о компании"
@@ -294,6 +327,36 @@ class CompanyInfo(models.Model):
 
     def __str__(self):
         return self.name
+
+class CompanyHistory(models.Model):
+    """Событие из истории компании."""
+
+    company = models.ForeignKey(
+        CompanyInfo,
+        on_delete=models.CASCADE,
+        related_name='history_items',
+        verbose_name='Компания',
+    )
+
+    year = models.PositiveSmallIntegerField(
+        verbose_name='Год',
+    )
+
+    event = models.TextField(
+        verbose_name='Описание события',
+    )
+
+    class Meta:
+        ordering = ['year', 'id']
+        verbose_name = 'Событие истории компании'
+        verbose_name_plural = 'История компании'
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.year}: {self.company.name}'
 
 class News(models.Model):
     """Новости"""
@@ -535,3 +598,93 @@ class Service(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.price} руб.)"
+
+class Partner(models.Model):
+    """Компания-партнёр"""
+    name = models.CharField(
+        max_length=300,
+        unique=True,
+        verbose_name="Название партнёра"
+    )
+    description = models.CharField(
+        max_length=300,
+        blank=True,
+        verbose_name="Краткое описание"
+    )
+    logo = models.ImageField(
+        upload_to='partners/',
+        verbose_name="Логотип партнёра"
+    )
+    website = models.URLField(
+        max_length=500,
+        verbose_name="Сайт партнёра"
+    )
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name="Показывать на сайте"
+    )
+    display_order = models.PositiveSmallIntegerField(
+        default=0,
+        verbose_name="Порядок отображения"
+    )
+
+    class Meta:
+        ordering = ['display_order', 'name']
+        verbose_name = "Партнёр"
+        verbose_name_plural = "Партнёры"
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+class Banner(models.Model):
+    """Рекламный баннер главной страницы"""
+
+    title = models.CharField(
+        max_length=150,
+        verbose_name="Заголовок"
+    )
+    description = models.CharField(
+        max_length=300,
+        blank=True,
+        verbose_name="Краткое описание"
+    )
+    image = models.ImageField(
+        upload_to='banners/',
+        verbose_name="Изображение"
+    )
+    alt_text = models.CharField(
+        max_length=200,
+        verbose_name="Альтернативный текст изображения",
+        help_text=(
+            "Кратко опишите содержание изображения "
+            "для пользователей скринридеров"
+        )
+    )
+    link = models.URLField(
+        max_length=500,
+        blank=True,
+        verbose_name="Ссылка баннера"
+    )
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name="Показывать на сайте"
+    )
+    display_order = models.PositiveSmallIntegerField(
+        default=0,
+        verbose_name="Порядок отображения"
+    )
+    class Meta:
+        ordering = ['display_order', 'title']
+        verbose_name = "Баннер"
+        verbose_name_plural = "Баннеры"
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title

@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import (
     CustomUser, ParkingSpot, Car, Accrual, Payment, CompanyInfo, 
-    News, Term, Employee, Vacancy, Review, PromoCode, Service, Category
+    News, Term, Employee, Vacancy, Review, PromoCode, Service, Category,
+    Partner, Banner, CompanyHistory,
 )
 
 # Редактирование связанных моделей в родительской модели
@@ -17,7 +18,13 @@ class AccrualInline(admin.TabularInline):
 
 class ServiceInline(admin.TabularInline):
     model = Service
-    extra = 1       
+    extra = 1
+
+class CompanyHistoryInline(admin.TabularInline):
+    model = CompanyHistory
+    extra = 1
+    fields = ('year', 'event')
+    ordering = ('year',)
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
@@ -116,6 +123,52 @@ class ServiceAdmin(admin.ModelAdmin):
 class CompanyInfoAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'address')
 
+    fieldsets = (
+        (
+            'Основная информация',
+            {
+                'fields': (
+                    'name',
+                    'description',
+                    'address',
+                    'email',
+                ),
+            },
+        ),
+        (
+            'Изображения',
+            {
+                'fields': (
+                    'main_logo',
+                    'logo',
+                ),
+            },
+        ),
+        (
+            'Документы и реквизиты',
+            {
+                'fields': (
+                    'requisites',
+                    'certificate',
+                    'document',
+                ),
+            },
+        ),
+        (
+            'Мультимедиа',
+            {
+                'fields': (
+                    'video',
+                    'audio',
+                ),
+            },
+        ),
+    )
+
+    inlines = (
+        CompanyHistoryInline,
+    )
+
 @admin.register(Term)
 class TermAdmin(admin.ModelAdmin):
     list_display = ('term', 'added_at')
@@ -124,3 +177,17 @@ class TermAdmin(admin.ModelAdmin):
 @admin.register(Vacancy)
 class VacancyAdmin(admin.ModelAdmin):
     list_display = ('title', 'salary')
+
+@admin.register(Partner)
+class PartnerAdmin(admin.ModelAdmin):
+    list_display = ('name', 'website', 'is_active', 'display_order')
+    list_filter = ('is_active',)
+    search_fields = ('name', 'description', 'website')
+    list_editable = ('is_active', 'display_order')
+
+@admin.register(Banner)
+class BannerAdmin(admin.ModelAdmin):
+    list_display = ('title', 'is_active', 'display_order')
+    list_filter = ('is_active',)
+    search_fields = ('title', 'description', 'alt_text')
+    list_editable = ('is_active', 'display_order')

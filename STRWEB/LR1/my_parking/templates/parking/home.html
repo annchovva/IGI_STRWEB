@@ -1,97 +1,296 @@
 {% extends "base.html" %}
 
-{% block title %}Главная - {{ company_global.name }}{% endblock %}
+{% block title %}
+    Главная — {{ company_global.name|default:"Автопарковка" }}
+{% endblock %}
+
+{% block meta_description %}
+    Охраняемая автомобильная парковка в Минске:
+    парковочные места, дополнительные услуги
+    и удобное управление автомобилями.
+{% endblock %}
+
+{% block meta_keywords %}
+    парковка Минск, охраняемая парковка,
+    парковочное место, автомобильные услуги
+{% endblock %}
+
+{% block og_title %}
+    {{ company_global.name|default:"Автопарковка" }}
+{% endblock %}
+
+{% block og_description %}
+    Надёжное хранение автомобилей
+    и дополнительные парковочные услуги.
+{% endblock %}
 
 {% block content %}
-        <div>
-            <div>
-                <h1>Добро пожаловать на нашу парковку!</h1>
-                <p>Мы обеспечиваем надежное хранение вашего автомобиля 24/7.</p>
-                
-                <div>
-                    {% if user.is_authenticated %}
-                        {% if user.role == 'client' %}
-                            <a href="{% url 'dashboard' %}">Личный кабинет</a> 
-                            <a href="{% url 'car_index' %}">Управлять моими авто</a>
-                        {% elif user.role == 'staff' %}
-                            <a href="{% url 'dashboard' %}">Панель сотрудника</a>
-                            <a href="{% url 'car_index' %}">Управление автомобилями</a> 
-                        {% elif user.role == 'admin' %}
-                            <a href="{% url 'admin_panel' %}">Панель администратора</a>
-                            <a href="{% url 'car_index' %}">Управление автомобилями</a>
-                        {% endif %}
-                        
-                    {% else %}
-                        <div>
-                            Чтобы управлять своими автомобилями, пожалуйста, войдите в систему.
-                        </div>
-                        <a href="{% url 'services_catalog' %}">Наши услуги</a>
-                        <a href="{% url 'login' %}">Войти в кабинет</a>
-                        <a href="{% url 'register' %}">Стать клиентом</a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
+        <section aria-labelledby="welcome-title">
+            <h1 id="welcome-title">
+                Добро пожаловать на нашу парковку!
+            </h1>
 
-        {% if weather %}
-        <div>
-            <div>
-                <div>
-                    <div>
-                        <div>
-                            <img src="http://openweathermap.org/img/wn/{{ weather.icon }}@2x.png" alt="icon">
-                            <div>
-                                <h3>{{ weather.temp }}°C в Минске</h3>
-                                <p>{{ weather.description }}</p>
-                            </div>
-                        </div>
-                        
-                        {# Убрали d-none d-md-block чтобы сообщение было видно всегда #}
-                        <div>
-                            <span>
-                                {{ weather_tip }}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <p>
+                Мы обеспечиваем надёжное хранение
+                вашего автомобиля 24 часа в сутки.
+            </p>
+
+            <nav aria-label="Действия пользователя">
+                {% if user.is_authenticated %}
+                    {% if user.role == "client" %}
+                        <a href="{% url 'dashboard' %}">
+                            Личный кабинет
+                        </a>
+
+                        <a href="{% url 'car_index' %}">
+                            Управлять моими автомобилями
+                        </a>
+
+                    {% elif user.role == "staff" %}
+                        <a href="{% url 'dashboard' %}">
+                            Панель сотрудника
+                        </a>
+
+                        <a href="{% url 'car_index' %}">
+                            Управление автомобилями
+                        </a>
+
+                    {% elif user.role == "admin" %}
+                        <a href="{% url 'admin_panel' %}">
+                            Панель администратора
+                        </a>
+
+                        <a href="{% url 'car_index' %}">
+                            Управление автомобилями
+                        </a>
+                    {% endif %}
+
+                {% else %}
+                    <p>
+                        Чтобы управлять своими автомобилями,
+                        войдите в систему или зарегистрируйтесь.
+                    </p>
+
+                    <a href="{% url 'services_catalog' %}">
+                        Наши услуги
+                    </a>
+
+                    <a href="{% url 'login' %}">
+                        Войти в кабинет
+                    </a>
+
+                    <a href="{% url 'register' %}">
+                        Стать клиентом
+                    </a>
+                {% endif %}
+            </nav>
+        </section>
+
+
+        {% if banners %}
+            <section aria-labelledby="banners-title">
+                <h2 id="banners-title">
+                    Специальные предложения
+                </h2>
+
+                {% for banner in banners %}
+                    <article>
+                        {% if banner.link %}
+                            <a
+                                href="{{ banner.link }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <img
+                                    src="{{ banner.image.url }}"
+                                    alt="{{ banner.alt_text }}"
+                                >
+                            </a>
+                        {% else %}
+                            <img
+                                src="{{ banner.image.url }}"
+                                alt="{{ banner.alt_text }}"
+                            >
+                        {% endif %}
+
+                        <h3>{{ banner.title }}</h3>
+
+                        {% if banner.description %}
+                            <p>{{ banner.description }}</p>
+                        {% endif %}
+                    </article>
+                {% endfor %}
+            </section>
         {% endif %}
 
-        <!-- КАРТОЧКА С КОЛИЧЕСТВОМ МАШИН -->
-        <div>
-            <div>
-                <div>
-                    <div>
-                        <h2>{{ cars_count|default:"0" }}</h2>
-                        <p>автомобилей сейчас в нашей системе</p>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Вывод последней новости -->
-        <h2>Последняя новость</h2>
+        {% if weather %}
+            <section aria-labelledby="weather-title">
+                <h2 id="weather-title">
+                    Погода
+                </h2>
 
-        {% if news %}
-            <div>
-                <div>
-                    {% if news.image %}
-                    <div>
-                        <img src="{{ news.image.url }}" alt="{{ news.title }}">
-                    </div>
+                <article>
+                    <img
+                        src="https://openweathermap.org/img/wn/{{ weather.icon }}.png"
+                        srcset="
+                            https://openweathermap.org/img/wn/{{ weather.icon }}.png 1x,
+                            https://openweathermap.org/img/wn/{{ weather.icon }}@2x.png 2x
+                        "
+                        width="50"
+                        height="50"
+                        alt="Погода: {{ weather.description }}"
+                    >
+
+                    <h3>
+                        {{ weather.temp }} °C в Минске
+                    </h3>
+
+                    <p>{{ weather.description }}</p>
+
+                    {% if weather_tip %}
+                        <p>{{ weather_tip }}</p>
                     {% endif %}
-                    <div>
-                        <div>
-                            <h5>{{ news.title }}</h5>
-                            <p>{{ news.short_content }}</p>
-                            <p>Опубликовано: {{ news.published_at|date:"d.m.Y" }}</p>
-                            <a href="{% url 'news_list' %}">Все новости</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% else %}
-            <div>Пока новостей нет, но мы скоро их добавим!</div>
-        {% endif %}    
+                </article>
+            </section>
+        {% endif %}
+
+
+        <section aria-labelledby="cars-count-title">
+            <h2 id="cars-count-title">
+                Автомобили в системе
+            </h2>
+
+            <p>
+                <strong>{{ cars_count|default:"0" }}</strong>
+                автомобилей сейчас зарегистрировано
+                в нашей системе.
+            </p>
+        </section>
+
+
+        <section aria-labelledby="featured-services-title">
+            <h2 id="featured-services-title">
+                Популярные услуги
+            </h2>
+
+            {% if featured_services %}
+                {% for service in featured_services %}
+                    <article>
+                        <h3>
+                            <a href="{% url 'service_detail' service.id %}">
+                                {{ service.name }}
+                            </a>
+                        </h3>
+
+                        <p>
+                            Категория:
+                            {{ service.category.name }}
+                        </p>
+
+                        <p>
+                            {{ service.description|truncatewords:25 }}
+                        </p>
+
+                        <p>
+                            Стоимость:
+                            <strong>
+                                {{ service.price|floatformat:2 }} руб.
+                            </strong>
+                        </p>
+
+                        <p>
+                            <a href="{% url 'service_detail' service.id %}">
+                                Подробнее
+                            </a>
+                        </p>
+                    </article>
+                {% endfor %}
+
+                <p>
+                    <a href="{% url 'services_catalog' %}">
+                        Посмотреть все услуги
+                    </a>
+                </p>
+            {% else %}
+                <p>
+                    Информация об услугах пока отсутствует.
+                </p>
+            {% endif %}
+        </section>
+
+
+        <section aria-labelledby="latest-news-title">
+            <h2 id="latest-news-title">
+                Последняя новость
+            </h2>
+
+            {% if news %}
+                <article>
+                    {% if news.image %}
+                        <img
+                            src="{{ news.image.url }}"
+                            alt="{{ news.title }}"
+                        >
+                    {% endif %}
+
+                    <h3>{{ news.title }}</h3>
+
+                    <p>{{ news.short_content }}</p>
+
+                    <p>
+                        Опубликовано:
+                        <time datetime="{{ news.published_at|date:'Y-m-d' }}">
+                            {{ news.published_at|date:"d.m.Y" }}
+                        </time>
+                    </p>
+
+                    <p>
+                        <a href="{% url 'news_detail' news.id %}">
+                            Читать новость полностью
+                        </a>
+                    </p>
+
+                    <p>
+                        <a href="{% url 'news_list' %}">
+                            Посмотреть все новости
+                        </a>
+                    </p>
+                </article>
+            {% else %}
+                <p>
+                    Пока новостей нет, но мы скоро их добавим.
+                </p>
+            {% endif %}
+        </section>
+
+
+        {% if partners %}
+            <section aria-labelledby="partners-title">
+                <h2 id="partners-title">
+                    Наши партнёры
+                </h2>
+
+                {% for partner in partners %}
+                    <article>
+                        <a
+                            href="{{ partner.website }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <img
+                                src="{{ partner.logo.url }}"
+                                alt="Логотип партнёра {{ partner.name }}"
+                            >
+
+                            <h3>{{ partner.name }}</h3>
+                        </a>
+
+                        {% if partner.description %}
+                            <p>{{ partner.description }}</p>
+                        {% endif %}
+                    </article>
+                {% endfor %}
+            </section>
+        {% endif %}
 {% endblock %}

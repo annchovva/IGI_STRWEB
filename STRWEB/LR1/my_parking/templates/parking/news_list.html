@@ -1,52 +1,157 @@
 {% extends "base.html" %}
 
-{% block title %}Новости - {{ company_global.name }}{% endblock %}
+{% block title %}
+    Новости —
+    {{ company_global.name|default:"Автопарковка" }}
+{% endblock %}
+
+{% block meta_description %}
+    Новости автомобильной парковки:
+    новые услуги, изменения в работе,
+    акции и полезная информация для клиентов
+{% endblock %}
+
+{% block meta_keywords %}
+    новости парковки, автомобильные услуги,
+    акции, обслуживание автомобилей
+{% endblock %}
+
+{% block og_title %}
+    Новости автомобильной парковки
+{% endblock %}
+
+{% block og_description %}
+    Последние новости и объявления компании
+{% endblock %}
 
 {% block content %}
-<h1>Наши новости</h1>
-        <div>
-            
-            {% for item in news_items %}
-            <div>
-                <div>
-                    {% if item.image %}
-                        <img src="{{ item.image.url }}" alt="{{ item.title }}">
-                    {% else %}
-                        <img src="https://via.placeholder.com/400x200?text=Нет+фото" alt="Нет фото">
-                    {% endif %}
-                    
-                    <div>
-                        <h5>{{ item.title }}</h5>
-                        <p>{{ item.short_content }}</p>
-                    </div>
+    <section aria-labelledby="news-title">
+        <header>
+            <h1 id="news-title">
+                Наши новости
+            </h1>
 
-                    <div>
-                        <div>
-                            <div>
-                                <small>
-                                    Опубликовано: {{ item.published_at_local|date:"d/m/Y H:i" }}
-                                </small>
+            <p>
+                Последние события компании,
+                изменения в работе парковки
+                и полезная информация для клиентов.
+            </p>
+        </header>
+
+        {% if news_items %}
+            <section aria-labelledby="news-list-title">
+                <h2 id="news-list-title">
+                    Список публикаций
+                </h2>
+
+                <ol>
+                    {% for item in news_items %}
+                        <li>
+                            <article
+                                itemscope
+                                itemtype="https://schema.org/NewsArticle"
+                                aria-labelledby="news-{{ item.id }}-title"
+                            >
+                                <header>
+                                    <h3
+                                        id="news-{{ item.id }}-title"
+                                        itemprop="headline"
+                                    >
+                                        <a
+                                            href="{% url 'news_detail' news_id=item.id %}"
+                                            itemprop="url"
+                                        >
+                                            {{ item.title }}
+                                        </a>
+                                    </h3>
+
+                                    <p>
+                                        Опубликовано:
+
+                                        <time
+                                            datetime="{{ item.published_at_local|date:'Y-m-d\TH:i:s' }}"
+                                            itemprop="datePublished"
+                                        >
+                                            {{ item.published_at_local|date:"d.m.Y H:i" }}
+                                        </time>
+                                    </p>
+                                </header>
+
+                                {% if item.image %}
+                                    <figure>
+                                        <img
+                                            src="{{ item.image.url }}"
+                                            alt="Иллюстрация к новости «{{ item.title }}»"
+                                            loading="lazy"
+                                            itemprop="image"
+                                        >
+
+                                        <figcaption>
+                                            Иллюстрация к публикации
+                                            «{{ item.title }}»
+                                        </figcaption>
+                                    </figure>
+                                {% endif %}
+
+                                <p itemprop="description">
+                                    {{ item.short_content }}
+                                </p>
+
                                 {% if item.created_at_local %}
-                                <small>
-                                    Создано: {{ item.created_at_local|date:"d/m/Y H:i" }}
-                                </small>
-                                {% endif %}
-                                {% if item.updated_at_local %}
-                                <small>
-                                    Обновлено: {{ item.updated_at_local|date:"d/m/Y H:i" }}
-                                </small>
-                                {% endif %}
-                            </div>
-                            <a href="{% url 'news_detail' news_id=item.id %}">Читать далее →</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% empty %}
-            <div>
-                <div>Новостей пока нет.</div>
-            </div>
-            {% endfor %}
+                                    <p>
+                                        Создано:
 
-        </div>
+                                        <time
+                                            datetime="{{ item.created_at_local|date:'Y-m-d\TH:i:s' }}"
+                                        >
+                                            {{ item.created_at_local|date:"d.m.Y H:i" }}
+                                        </time>
+                                    </p>
+                                {% endif %}
+
+                                {% if item.updated_at_local %}
+                                    <p>
+                                        Последнее изменение:
+
+                                        <time
+                                            datetime="{{ item.updated_at_local|date:'Y-m-d\TH:i:s' }}"
+                                            itemprop="dateModified"
+                                        >
+                                            {{ item.updated_at_local|date:"d.m.Y H:i" }}
+                                        </time>
+                                    </p>
+                                {% endif %}
+
+                                <div
+                                    itemprop="publisher"
+                                    itemscope
+                                    itemtype="https://schema.org/Organization"
+                                >
+                                    <meta
+                                        itemprop="name"
+                                        content="{{ company_global.name|default:'Автопарковка' }}"
+                                    >
+                                </div>
+
+                                <footer>
+                                    <p>
+                                        <a
+                                            href="{% url 'news_detail' news_id=item.id %}"
+                                        >
+                                            Читать далее
+                                            <span aria-hidden="true">→</span>
+                                        </a>
+                                    </p>
+                                </footer>
+                            </article>
+                        </li>
+                    {% endfor %}
+                </ol>
+            </section>
+        {% else %}
+            <p role="status">
+                Новостей пока нет.
+            </p>
+        {% endif %}
+    </section>
 {% endblock %}

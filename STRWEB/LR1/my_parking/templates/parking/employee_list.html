@@ -1,60 +1,181 @@
 {% extends "base.html" %}
 
-{% block title %}Контакты - {{ company_global.name }}{% endblock %}
+{% block title %}
+    Контакты —
+    {{ company_global.name|default:"Автопарковка" }}
+{% endblock %}
+
+{% block meta_description %}
+    Контактная информация сотрудников автомобильной парковки:
+    должности, телефоны и электронная почта
+{% endblock %}
+
+{% block meta_keywords %}
+    сотрудники парковки, контакты, телефон,
+    электронная почта, автомобильная парковка
+{% endblock %}
+
+{% block og_title %}
+    Контакты сотрудников
+{% endblock %}
+
+{% block og_description %}
+    Свяжитесь со специалистами автомобильной парковки
+{% endblock %}
 
 {% block content %}
-        <div>
-            <h1>Наша команда</h1>
-            <p>Свяжитесь с нашими специалистами для решения любого вопроса</p>
-        </div>
+    <section aria-labelledby="employees-title">
+        <header>
+            <h1 id="employees-title">
+                Наша команда
+            </h1>
 
-        <div>
-            {% for person in employees %}
-            <div>
-                <div>
-                    {% if person.photo %}
-                        <img src="{{ person.photo.url }}" alt="{{ person.name }}">
+            <p>
+                Свяжитесь с нашими специалистами
+                для решения вопросов, связанных
+                с работой автомобильной парковки.
+            </p>
+        </header>
+
+        {% if employees %}
+            <section aria-labelledby="employee-list-title">
+                <h2 id="employee-list-title">
+                    Сотрудники компании
+                </h2>
+
+                <ul>
+                    {% for person in employees %}
+                        <li>
+                            <article
+                                itemscope
+                                itemtype="https://schema.org/Person"
+                                aria-labelledby="employee-{{ person.id }}-name"
+                            >
+                                {% if person.photo %}
+                                    <figure>
+                                        <img
+                                            src="{{ person.photo.url }}"
+                                            alt="Фотография сотрудника {{ person.name }}"
+                                            loading="lazy"
+                                            itemprop="image"
+                                        >
+
+                                        <figcaption>
+                                            {{ person.name }},
+                                            {{ person.position }}
+                                        </figcaption>
+                                    </figure>
+                                {% endif %}
+
+                                <header>
+                                    <h3
+                                        id="employee-{{ person.id }}-name"
+                                        itemprop="name"
+                                    >
+                                        {{ person.name }}
+                                    </h3>
+
+                                    <p itemprop="jobTitle">
+                                        {{ person.position }}
+                                    </p>
+                                </header>
+
+                                <address>
+                                    <dl>
+                                        <dt>
+                                            Телефон
+                                        </dt>
+
+                                        <dd>
+                                            <a
+                                                href="tel:{{ person.phone|cut:' '|cut:'('|cut:')'|cut:'-' }}"
+                                                itemprop="telephone"
+                                            >
+                                                {{ person.phone }}
+                                            </a>
+                                        </dd>
+
+                                        <dt>
+                                            Электронная почта
+                                        </dt>
+
+                                        <dd>
+                                            <span itemprop="email">
+                                                <a href="mailto:{{ person.email }}">
+                                                    {{ person.email }}
+                                                </a>
+                                            </span>
+                                        </dd>
+                                    </dl>
+                                </address>
+                            </article>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% else %}
+            <p role="status">
+                Список сотрудников временно пуст.
+            </p>
+        {% endif %}
+    </section>
+
+    <section aria-labelledby="general-contacts-title">
+        <h2 id="general-contacts-title">
+            Общие контакты
+        </h2>
+
+        <address
+            itemscope
+            itemtype="https://schema.org/Organization"
+        >
+            <p>
+                <strong itemprop="name">
+                    {{ company_global.name|default:"Автопарковка" }}
+                </strong>
+            </p>
+
+            {% if company_global.address %}
+                <p>
+                    <strong>Адрес:</strong>
+
+                    <span itemprop="address">
+                        {{ company_global.address }}
+                    </span>
+                </p>
+            {% endif %}
+
+            <p>
+                <strong>Электронная почта:</strong>
+
+                <span itemprop="email">
+                    {% if company_global.email %}
+                        <a href="mailto:{{ company_global.email }}">
+                            {{ company_global.email }}
+                        </a>
                     {% else %}
-                        <div>
-                            <i></i>
-                        </div>
+                        <a href="mailto:info@parkingsystem.ru">
+                            info@parkingsystem.ru
+                        </a>
                     {% endif %}
-                    
-                    <div>
-                        <h5>{{ person.name }}</h5>
-                        <p>{{ person.position }}</p>
-                        
-                        <div>
-                            <p>
-                                <a href="tel:{{ person.phone }}">
-                                    <i></i> {{ person.phone }}
-                                </a>
-                            </p>
-                            <p>
-                                <a href="mailto:{{ person.email }}">
-                                    <i></i> {{ person.email }}
-                                </a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% empty %}
-            <div>
-                <div>Список сотрудников временно пуст.</div>
-            </div>
-            {% endfor %}
-        </div>
+                </span>
+            </p>
+        </address>
 
-        <div>
-            <h3>Общие контакты</h3>
-            <div>
-                <div>
-                    <p><strong><i></i>Адрес:</strong> {{ company_global.address|default:"Не указан" }}</p>
-                </div>
-                <div>
-                    <p><strong><i></i>Общий Email:</strong> {{ company_global.email|default:"info@parkingsystem.ru" }}</p>
-                </div>
-            </div>
-        </div>
+        <nav aria-label="Дополнительная навигация контактов">
+            <ul>
+                <li>
+                    <a href="{% url 'about' %}#company-map">
+                        Посмотреть расположение на карте
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'vacancy_list' %}">
+                        Посмотреть открытые вакансии
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </section>
 {% endblock %}

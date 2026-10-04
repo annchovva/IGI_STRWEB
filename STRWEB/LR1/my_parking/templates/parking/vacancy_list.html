@@ -1,49 +1,165 @@
 {% extends "base.html" %}
 
-{% block title %}Вакансии - {{ company_global.name }}{% endblock %}
+{% block title %}
+    Вакансии —
+    {{ company_global.name|default:"Автопарковка" }}
+{% endblock %}
+
+{% block meta_description %}
+    Открытые вакансии автомобильной парковки:
+    описание должностей, требования и условия работы
+{% endblock %}
+
+{% block meta_keywords %}
+    вакансии парковки, работа, трудоустройство,
+    автомобильная парковка
+{% endblock %}
+
+{% block og_title %}
+    Вакансии автомобильной парковки
+{% endblock %}
+
+{% block og_description %}
+    Открытые вакансии и требования к кандидатам
+{% endblock %}
 
 {% block content %}
-        <div>
-            <div>
-                <h1>Работа в {{ company_global.name|default:"нашей компании" }}</h1>
-                <p>Присоединяйтесь к команде профессионалов в сфере умных парковочных решений.</p>
-            </div>
-        </div>
+    <section aria-labelledby="vacancies-title">
+        <header>
+            <h1 id="vacancies-title">
+                Работа в
+                {{ company_global.name|default:"нашей компании" }}
+            </h1>
 
-        <div>
-            {% for job in vacancies %}
-            <div>
-                <div>
-                    <div>
-                        <div>
-                            <div>
-                                <h3>{{ job.title }}</h3>
-                                <span>
-                                    {% if job.salary %}{{ job.salary }}{% else %}З/П по результатам собеседования{% endif %}
-                                </span>
-                            </div>
-                            <div>
-                                <button>Откликнуться</button>
-                            </div>
-                        </div>
+            <p>
+                Присоединяйтесь к команде специалистов
+                в сфере автомобильных парковок
+                и обслуживания клиентов.
+            </p>
+        </header>
 
-                        <div>
-                            <div>
-                                <h5><i></i>Описание позиции</h5>
-                                <p>{{ job.description }}</p>
-                            </div>
-                            <div>
-                                <h5><i></i>Требования</h5>
-                                <p>{{ job.requirements }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% empty %}
-            <div>
-                <div>На данный момент открытых вакансий нет.</div>
-            </div>
-            {% endfor %}
-        </div>
+        {% if vacancies %}
+            <section aria-labelledby="vacancy-list-title">
+                <h2 id="vacancy-list-title">
+                    Открытые вакансии
+                </h2>
+
+                <ol>
+                    {% for job in vacancies %}
+                        <li>
+                            <article
+                                itemscope
+                                itemtype="https://schema.org/JobPosting"
+                                aria-labelledby="vacancy-{{ job.id }}-title"
+                            >
+                                <header>
+                                    <h3
+                                        id="vacancy-{{ job.id }}-title"
+                                        itemprop="title"
+                                    >
+                                        {{ job.title }}
+                                    </h3>
+
+                                    <div
+                                        itemprop="hiringOrganization"
+                                        itemscope
+                                        itemtype="https://schema.org/Organization"
+                                    >
+                                        <meta
+                                            itemprop="name"
+                                            content="{{ company_global.name|default:'Автопарковка' }}"
+                                        >
+                                    </div>
+
+                                    <p>
+                                        <strong>Оплата труда:</strong>
+
+                                        {% if job.salary %}
+                                            <span>
+                                                {{ job.salary }}
+                                            </span>
+                                        {% else %}
+                                            <span>
+                                                По результатам собеседования
+                                            </span>
+                                        {% endif %}
+                                    </p>
+                                </header>
+
+                                <section
+                                    aria-labelledby="vacancy-{{ job.id }}-description"
+                                >
+                                    <h4
+                                        id="vacancy-{{ job.id }}-description"
+                                    >
+                                        Описание должности
+                                    </h4>
+
+                                    <div itemprop="description">
+                                        {{ job.description|linebreaks }}
+                                    </div>
+                                </section>
+
+                                <section
+                                    aria-labelledby="vacancy-{{ job.id }}-requirements"
+                                >
+                                    <h4
+                                        id="vacancy-{{ job.id }}-requirements"
+                                    >
+                                        Требования
+                                    </h4>
+
+                                    <div itemprop="qualifications">
+                                        {{ job.requirements|linebreaks }}
+                                    </div>
+                                </section>
+
+                                <footer>
+                                    {% if company_global.email %}
+                                        <p>
+                                            <a
+                                                href="mailto:{{ company_global.email }}?subject=Отклик%20на%20вакансию%20{{ job.title|urlencode }}"
+                                            >
+                                                Откликнуться на вакансию
+                                            </a>
+                                        </p>
+                                    {% else %}
+                                        <p>
+                                            <a href="{% url 'employee_list' %}">
+                                                Связаться с представителем компании
+                                            </a>
+                                        </p>
+                                    {% endif %}
+                                </footer>
+                            </article>
+                        </li>
+                    {% endfor %}
+                </ol>
+            </section>
+        {% else %}
+            <p role="status">
+                На данный момент открытых вакансий нет.
+            </p>
+        {% endif %}
+    </section>
+
+    <aside aria-labelledby="employment-information-title">
+        <h2 id="employment-information-title">
+            Как отправить отклик
+        </h2>
+
+        <p>
+            Укажите в письме выбранную вакансию,
+            кратко расскажите о своём опыте
+            и приложите резюме.
+        </p>
+
+        <p>
+            Контактная информация сотрудников
+            доступна на странице
+            <a href="{% url 'employee_list' %}">
+                «Контакты»
+            </a>.
+        </p>
+    </aside>
 {% endblock %}

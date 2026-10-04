@@ -1,111 +1,302 @@
-{% extends "new_base.html" %}
+{% extends "base.html" %}
 
-{% block title %}Личный кабинет - {{ block.super }}{% endblock %}
+{% block title %}
+    Личный кабинет — {{ company_global.name|default:"Автопарковка" }}
+{% endblock %}
+
+{% block meta_description %}
+    Личный кабинет клиента автомобильной парковки: автомобили, баланс, начисления и платежи
+{% endblock %}
+
+{% block meta_keywords %}
+    личный кабинет, автомобили, платежи, начисления, баланс парковки
+{% endblock %}
+
+{% block og_title %}
+    Личный кабинет клиента
+{% endblock %}
+
+{% block og_description %}
+    Управление автомобилями, платежами и начислениями клиента парковки
+{% endblock %}
 
 {% block content %}
-{% if user.is_authenticated %}    
-        <h1>Мой транспорт и счета</h1>
+    <section aria-labelledby="client-dashboard-title">
+        <header>
+            <h1 id="client-dashboard-title">
+                Мой транспорт и счета
+            </h1>
 
-        <div>
-            <div>
-                <h5>Быстрая оплата</h5>
-                <form method="post">
-                    {% csrf_token %}
-                    <div>
-                        <label>Выберите автомобиль:</label>
-                        {{ payment_form.car }}
-                    </div>
-                    <div>
-                        <label>Сумма платежа (руб.):</label>
-                        {{ payment_form.amount }}
-                        {% if payment_form.amount.errors %}
-                            <div>{{ payment_form.amount.errors.0 }}</div>
-                        {% endif %}
-                    </div>
-                    <div>
-                        <button type="submit" name="make_payment">Внести оплату</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+            <p>
+                Здесь отображаются ваши автомобили, начисления,
+                платежи и текущий баланс.
+            </p>
+        </header>
 
         {% if messages %}
-            {% for message in messages %}
-                <div role="alert">
-                    {{ message }}
-                </div>
-            {% endfor %}
+            <section aria-label="Системные сообщения">
+                {% for message in messages %}
+                    <p
+                        role="{% if message.tags == 'error' %}alert{% else %}status{% endif %}"
+                    >
+                        {{ message }}
+                    </p>
+                {% endfor %}
+            </section>
         {% endif %}
 
-        <div>
-            {% for item in cars_data %}
-            <div>
-                <div>
-                    <div>
-                        <h5>🚗 {{ item.car.brand }} {{ item.car.model_name }} — <b>{{ item.car.license_plate }}</b></h5>
-                        <div>
-                            Баланс: <span>{{ item.balance }} руб.</span>
-                        </div>
-                    </div>
-                    <div>
-                        <div>
-                            <div>
-                                <div>История начислений</div>
-                                <div>
-                                    <table>
-                                        <thead>
-                                            <tr><th>Период</th><th>Дата</th><th>Сумма</th></tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for acc in item.accruals %}
-                                            <tr>
-                                                <td>{{ acc.month }}/{{ acc.year }}</td>
-                                                <td>{{ acc.date|date:"d.m.Y" }}</td>
-                                                <td>{{ acc.amount }} руб.</td>
-                                            </tr>
-                                            {% empty %}
-                                            <tr><td colspan="3">Нет начислений</td></tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div>
-                                <div>Последние платежи</div>
-                                <div>
-                                    <table>
-                                        <thead>
-                                            <tr><th>Дата</th><th>Статус</th><th>Сумма</th></tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for pay in item.payments %}
-                                            <tr>
-                                                <td>{{ pay.date|date:"d.m.Y" }}</td>
-                                                <td><span>Проведен</span></td>
-                                                <td>+{{ pay.amount }} руб.</td>
-                                            </tr>
-                                            {% empty %}
-                                            <tr><td colspan="3">Платежей не найдено</td></tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% empty %}
-            <div>
-                <div>
-                    <p>У вас пока нет зарегистрированных транспортных средств.</p>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
+        {% if cars_data %}
+            <section aria-labelledby="payment-title">
+                <h2 id="payment-title">
+                    Внести оплату
+                </h2>
 
-{% else %}
-    <script>window.location.href = "{% url 'login' %}";</script>
-{% endif %}
+                <form
+                    method="post"
+                    action="{% url 'dashboard' %}"
+                >
+                    {% csrf_token %}
+
+                    {% if payment_form.non_field_errors %}
+                        <div role="alert">
+                            <p>
+                                Не удалось выполнить оплату:
+                            </p>
+
+                            <ul>
+                                {% for error in payment_form.non_field_errors %}
+                                    <li>
+                                        {{ error }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                    <fieldset>
+                        <legend>
+                            Данные платежа
+                        </legend>
+
+                        {% for field in payment_form %}
+                            <p>
+                                <label for="{{ field.id_for_label }}">
+                                    {{ field.label }}
+
+                                    {% if field.field.required %}
+                                        <span aria-hidden="true">*</span>
+                                    {% endif %}
+                                </label>
+
+                                {{ field }}
+
+                                {% if field.help_text %}
+                                    <small id="{{ field.id_for_label }}_helptext">
+                                        {{ field.help_text }}
+                                    </small>
+                                {% endif %}
+
+                                {% if field.errors %}
+                                    <span role="alert">
+                                        {% for error in field.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </span>
+                                {% endif %}
+                            </p>
+                        {% endfor %}
+                    </fieldset>
+
+                    <p>
+                        <button
+                            type="submit"
+                            name="make_payment"
+                            value="1"
+                        >
+                            Внести оплату
+                        </button>
+                    </p>
+                </form>
+            </section>
+
+            <section aria-labelledby="client-cars-title">
+                <h2 id="client-cars-title">
+                    Мои автомобили
+                </h2>
+
+                {% for item in cars_data %}
+                    <article aria-labelledby="car-{{ item.car.id }}-title">
+                        <header>
+                            <h3 id="car-{{ item.car.id }}-title">
+                                {{ item.car.brand }}
+                                {{ item.car.model_name }}
+                            </h3>
+
+                            <p>
+                                Государственный номер:
+                                <strong>
+                                    {{ item.car.license_plate }}
+                                </strong>
+                            </p>
+
+                            <p>
+                                Текущий баланс:
+
+                                <data value="{{ item.balance }}">
+                                    <strong>
+                                        {{ item.balance }} руб.
+                                    </strong>
+                                </data>
+                            </p>
+
+                            {% if item.balance < 0 %}
+                                <p role="status">
+                                    По автомобилю имеется задолженность.
+                                </p>
+                            {% elif item.balance > 0 %}
+                                <p>
+                                    На счёте автомобиля имеется положительный остаток.
+                                </p>
+                            {% else %}
+                                <p>
+                                    Начисления полностью оплачены.
+                                </p>
+                            {% endif %}
+                        </header>
+
+                        <section
+                            aria-labelledby="car-{{ item.car.id }}-accruals"
+                        >
+                            <h4 id="car-{{ item.car.id }}-accruals">
+                                История начислений
+                            </h4>
+
+                            <table>
+                                <caption>
+                                    Начисления для автомобиля
+                                    {{ item.car.license_plate }}
+                                </caption>
+
+                                <thead>
+                                    <tr>
+                                        <th scope="col">
+                                            Расчётный период
+                                        </th>
+                                        <th scope="col">
+                                            Дата начисления
+                                        </th>
+                                        <th scope="col">
+                                            Сумма
+                                        </th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {% for acc in item.accruals %}
+                                        <tr>
+                                            <th scope="row">
+                                                {{ acc.month }}/{{ acc.year }}
+                                            </th>
+
+                                            <td>
+                                                <time datetime="{{ acc.date|date:'Y-m-d' }}">
+                                                    {{ acc.date|date:"d.m.Y" }}
+                                                </time>
+                                            </td>
+
+                                            <td>
+                                                <data value="{{ acc.amount }}">
+                                                    {{ acc.amount }} руб.
+                                                </data>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="3">
+                                                Начислений пока нет.
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </section>
+
+                        <section
+                            aria-labelledby="car-{{ item.car.id }}-payments"
+                        >
+                            <h4 id="car-{{ item.car.id }}-payments">
+                                История платежей
+                            </h4>
+
+                            <table>
+                                <caption>
+                                    Платежи для автомобиля
+                                    {{ item.car.license_plate }}
+                                </caption>
+
+                                <thead>
+                                    <tr>
+                                        <th scope="col">
+                                            Дата платежа
+                                        </th>
+                                        <th scope="col">
+                                            Статус
+                                        </th>
+                                        <th scope="col">
+                                            Сумма
+                                        </th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {% for pay in item.payments %}
+                                        <tr>
+                                            <th scope="row">
+                                                <time datetime="{{ pay.date|date:'Y-m-d' }}">
+                                                    {{ pay.date|date:"d.m.Y" }}
+                                                </time>
+                                            </th>
+
+                                            <td>
+                                                Проведён
+                                            </td>
+
+                                            <td>
+                                                <data value="{{ pay.amount }}">
+                                                    {{ pay.amount }} руб.
+                                                </data>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="3">
+                                                Платежей пока нет.
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </section>
+                    </article>
+                {% endfor %}
+            </section>
+        {% else %}
+            <section aria-labelledby="no-cars-title">
+                <h2 id="no-cars-title">
+                    Автомобили не найдены
+                </h2>
+
+                <p>
+                    У вас пока нет зарегистрированных транспортных средств.
+                    Для совершения платежей сначала добавьте автомобиль.
+                </p>
+
+                <p>
+                    <a href="{% url 'car_create' %}">
+                        Добавить автомобиль
+                    </a>
+                </p>
+            </section>
+        {% endif %}
+    </section>
 {% endblock %}
