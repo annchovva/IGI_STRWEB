@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ service.name }} —
+    {{ company_global.name|default:"Автопарковка" }}
+{% endblock %}
+
+{% block meta_description %}
+    {{ service.description|truncatewords:25 }}
+{% endblock %}
+
+{% block meta_keywords %}
+    {{ service.name }}, {{ service.category.name }},
+    услуги парковки, автомобильные услуги
+{% endblock %}
+
+{% block og_title %}
+    {{ service.name }}
+{% endblock %}
+
+{% block og_description %}
+    {{ service.description|truncatewords:25 }}
+{% endblock %}
+
+{% block content %}
+        <nav aria-label="Навигационная цепочка">
+            <ol>
+                <li>
+                    <a href="{% url 'home' %}">
+                        Главная
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'services_catalog' %}">
+                        Услуги
+                    </a>
+                </li>
+
+                <li aria-current="page">
+                    {{ service.name }}
+                </li>
+            </ol>
+        </nav>
+
+        {% if messages %}
+            <section aria-label="Системные сообщения">
+                {% for message in messages %}
+                    <p role="status">
+                        {{ message }}
+                    </p>
+                {% endfor %}
+            </section>
+        {% endif %}
+
+        <article>
+            <header>
+                <p>
+                    Категория:
+                    <strong>
+                        {{ service.category.name }}
+                    </strong>
+                </p>
+
+                <h1>{{ service.name }}</h1>
+            </header>
+
+            {% if service.is_additional %}
+                <p>
+                    <strong>
+                        Дополнительная услуга
+                    </strong>
+                </p>
+            {% else %}
+                <p>
+                    Основная услуга парковки
+                </p>
+            {% endif %}
+
+            <section aria-labelledby="service-description-title">
+                <h2 id="service-description-title">
+                    Описание услуги
+                </h2>
+
+                <p>
+                    {{ service.description|linebreaksbr }}
+                </p>
+            </section>
+
+            <section aria-labelledby="service-price-title">
+                <h2 id="service-price-title">
+                    Стоимость
+                </h2>
+
+                <p>
+                    <data value="{{ service.price }}">
+                        <strong>
+                            {{ service.price|floatformat:2 }} руб.
+                        </strong>
+                    </data>
+                </p>
+            </section>
+
+            <form method="post" action="{% url 'add_to_cart' service.id %}">
+                {% csrf_token %}
+
+                <button type="submit">
+                    <span aria-hidden="true">🛒</span>
+                    Добавить в корзину
+                </button>
+            </form>
+
+            <p>
+                <a href="{% url 'cart_detail' %}">
+                    Открыть корзину
+                </a>
+            </p>
+
+            <p>
+                <a href="{% url 'services_catalog' %}">
+                    Вернуться в каталог
+                </a>
+            </p>
+        </article>
+{% endblock %}

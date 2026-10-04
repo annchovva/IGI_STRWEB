@@ -1,0 +1,459 @@
+{% extends "base.html" %}
+
+{% block title %}
+    О компании —
+    {{ company_global.name|default:"Автопарковка" }}
+{% endblock %}
+
+{% block meta_description %}
+    Информация об автомобильной парковке:
+    история компании, услуги, контакты,
+    реквизиты и сертификаты
+{% endblock %}
+
+{% block meta_keywords %}
+    автомобильная парковка, о компании,
+    история парковки, реквизиты, контакты
+{% endblock %}
+
+{% block og_title %}
+    О компании
+{% endblock %}
+
+{% block og_description %}
+    История, деятельность и контактная
+    информация автомобильной парковки
+{% endblock %}
+
+{% block content %}
+        {% if company %}
+            <article itemscope itemtype="https://schema.org/Organization">
+                <header id="about-start">
+                    <hr>
+                        {% if company.main_logo or company.logo %}
+                            <figure>
+                                <picture>
+                                    <source
+                                        media="(max-width: 1000px)"
+                                        srcset="{{ company.logo.url }}"
+                                    >
+
+                                    <img
+                                        src="{{ company.main_logo.url }}"
+                                        alt="Логотип компании {{ company.name }}"
+                                        loading="lazy"
+                                        itemprop="logo"
+                                    >
+                                </picture>
+
+                                <figcaption>
+                                    Официальный логотип
+                                    компании {{ company.name }}
+                                </figcaption>
+                            </figure>
+                        {% endif %}
+
+                        <h1 itemprop="name">
+                            {{ company.name }}
+                        </h1>
+
+                        <p>
+                            <abbr title="Общество с ограниченной ответственностью">
+                                ООО
+                            </abbr>
+
+                            «{{ company.name }}» предоставляет
+                            услуги безопасного хранения автомобилей.
+                        </p>
+                    <hr>
+                </header>
+
+                <aside aria-labelledby="about-navigation-title">
+                    <h2 id="about-navigation-title">
+                        Содержание страницы
+                    </h2>
+
+                    <nav aria-label="Навигация по странице компании">
+                        <ul type="circle">
+                            <li>
+                                <a href="#company-description">
+                                    Описание
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#company-principles">
+                                    Принципы работы
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#company-history">
+                                    История
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#company-requisites">
+                                    Реквизиты
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#company-certificate">
+                                    Сертификат
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#company-media">
+                                    Видео и аудио
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#company-contacts">
+                                    Контакты
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#company-map">
+                                    Карта
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </aside>
+
+                <section
+                    id="company-description"
+                    aria-labelledby="company-description-title"
+                >
+                    <h2 id="company-description-title">
+                        О нашей деятельности
+                    </h2>
+
+                    <p itemprop="description">
+                        {{ company.description|linebreaksbr }}
+                    </p>
+
+                    <p>
+                        <dfn title="Организованная территория для хранения транспортных средств">
+                            Автомобильная парковка
+                        </dfn>
+                        — это специально оборудованная территория,
+                        предназначенная для временного или длительного
+                        размещения автомобилей.
+                    </p>
+
+                    <p>
+                        Основная цель компании —
+                        <mark>безопасность автомобилей клиентов</mark>
+                        и удобство использования парковочных услуг.
+                    </p>
+                </section>
+
+                <section
+                    id="company-principles"
+                    aria-labelledby="company-principles-title"
+                >
+                    <h2 id="company-principles-title">
+                        Принципы работы
+                    </h2>
+
+                    <blockquote cite="{{ company.document.url }}">
+                        <p>
+                            Безопасность автомобиля начинается
+                            с внимательного отношения к каждому клиенту.
+                        </p>
+
+                        <footer>
+                            <cite>Принцип работы {{ company.name }}</cite>
+                        </footer>
+                    </blockquote>
+
+                    <p>
+                        Наши сотрудники руководствуются правилом:
+                        <q>ответственность важна в каждой детали</q>.
+                    </p>
+
+                    <p>
+                        Мы обеспечиваем
+                        <strong>круглосуточное наблюдение</strong>,
+                        регулярно проверяем оборудование и
+                        <em>постоянно совершенствуем</em>
+                        обслуживание клиентов.
+                    </p>
+                </section>
+
+                <section aria-labelledby="company-poem-title">
+                    <h2 id="company-poem-title">
+                        Наш девиз
+                    </h2>
+
+                    <pre>Машина под надёжною охраной,
+Спокойно отдыхает до утра.
+Мы рядом будем поздно или рано,
+Безопасность обеспечим вам всегда.</pre>
+                </section>
+
+                <section aria-labelledby="parking-access-title">
+                    <h2 id="parking-access-title">
+                        Как получить допуск на парковку
+                    </h2>
+
+                    <p
+                        id="parking-algorithm-description"
+                        class="instruction-text"
+                        title="Краткое описание алгоритма допуска на парковку"
+                        lang="ru"
+                        dir="ltr"
+                        tabindex="0"
+                        accesskey="p"
+                        contenteditable="false"
+                        draggable="false"
+                        spellcheck="true"
+                        translate="yes"
+                        data-section="parking-access"
+                        data-purpose="algorithm-description"
+                    >
+                        Упрощённый алгоритм допуска автомобиля
+                        на парковку:
+
+                        <span hidden>
+                            Служебная информация: алгоритм проверен 16.09.2026.
+                        </span>
+                    </p>
+
+                    <p>
+                        Если переменная <var>vehicle_is_registered</var> равна 
+                        <code>true</code>, система открывает шлагбаум:
+                    </p>
+
+                    <pre><code>
+                        if vehicle_is_registered:
+                            open_parking_gate()
+                        else:
+                            request_registration()
+                    </code></pre>
+
+                    <p>
+                        При успешной проверке система выводит:
+                        <samp>Пропуск разрешён. Шлагбаум открыт.</samp>
+                        <br>
+                        Оператор вводит команду 
+                        <kbd>Ctrl</kbd> + <kbd>Enter</kbd>
+                        для ручного открытия шлагбаума.
+                    </p>
+                </section>
+
+                <section
+                    id="company-history"
+                    aria-labelledby="company-history-title"
+                >
+                    <h2 id="company-history-title">
+                        История компании
+                    </h2>
+
+                    {% if company.history_items.all %}
+                        <ol>
+                            {% for item in company.history_items.all %}
+                                <li>
+                                    <time datetime="{{ item.year }}-01-01">
+                                        {{ item.year }} год
+                                    </time>
+
+                                    <p>{{ item.event }}</p>
+                                </li>
+                            {% endfor %}
+                        </ol>
+                    {% else %}
+                        <p>
+                            История компании пока не добавлена.
+                        </p>
+                    {% endif %}
+                </section>
+
+                <section
+                    id="company-requisites"
+                    aria-labelledby="company-requisites-title"
+                >
+                    <h2 id="company-requisites-title">
+                        Реквизиты
+                    </h2>
+
+                    {% if company.requisites %}
+                        <pre>{{ company.requisites }}</pre>
+                    {% else %}
+                        <p>
+                            Реквизиты пока не опубликованы.
+                        </p>
+                    {% endif %}
+                </section>
+
+                <section
+                    id="company-certificate"
+                    aria-labelledby="company-certificate-title"
+                >
+                    <h2 id="company-certificate-title">
+                        Сертификат
+                    </h2>
+                    {% if company.certificate %}
+                        <figure>
+                            <a href="{{ company.document.utl }}"
+                                download="Документ {{ company.name }}.pdf"
+                                title="Скачать документ компании">
+                                <img 
+                                    src="{{ company.certificate.url }}"
+                                    alt="Сертификат компании {{ company.name }}"
+                                    loading="lazy"
+                                >
+                            </a>
+                            <figcaption>
+                                Сертификат компании {{ company.name }}.
+                                <small>Нажмите на изображение, чтобы скачать.</small>
+                            </figcaption>
+                        </figure>
+                    {% else %}
+                        <p>
+                            Информация о сертификате пока не опубликована.
+                        </p>
+                    {% endif %}
+                </section>
+
+                <section
+                    id="company-media"
+                    aria-labelledby="company-media-title"
+                >
+                    <h2 id="company-media-title">
+                        Видео и аудио
+                    </h2>
+
+                    {% if company.video %}
+                        <figure>
+                            <video controls muted preload="metadata">
+                                <source src="{{ company.video.url }}">
+
+                                Ваш браузер не поддерживает
+                                воспроизведение видео.
+                            </video>
+
+                            <figcaption>
+                                Видео о работе компании
+                                {{ company.name }}
+                            </figcaption>
+                        </figure>
+
+                    {% if company.audio %}
+                        <figure>
+                            <audio controls preload="metadata">
+                                <source src="{{ company.audio.url }}">
+
+                                Ваш браузер не поддерживает
+                                воспроизведение аудио.
+                            </audio>
+
+                            <figcaption>
+                                Аудиоматериал о компании
+                            </figcaption>
+                        </figure>
+                    {% else %}
+                        <p>
+                            Аудиоматериал пока не добавлен.
+                        </p>
+                    {% endif %}
+                </section>
+
+                <section
+                    id="company-contacts"
+                    aria-labelledby="company-contacts-title"
+                    itemprop="address"
+                    itemscope
+                    itemtype="https://schema.org/PostalAddress"
+                >
+                    <h2 id="company-contacts-title">
+                        Контактная информация
+                    </h2>
+
+                    <dl>
+                        {% if company.address %}
+                            <dt>Адрес</dt>
+
+                            <dd itemprop="streetAddress">
+                                {{ company.address }}
+                            </dd>
+                        {% endif %}
+
+                        {% if company.email %}
+                            <dt>Электронная почта</dt>
+
+                            <dd>
+                                <span itemprop="email">
+                                    <a href="mailto:{{ company.email }}">
+                                        {{ company.email }}
+                                    </a>
+                                </span>
+                            </dd>
+                        {% endif %}
+                    </dl>
+
+                    <p>
+                        <a href="{% url 'employee_list' %}" target="_blank" rel="noopener">
+                            Посмотреть контакты сотрудников
+                        </a>
+                    </p>
+                </section>
+
+                <section
+                    id="company-map"
+                    aria-labelledby="company-map-title"
+                >
+                    <h2 id="company-map-title">
+                        Компания на карте
+                    </h2>
+
+                    <iframe
+                        src="{{ map_url }}"
+                        title="Расположение компании {{ company.name }} на карте"
+                        width="800"
+                        height="450"
+                        loading="lazy"
+                        allowfullscreen
+                    >
+                    </iframe>
+                </section>
+
+                <footer>
+                    <p>
+                        <a href="#about-start">
+                            Вернуться в начало страницы
+                        </a>
+                    </p>
+
+                    <p>
+                        <a
+                            href="https://www.w3.org/WAI/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            hreflang="en"
+                        >
+                            Международные рекомендации
+                            по доступности сайтов
+                        </a>
+                    </p>
+                </footer>
+            </article>
+        {% else %}
+            <section aria-labelledby="company-empty-title">
+                <h1 id="company-empty-title">
+                    О компании
+                </h1>
+
+                <p role="status">
+                    Информация о компании ещё не добавлена.
+                </p>
+            </section>
+        {% endif %}
+    {% endif %}
+{% endblock %}

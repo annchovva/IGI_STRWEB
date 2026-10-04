@@ -1,0 +1,277 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Отзывы —
+    {{ company_global.name|default:"Автопарковка" }}
+{% endblock %}
+
+{% block meta_description %}
+    Отзывы клиентов автомобильной парковки,
+    оценки качества обслуживания
+    и форма добавления отзыва
+{% endblock %}
+
+{% block meta_keywords %}
+    отзывы о парковке, оценка парковки,
+    мнение клиентов, автомобильная парковка
+{% endblock %}
+
+{% block og_title %}
+    Отзывы клиентов
+{% endblock %}
+
+{% block og_description %}
+    Мнения клиентов об услугах автомобильной парковки
+{% endblock %}
+
+{% block content %}
+    <section aria-labelledby="reviews-title">
+        <header>
+            <h1 id="reviews-title">
+                Отзывы клиентов
+            </h1>
+
+            <p>
+                Здесь клиенты делятся впечатлениями
+                о работе парковки и качестве обслуживания.
+            </p>
+        </header>
+
+        <section aria-labelledby="review-list-title">
+            <h2 id="review-list-title">
+                Опубликованные отзывы
+            </h2>
+
+            {% if reviews %}
+                <ol>
+                    {% for review in reviews %}
+                        <li>
+                            <article
+                                itemscope
+                                itemtype="https://schema.org/Review"
+                                aria-labelledby="review-{{ review.id }}-author"
+                            >
+                                <header>
+                                    <h3
+                                        id="review-{{ review.id }}-author"
+                                        itemprop="author"
+                                    >
+                                        {{ review.author.get_full_name|default:review.author.username }}
+                                    </h3>
+
+                                    <p>
+                                        Оценка:
+
+                                        <data
+                                            value="{{ review.rating }}"
+                                            itemprop="reviewRating"
+                                        >
+                                            {{ review.rating }} из 5
+                                        </data>
+                                    </p>
+                                </header>
+
+                                <blockquote itemprop="reviewBody">
+                                    <p>{{ review.text }}</p>
+                                </blockquote>
+
+                                <footer>
+                                    <p>
+                                        Опубликовано:
+
+                                        <time
+                                            datetime="{{ review.created_at_local|date:'Y-m-d\TH:i:s' }}"
+                                            itemprop="datePublished"
+                                        >
+                                            {{ review.created_at_local|date:"d.m.Y H:i" }}
+                                        </time>
+                                    </p>
+                                </footer>
+                            </article>
+                        </li>
+                    {% endfor %}
+                </ol>
+            {% else %}
+                <p role="status">
+                    Отзывов пока нет.
+                    Вы можете стать первым автором.
+                </p>
+            {% endif %}
+        </section>
+    </section>
+
+    <section aria-labelledby="review-form-title">
+        <h2 id="review-form-title">
+            Оставить отзыв
+        </h2>
+
+        {% if user.is_authenticated and not user.is_staff and not user.is_superuser %}
+            <form method="post">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div role="alert">
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <p>
+                    <label for="{{ form.rating.id_for_label }}">
+                        {{ form.rating.label }}
+                    </label>
+
+                    {{ form.rating }}
+
+                    {% if form.rating.help_text %}
+                        <small>
+                            {{ form.rating.help_text }}
+                        </small>
+                    {% endif %}
+
+                    {% for error in form.rating.errors %}
+                        <span role="alert">
+                            {{ error }}
+                        </span>
+                    {% endfor %}
+                </p>
+
+                <p>
+                    <label for="{{ form.text.id_for_label }}">
+                        {{ form.text.label }}
+                    </label>
+
+                    {{ form.text }}
+
+                    {% if form.text.help_text %}
+                        <small>
+                            {{ form.text.help_text }}
+                        </small>
+                    {% endif %}
+
+                    {% for error in form.text.errors %}
+                        <span role="alert">
+                            {{ error }}
+                        </span>
+                    {% endfor %}
+                </p>
+
+                <p>
+                    <button type="submit">
+                        Отправить отзыв
+                    </button>
+                </p>
+            </form>
+
+        {% elif user.is_staff or user.is_superuser %}
+            <p>
+                Раздел добавления отзывов доступен
+                только клиентам компании.
+                Сотрудники и администраторы
+                не могут оставлять отзывы.
+            </p>
+
+        {% else %}
+            <p>
+                Чтобы оставить отзыв,
+                войдите в учётную запись
+                или зарегистрируйтесь.
+            </p>
+
+            <nav aria-label="Авторизация для добавления отзыва">
+                <ul>
+                    <li>
+                        <a
+                            href="{% url 'login' %}?next={% url 'review_list' %}"
+                        >
+                            Войти
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{% url 'register' %}">
+                            Зарегистрироваться
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        {% endif %}
+    </section>
+
+    <section id="parking-preferences" aria-labelledby="parking-preferences-title">
+        <h2 id="parking-preferences-title">Ваши предпочтения</h2>
+
+        <form action="/preferences/" method="post" name="preferences-form">
+
+            <fieldset>
+                <legend>Данные клиента</legend>
+
+                <p>
+                    <label for="client-id">Ваш ID:</label>
+                    <input type="text" id="client-id" name="client_id"
+                           value="CL-2026-0042" readonly>
+                </p>
+
+                <p>
+                    <label for="bonus-points">Бонусные баллы:</label>
+                    <input type="number" id="bonus-points" name="bonus"
+                            value="150" disabled>
+                </p>
+            </fieldset>
+
+            <fieldset>
+                <legend>Тип автомобиля</legend>
+
+                <input type="radio" id="car-sedan" name="car_type"
+                       value="sedan" checked>
+                <label for="car-sedan">Седан</label>
+
+                <input type="radio" id="car-suv" name="car_type"
+                       value="suv">
+                <label for="car-suv">Внедорожник</label>
+
+                <input type="radio" id="car-truck" name="car_type"
+                       value="truck">
+                <label for="car-truck">Грузовик</label>
+            </fieldset>
+
+            <fieldset>
+                <legend>Дополнительные услуги</legend>
+
+                <input type="checkbox" id="svc-wash" name="services"
+                       value="wash" checked>
+                <label for="svc-wash">Мойка</label>
+
+                <input type="checkbox" id="svc-charge" name="services"
+                       value="charge">
+                <label for="svc-charge">Зарядка</label>
+
+                <input type="checkbox" id="svc-security" name="services"
+                       value="security">
+                <label for="svc-security">Охрана</label>
+            </fieldset>
+
+            <fieldset>
+                <legend>Комментарий</legend>
+
+                <p>
+                    <label for="user-comment">Ваши пожелания:</label>
+                    <textarea
+                        id="user-comment"
+                        name="comment"
+                        rows="4"
+                        cols="40"
+                        placeholder="Напишите пожелания..."
+                        maxlength="300"
+                    ></textarea>
+                </p>
+            </fieldset>
+
+            <p>
+                <button type="submit">Сохранить</button>
+                <input type="reset" value="Очистить">
+            </p>
+        </form>
+    </section>
+{% endblock %}

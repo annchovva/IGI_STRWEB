@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ title }} — {{ company_global.name|default:"Автопарковка" }}
+{% endblock %}
+
+{% block meta_description %}
+    {{ title }} в системе управления автомобилями парковки
+{% endblock %}
+
+{% block meta_keywords %}
+    автомобиль, парковка, добавление автомобиля, редактирование автомобиля
+{% endblock %}
+
+{% block og_title %}
+    {{ title }}
+{% endblock %}
+
+{% block og_description %}
+    Форма управления данными автомобиля
+{% endblock %}
+
+{% block content %}
+    <section aria-labelledby="car-form-title">
+        <header>
+            <h1 id="car-form-title">
+                {{ title }}
+            </h1>
+
+            <p>
+                Заполните данные автомобиля. Поля, отмеченные звёздочкой,
+                являются обязательными.
+            </p>
+        </header>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div role="alert">
+                    <p>
+                        Исправьте общие ошибки формы:
+                    </p>
+
+                    <ul>
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <fieldset>
+                <legend>
+                    Данные автомобиля
+                </legend>
+
+                {% for field in form %}
+                    <div>
+                        <label for="{{ field.id_for_label }}">
+                            {{ field.label }}
+
+                            {% if field.field.required %}
+                                <span aria-hidden="true">*</span>
+                            {% endif %}
+                        </label>
+
+                        {{ field }}
+
+                        {% if field.help_text %}
+                            <div id="{{ field.id_for_label }}_helptext">
+                                {{ field.help_text|safe }}
+                            </div>
+                        {% endif %}
+
+                        {% if field.errors %}
+                            <div role="alert">
+                                <ul>
+                                    {% for error in field.errors %}
+                                        <li>
+                                            {{ field.label }}: {{ error }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </fieldset>
+
+            <p>
+                <button type="submit">
+                    Сохранить
+                </button>
+
+                <a href="{% url 'car_index' %}">
+                    Отмена
+                </a>
+            </p>
+        </form>
+
+        <aside aria-label="Рекомендация по заполнению формы">
+            <p>
+                Убедитесь, что данные введены корректно и соответствуют
+                документам на автомобиль.
+            </p>
+        </aside>
+
+        <p>
+            <a href="{% url 'car_index' %}">
+                ← Вернуться к списку автомобилей
+            </a>
+        </p>
+    </section>
+{% endblock %}

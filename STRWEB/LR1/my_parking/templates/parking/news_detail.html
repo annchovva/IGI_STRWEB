@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ news.title }} — {{ company_global.name|default:"Автопарковка" }}
+{% endblock %}
+
+{% block meta_description %}
+    {{ news.content|striptags|truncatechars:160 }}
+{% endblock %}
+
+{% block meta_keywords %}
+    новости, парковка, автомобили, {{ news.title }}
+{% endblock %}
+
+{% block og_title %}
+    {{ news.title }}
+{% endblock %}
+
+{% block og_description %}
+    {{ news.content|striptags|truncatechars:160 }}
+{% endblock %}
+
+{% block og_type %}
+    article
+{% endblock %}
+
+{% block content %}
+    <article
+        itemscope
+        itemtype="https://schema.org/NewsArticle"
+    >
+        <header>
+            <h1 itemprop="headline">
+                {{ news.title }}
+            </h1>
+
+            <meta
+                itemprop="description"
+                content="{{ news.content|striptags|truncatechars:160 }}"
+            >
+
+            <span
+                itemprop="publisher"
+                itemscope
+                itemtype="https://schema.org/Organization"
+            >
+                <meta
+                    itemprop="name"
+                    content="{{ company_global.name|default:'Автопарковка' }}"
+                >
+            </span>
+        </header>
+
+        {% if news.image %}
+            <figure>
+                <img
+                    src="{{ news.image.url }}"
+                    alt="Изображение к новости «{{ news.title }}»"
+                    loading="lazy"
+                    itemprop="image"
+                >
+                <figcaption>
+                    Иллюстрация к новости «{{ news.title }}»
+                </figcaption>
+            </figure>
+        {% endif %}
+
+        <div itemprop="articleBody">
+            {{ news.content|linebreaks }}
+        </div>
+
+        <section aria-labelledby="local-news-time">
+            <h2 id="local-news-time">
+                Время в часовом поясе {{ tz_user }}
+            </h2>
+
+            <dl>
+                <dt>Опубликовано</dt>
+                <dd>
+                    <time
+                        datetime="{{ news.published_at_local|date:'Y-m-d\TH:i:s' }}"
+                        itemprop="datePublished"
+                    >
+                        {{ news.published_at_local|date:"d.m.Y H:i" }}
+                    </time>
+                </dd>
+
+                <dt>Создано</dt>
+                <dd>
+                    <time datetime="{{ news.created_at_local|date:'Y-m-d\TH:i:s' }}">
+                        {{ news.created_at_local|date:"d.m.Y H:i" }}
+                    </time>
+                </dd>
+
+                <dt>Обновлено</dt>
+                <dd>
+                    <time
+                        datetime="{{ news.updated_at_local|date:'Y-m-d\TH:i:s' }}"
+                        itemprop="dateModified"
+                    >
+                        {{ news.updated_at_local|date:"d.m.Y H:i" }}
+                    </time>
+                </dd>
+            </dl>
+        </section>
+
+        <section aria-labelledby="utc-news-time">
+            <h2 id="utc-news-time">
+                Всемирное время UTC
+            </h2>
+
+            <dl>
+                <dt>Опубликовано</dt>
+                <dd>
+                    <time datetime="{{ news.published_at_utc|date:'Y-m-d\TH:i:s\Z' }}">
+                        {{ news.published_at_utc|date:"d.m.Y H:i" }}
+                    </time>
+                </dd>
+
+                <dt>Создано</dt>
+                <dd>
+                    <time datetime="{{ news.created_at_utc|date:'Y-m-d\TH:i:s\Z' }}">
+                        {{ news.created_at_utc|date:"d.m.Y H:i" }}
+                    </time>
+                </dd>
+
+                <dt>Обновлено</dt>
+                <dd>
+                    <time datetime="{{ news.updated_at_utc|date:'Y-m-d\TH:i:s\Z' }}">
+                        {{ news.updated_at_utc|date:"d.m.Y H:i" }}
+                    </time>
+                </dd>
+            </dl>
+        </section>
+
+        <p>
+            <a href="{% url 'news_list' %}">
+                ← Вернуться ко всем новостям
+            </a>
+        </p>
+    </article>
+{% endblock %}

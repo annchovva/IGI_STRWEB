@@ -1,0 +1,778 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Панель администратора — {{ company_global.name|default:"Автопарковка" }}
+{% endblock %}
+
+{% block meta_description %}
+    Административная панель парковки: клиенты, парковочные места, цены и аналитика
+{% endblock %}
+
+{% block meta_keywords %}
+    администрирование парковки, клиенты, парковочные места, аналитика, цены
+{% endblock %}
+
+{% block og_title %}
+    Панель администратора парковки
+{% endblock %}
+
+{% block og_description %}
+    Управление клиентами, парковочными местами и аналитикой парковки
+{% endblock %}
+
+{% block content %}
+    <section aria-labelledby="admin-title">
+        <header>
+            <h1 id="admin-title">
+                Панель управления
+            </h1>
+
+            <p>
+                Администратор:
+                <strong>{{ user.username }}</strong>
+            </p>
+        </header>
+
+        <nav aria-label="Разделы административной панели">
+            <h2>
+                Навигация по панели
+            </h2>
+
+            <ul>
+                <li>
+                    <a href="#clients">
+                        Реестр клиентов
+                    </a>
+                </li>
+                <li>
+                    <a href="#parking-spots">
+                        Парковочные места
+                    </a>
+                </li>
+                <li>
+                    <a href="#analytics">
+                        Аналитика
+                    </a>
+                </li>
+                <li>
+                    <a href="#statistics">
+                        Статистика
+                    </a>
+                </li>
+                <li>
+                    <a href="#income-chart">
+                        Диаграмма доходов
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        {% if messages %}
+            <section aria-label="Системные сообщения">
+                {% for message in messages %}
+                    <p
+                        role="{% if message.tags == 'error' %}alert{% else %}status{% endif %}"
+                    >
+                        {{ message }}
+                    </p>
+                {% endfor %}
+            </section>
+        {% endif %}
+
+        <section
+            id="filters"
+            aria-labelledby="filters-title"
+        >
+            <h2 id="filters-title">
+                Поиск и фильтрация
+            </h2>
+
+            <form
+                method="get"
+                action="{% url 'admin_panel' %}"
+            >
+                <input
+                    type="hidden"
+                    name="user_sort"
+                    value="{{ user_sort }}"
+                >
+
+                <fieldset>
+                    <legend>
+                        Поиск клиентов
+                    </legend>
+
+                    <p>
+                        <label for="user-search">
+                            Имя пользователя или телефон:
+                        </label>
+
+                        
+                            id="user-search"
+                            type="search"
+                            name="user_search"
+                            value="{{ user_search }}"
+                            placeholder="Например: anna или 291234567"
+                        >
+                    </p>
+
+                    <p>
+                        Поиск применяется к расположенному ниже реестру
+                        клиентов. Телефон можно вводить как с оформлением,
+                        так и только цифрами.
+                    </p>
+                </fieldset>
+
+                <fieldset>
+                    <legend>
+                        Фильтры аналитики
+                    </legend>
+
+                    <p>
+                        <label for="analytics-start-date">
+                            Начальная дата:
+                        </label>
+
+                        
+                            id="analytics-start-date"
+                            type="date"
+                            name="start_date"
+                            value="{{ start_date }}"
+                            required
+                        >
+                    </p>
+
+                    <p>
+                        <label for="analytics-end-date">
+                            Конечная дата:
+                        </label>
+
+                        
+                            id="analytics-end-date"
+                            type="date"
+                            name="end_date"
+                            value="{{ end_date }}"
+                            required
+                        >
+                    </p>
+
+                    <p>
+                        <label for="analytics-brand">
+                            Марка автомобиля:
+                        </label>
+
+                        <input
+                            id="analytics-brand"
+                            type="search"
+                            name="brand"
+                            value="{{ brand }}"
+                            placeholder="Например: BMW"
+                        >
+                    </p>
+
+                    <p>
+                        Даты применяются к финансовым показателям,
+                        а марка — к списку автомобилей и их владельцев.
+                    </p>
+                </fieldset>
+
+                <p>
+                    <button type="submit">
+                        Применить параметры
+                    </button>
+
+                    <a href="{% url 'admin_panel' %}">
+                        Сбросить поиск и фильтры
+                    </a>
+                </p>
+            </form>
+        </section>
+
+        <section
+            id="clients"
+            aria-labelledby="clients-title"
+        >
+            <h2 id="clients-title">
+                Реестр клиентов
+            </h2>
+
+            <table border="1">
+                <colgroup span="2" width="200"></colgroup>
+                <colgroup>
+                    <col width="150">
+                    <col width="100">
+                </colgroup>
+                <caption>
+                    Клиенты, зарегистрированные в системе
+                </caption>
+
+                <thead>
+                    <tr>
+                        <th scope="col">
+                            <a
+                                href="?user_sort={{ username_sort }}&amp;user_search={{ user_search|urlencode }}&amp;start_date={{ start_date|urlencode }}&amp;end_date={{ end_date|urlencode }}&amp;brand={{ brand|urlencode }}"
+                            >
+                                Имя пользователя
+
+                                {% if user_sort == 'username' %}
+                                    ↑
+                                {% elif user_sort == '-username' %}
+                                    ↓
+                                {% else %}
+                                    ↕
+                                {% endif %}
+                            </a>
+                        </th>
+
+                        <th scope="col">
+                            Телефон
+                        </th>
+
+                        <th scope="col">
+                            <a
+                                href="?user_sort={{ birth_date_sort }}&amp;user_search={{ user_search|urlencode }}&amp;start_date={{ start_date|urlencode }}&amp;end_date={{ end_date|urlencode }}&amp;brand={{ brand|urlencode }}"
+                            >
+                                Дата рождения
+
+                                {% if user_sort == 'birth_date' %}
+                                    ↑
+                                {% elif user_sort == '-birth_date' %}
+                                    ↓
+                                {% else %}
+                                    ↕
+                                {% endif %}
+                            </a>
+                        </th>
+
+                        <th scope="col">
+                            Статус
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for client in clients_list %}
+                        <tr>
+                            <th scope="row">
+                                {{ client.username }}
+                            </th>
+
+                            <td>
+                                {{ client.phone_number|default:"Не указан" }}
+                            </td>
+
+                            <td>
+                                {% if client.birth_date %}
+                                    <time datetime="{{ client.birth_date|date:'Y-m-d' }}">
+                                        {{ client.birth_date|date:"d.m.Y" }}
+                                    </time>
+                                {% else %}
+                                    Не указана
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                Клиент
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4">
+                                Клиенты по заданным параметрам не найдены.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <section
+            id="parking-spots"
+            aria-labelledby="parking-spots-title"
+        >
+            <h2 id="parking-spots-title">
+                Парковочные места и цены
+            </h2>
+
+            <table>
+                <caption>
+                    Состояние и стоимость парковочных мест
+                </caption>
+
+                <thead>
+                    <tr>
+                        <th scope="col">
+                            Номер места
+                        </th>
+                        <th scope="col">
+                            Текущая цена
+                        </th>
+                        <th scope="col">
+                            Состояние
+                        </th>
+                        <th scope="col">
+                            Изменение цены
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for spot in spots_list %}
+                        <tr>
+                            <th scope="row">
+                                Место {{ spot.number }}
+                            </th>
+
+                            <td>
+                                <data value="{{ spot.price }}">
+                                    {{ spot.price }} руб.
+                                </data>
+                            </td>
+
+                            <td>
+                                {% if spot.current_car %}
+                                    Занято автомобилем
+                                    <strong>
+                                        {{ spot.current_car.license_plate }}
+                                    </strong>
+                                {% else %}
+                                    Свободно
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                <form
+                                    method="post"
+                                    action="{% url 'admin_panel' %}"
+                                >
+                                    {% csrf_token %}
+
+                                    
+                                        type="hidden"
+                                        name="spot_id"
+                                        value="{{ spot.id }}"
+                                    >
+
+                                    <label for="price-{{ spot.id }}">
+                                        Новая цена для места
+                                        {{ spot.number }}:
+                                    </label>
+
+                                    <input
+                                        id="price-{{ spot.id }}"
+                                        type="number"
+                                        name="price"
+                                        value="{{ spot.price|stringformat:'.2f' }}"
+                                        step="0.01"
+                                        min="0.01"
+                                        required
+                                    >
+
+                                    <button
+                                        type="submit"
+                                        name="update_price"
+                                        value="1"
+                                    >
+                                        Сохранить цену
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4">
+                                Парковочные места пока не добавлены.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <section
+            id="analytics"
+            aria-labelledby="analytics-title"
+        >
+            <h2 id="analytics-title">
+                Результаты аналитики
+            </h2>
+
+            <p>
+                Выбранный период:
+                <strong>{{ start_date }}</strong>
+                —
+                <strong>{{ end_date }}</strong>.
+
+                {% if brand %}
+                    Выбранная марка:
+                    <strong>{{ brand }}</strong>.
+                {% endif %}
+            </p>
+
+            <section aria-labelledby="financial-results-title">
+                <h3 id="financial-results-title">
+                    Финансовые результаты
+                </h3>
+
+                <article>
+                    <h4>
+                        Клиент с наибольшей задолженностью
+                    </h4>
+
+                    {% if top_debtor %}
+                        <p>
+                            Клиент:
+                            <strong>
+                                {{ top_debtor.username }}
+                            </strong>
+                        </p>
+
+                        <p>
+                            Размер задолженности:
+
+                            <data value="{{ top_debtor.debt }}">
+                                {{ top_debtor.debt }} руб.
+                            </data>
+                        </p>
+
+                        <p>
+                            Последний платёж:
+
+                            {% if last_payment_date %}
+                                <time datetime="{{ last_payment_date|date:'Y-m-d' }}">
+                                    {{ last_payment_date|date:"d.m.Y" }}
+                                </time>
+                            {% else %}
+                                платежей не было
+                            {% endif %}
+                        </p>
+                    {% else %}
+                        <p>
+                            Клиенты с задолженностью не найдены.
+                        </p>
+                    {% endif %}
+                </article>
+
+                <article>
+                    <h4>
+                        Баланс системы за выбранный период
+                    </h4>
+
+                    <p>
+                        <data value="{{ total_debt }}">
+                            {{ total_debt }} руб.
+                        </data>
+                    </p>
+
+                    <p>
+                        Положительное значение обозначает задолженность,
+                        отрицательное — переплату.
+                    </p>
+                </article>
+
+                <article>
+                    <h4>
+                        Автомобиль с минимальной задолженностью
+                    </h4>
+
+                    {% if min_debt_car %}
+                        <p>
+                            <strong>
+                                {{ min_debt_car.brand }}
+                                {{ min_debt_car.model_name }}
+                            </strong>
+
+                            — {{ min_debt_car.license_plate }}
+                        </p>
+
+                        <p>
+                            Задолженность:
+
+                            <data value="{{ min_debt_car.period_debt }}">
+                                {{ min_debt_car.period_debt }} руб.
+                            </data>
+                        </p>
+                    {% else %}
+                        <p>
+                            За выбранный период данные отсутствуют.
+                        </p>
+                    {% endif %}
+                </article>
+            </section>
+
+            <section aria-labelledby="car-analysis-title">
+                <h3 id="car-analysis-title">
+                    Анализ автомобилей и владельцев
+                </h3>
+
+                <article>
+                    <h4>
+                        Автомобили с несколькими владельцами
+                    </h4>
+
+                    <ul>
+                        {% for car in shared_cars %}
+                            <li>
+                                <strong>
+                                    {{ car.brand }}
+                                    {{ car.model_name }}
+                                    — {{ car.license_plate }}
+                                </strong>
+
+                                <span>
+                                    Владельцы:
+
+                                    {% for owner in car.owners.all %}
+                                        {{ owner.username }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                </span>
+                            </li>
+                        {% empty %}
+                            <li>
+                                Автомобили с несколькими владельцами
+                                не найдены.
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </article>
+
+                <article>
+                    <h4>
+                        Владельцы автомобилей марки
+                        {% if brand %}
+                            «{{ brand }}»
+                        {% else %}
+                            по запросу
+                        {% endif %}
+                    </h4>
+
+                    {% if brand %}
+                        {% if branded_cars %}
+                            <ul>
+                                {% for car in branded_cars %}
+                                    <li>
+                                        <strong>
+                                            {{ car.brand }}
+                                            {{ car.model_name }}
+                                            — {{ car.license_plate }}
+                                        </strong>
+
+                                        Владельцы:
+
+                                        {% for owner in car.owners.all %}
+                                            {{ owner.username }}{% if not forloop.last %}, {% endif %}
+                                        {% empty %}
+                                            не указаны
+                                        {% endfor %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>
+                                Автомобили марки «{{ brand }}» не найдены.
+                            </p>
+                        {% endif %}
+                    {% else %}
+                        <p>
+                            Введите марку автомобиля в форме аналитики.
+                        </p>
+                    {% endif %}
+                </article>
+            </section>
+        </section>
+
+        <section
+            id="statistics"
+            aria-labelledby="statistics-title"
+        >
+            <h2 id="statistics-title">
+                Статистические показатели
+            </h2>
+
+            <table border="1">
+                <caption>
+                    Сводные статистические данные парковки
+                </caption>
+
+                <thead>
+                    <tr>
+                        <th
+                            id="statistics-group"
+                            scope="colgroup"
+                            colspan="3"
+                        >
+                            Сводная статистика
+                        </th>
+                    </tr>
+
+                    <tr>
+                        <th id="statistics-category" scope="col">
+                            Категория
+                        </th>
+                        <th id="statistics-indicator" scope="col">
+                            Показатель
+                        </th>
+                        <th id="statistics-value" scope="col">
+                            Значение
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <th
+                            id="payment-statistics"
+                            scope="rowgroup"
+                            rowspan="3"
+                            headers="statistics-group statistics-category"
+                        >
+                            Платежи
+                        </th>
+                        <th
+                            scope="row"
+                            headers="statistics-group payment-statistics statistics-indicator"
+                        >
+                            Среднее значение
+                        </th>
+                        <td
+                            headers="statistics-group payment-statistics statistics-indicator statistics-value"
+                        >
+                            {{ stats_payments.avg }} руб.
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th
+                            scope="row"
+                            headers="statistics-group payment-statistics statistics-indicator"
+                        >
+                            Медиана
+                        </th>
+                        <td
+                            headers="statistics-group payment-statistics statistics-indicator statistics-value"
+                        >
+                            {{ stats_payments.median }} руб.
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th
+                            scope="row"
+                            headers="statistics-group payment-statistics statistics-indicator"
+                        >
+                            Мода
+                        </th>
+                        <td
+                            headers="statistics-group payment-statistics statistics-indicator statistics-value"
+                        >
+                            {{ stats_payments.mode }}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th
+                            id="age-statistics"
+                            scope="rowgroup"
+                            rowspan="2"
+                            headers="statistics-group statistics-category"
+                        >
+                            Возраст клиентов
+                        </th>
+                        <th
+                            scope="row"
+                            headers="statistics-group age-statistics statistics-indicator"
+                        >
+                            Средний возраст
+                        </th>
+                        <td
+                            headers="statistics-group age-statistics statistics-indicator statistics-value"
+                        >
+                            {{ stats_ages.avg }} лет
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th
+                            scope="row"
+                            headers="statistics-group age-statistics statistics-indicator"
+                        >
+                            Медианный возраст
+                        </th>
+                        <td
+                            headers="statistics-group age-statistics statistics-indicator statistics-value"
+                        >
+                            {{ stats_ages.median }} лет
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th
+                            id="brand-statistics"
+                            scope="rowgroup"
+                            rowspan="2"
+                            headers="statistics-group statistics-category"
+                        >
+                            Автомобильные марки
+                        </th>
+                        <th
+                            scope="row"
+                            headers="statistics-group brand-statistics statistics-indicator"
+                        >
+                            Самая популярная марка
+                        </th>
+                        <td
+                            headers="statistics-group brand-statistics statistics-indicator statistics-value"
+                        >
+                            {{ popular_brand }}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th
+                            scope="row"
+                            headers="statistics-group brand-statistics statistics-indicator"
+                        >
+                            Марка с наибольшей суммой платежей
+                        </th>
+                        <td
+                            headers="statistics-group brand-statistics statistics-indicator statistics-value"
+                        >
+                            {{ profitable_brand }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        {% if graphic %}
+            <section
+                id="income-chart"
+                aria-labelledby="income-chart-title"
+            >
+                <h2 id="income-chart-title">
+                    Распределение платежей по маркам автомобилей
+                </h2>
+
+                <figure>
+                    <img
+                        src="data:image/png;base64,{{ graphic }}"
+                        alt="Круговая диаграмма распределения платежей по маркам автомобилей"
+                        width="600"
+                        height="600"
+                    >
+
+                    <figcaption>
+                        Доля платежей, приходящаяся на каждую
+                        автомобильную марку.
+                    </figcaption>
+                </figure>
+            </section>
+        {% endif %}
+
+        <p>
+            <a href="#admin-title">
+                Вернуться к началу административной панели
+            </a>
+        </p>
+    </section>
+{% endblock %}

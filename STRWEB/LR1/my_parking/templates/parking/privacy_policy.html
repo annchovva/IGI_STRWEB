@@ -1,0 +1,348 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Политика конфиденциальности —
+    {{ company_global.name|default:"Автопарковка" }}
+{% endblock %}
+
+{% block meta_description %}
+    Политика обработки персональных данных
+    пользователей сайта автомобильной парковки
+{% endblock %}
+
+{% block meta_keywords %}
+    политика конфиденциальности,
+    персональные данные, защита данных,
+    автомобильная парковка
+{% endblock %}
+
+{% block og_title %}
+    Политика конфиденциальности
+{% endblock %}
+
+{% block og_description %}
+    Порядок обработки данных пользователей сайта парковки
+{% endblock %}
+
+{% block content %}
+    <article aria-labelledby="privacy-title">
+        <header id="privacy-start">
+            <h1 id="privacy-title">
+                Политика конфиденциальности
+            </h1>
+
+            <p>
+                Настоящая политика описывает,
+                какие данные используются сайтом
+                {{ company_global.name|default:"автомобильной парковки" }}
+                и для каких целей они необходимы.
+            </p>
+
+            <p>
+                Последнее обновление:
+
+                <time datetime="2026-09-16">
+                    16 сентября 2026 года
+                </time>
+            </p>
+        </header>
+
+        <aside aria-labelledby="privacy-navigation-title">
+            <h2 id="privacy-navigation-title">
+                Содержание
+            </h2>
+
+            <nav aria-label="Разделы политики конфиденциальности">
+                <ol>
+                    <li>
+                        <a href="#privacy-collected-data">
+                            Собираемые данные
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#privacy-purposes">
+                            Цели обработки
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#privacy-storage">
+                            Хранение и защита
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#privacy-payment">
+                            Платёжные данные
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#privacy-cookies">
+                            Сессии и технические данные
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#privacy-services">
+                            Внешние сервисы
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#privacy-rights">
+                            Права пользователя
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#privacy-contacts">
+                            Контакты
+                        </a>
+                    </li>
+                </ol>
+            </nav>
+        </aside>
+
+        <section
+            id="privacy-collected-data"
+            aria-labelledby="privacy-collected-data-title"
+        >
+            <h2 id="privacy-collected-data-title">
+                1. Какие данные используются
+            </h2>
+
+            <p>
+                При регистрации и использовании сайта
+                могут обрабатываться следующие данные:
+            </p>
+
+            <ul>
+                <li>имя пользователя;</li>
+                <li>адрес электронной почты;</li>
+                <li>номер телефона;</li>
+                <li>дата рождения;</li>
+                <li>сведения об автомобилях;</li>
+                <li>государственные регистрационные номера;</li>
+                <li>сведения о начислениях и оплатах;</li>
+                <li>тексты и оценки отзывов;</li>
+                <li>содержимое пользовательской корзины.</li>
+            </ul>
+        </section>
+
+        <section
+            id="privacy-purposes"
+            aria-labelledby="privacy-purposes-title"
+        >
+            <h2 id="privacy-purposes-title">
+                2. Цели обработки данных
+            </h2>
+
+            <p>
+                Данные используются для:
+            </p>
+
+            <ul>
+                <li>
+                    регистрации и авторизации пользователя;
+                </li>
+
+                <li>
+                    ведения личного кабинета;
+                </li>
+
+                <li>
+                    управления автомобилями клиента;
+                </li>
+
+                <li>
+                    расчёта начислений и учёта платежей;
+                </li>
+
+                <li>
+                    формирования корзины услуг;
+                </li>
+
+                <li>
+                    обработки отзывов;
+                </li>
+
+                <li>
+                    связи пользователя с сотрудниками компании;
+                </li>
+            </ul>
+        </section>
+
+        <section
+            id="privacy-storage"
+            aria-labelledby="privacy-storage-title"
+        >
+            <h2 id="privacy-storage-title">
+                3. Хранение и защита информации
+            </h2>
+
+            <p>
+                Доступ к данным ограничивается
+                в соответствии с ролью пользователя.
+                Клиент, сотрудник и администратор
+                имеют разные права доступа.
+            </p>
+
+            <p>
+                Пароли не сохраняются в открытом виде.
+                Для их хранения используются механизмы
+                хеширования, предоставляемые Django.
+            </p>
+
+            <p>
+                Формы, изменяющие данные,
+                защищаются с помощью
+                <abbr title="Cross-Site Request Forgery">
+                    CSRF
+                </abbr>
+                токенов.
+            </p>
+        </section>
+
+        <section
+            id="privacy-payment"
+            aria-labelledby="privacy-payment-title"
+        >
+            <h2 id="privacy-payment-title">
+                4. Платёжные данные
+            </h2>
+
+            <p>
+                Номер банковской карты,
+                срок действия карты и код
+                <abbr title="Card Verification Value">
+                    CVV
+                </abbr>
+                используются только для проверки формы оплаты.
+            </p>
+
+            <p>
+                Эти сведения не записываются
+                в базу данных сайта
+                и не выводятся на других страницах.
+            </p>
+        </section>
+
+        <section
+            id="privacy-cookies"
+            aria-labelledby="privacy-cookies-title"
+        >
+            <h2 id="privacy-cookies-title">
+                5. Сессии и технические данные
+            </h2>
+
+            <p>
+                Сайт использует сессию Django
+                для сохранения авторизации пользователя
+                и содержимого корзины.
+            </p>
+
+            <p>
+                В сессии корзины хранятся
+                идентификаторы выбранных услуг
+                и их количество.
+                Названия и стоимость услуг
+                загружаются из базы данных.
+            </p>
+        </section>
+
+        <section
+            id="privacy-services"
+            aria-labelledby="privacy-services-title"
+        >
+            <h2 id="privacy-services-title">
+                6. Внешние сервисы
+            </h2>
+
+            <p>
+                Для отображения погоды сайт обращается
+                к сервису OpenWeatherMap.
+                Для отображения местоположения компании
+                используется виджет Яндекс Карт.
+            </p>
+
+            <p>
+                При загрузке содержимого внешнего сервиса
+                браузер пользователя устанавливает соединение
+                с соответствующим поставщиком.
+            </p>
+        </section>
+
+        <section
+            id="privacy-rights"
+            aria-labelledby="privacy-rights-title"
+        >
+            <h2 id="privacy-rights-title">
+                7. Права пользователя
+            </h2>
+
+            <p>
+                Пользователь может обратиться к компании,
+                чтобы уточнить, изменить или удалить
+                предоставленные им персональные данные,
+                если их сохранение больше не требуется
+                для работы учётной записи.
+            </p>
+        </section>
+
+        <section
+            id="privacy-contacts"
+            aria-labelledby="privacy-contacts-title"
+        >
+            <h2 id="privacy-contacts-title">
+                8. Контактная информация
+            </h2>
+
+            <p>
+                По вопросам обработки данных
+                можно обратиться к представителям компании.
+            </p>
+
+            <address>
+                {% if company_global.email %}
+                    <p>
+                        Электронная почта:
+
+                        <a href="mailto:{{ company_global.email }}">
+                            {{ company_global.email }}
+                        </a>
+                    </p>
+                {% endif %}
+
+                {% if company_global.address %}
+                    <p>
+                        Адрес:
+                        {{ company_global.address }}
+                    </p>
+                {% endif %}
+            </address>
+
+            <p>
+                <a href="{% url 'employee_list' %}">
+                    Перейти к контактам сотрудников
+                </a>
+            </p>
+        </section>
+
+        <footer>
+            <p>
+                Продолжая использование сайта
+                и отправляя формы,
+                пользователь подтверждает,
+                что ознакомился с настоящей политикой.
+            </p>
+
+            <p>
+                <a href="#privacy-start">
+                    Вернуться в начало документа
+                </a>
+            </p>
+        </footer>
+    </article>
+{% endblock %}

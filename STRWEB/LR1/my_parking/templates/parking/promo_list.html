@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Промокоды —
+    {{ company_global.name|default:"Автопарковка" }}
+{% endblock %}
+
+{% block meta_description %}
+    Действующие и архивные промокоды
+    автомобильной парковки
+{% endblock %}
+
+{% block meta_keywords %}
+    промокоды парковки, скидки,
+    акции, купоны, автомобильные услуги
+{% endblock %}
+
+{% block og_title %}
+    Промокоды и специальные предложения
+{% endblock %}
+
+{% block og_description %}
+    Действующие скидки и архив предложений парковки
+{% endblock %}
+
+{% block content %}
+    <section aria-labelledby="promocodes-title">
+        <header>
+            <h1 id="promocodes-title">
+                Промокоды и специальные предложения
+            </h1>
+
+            <p>
+                На странице представлены действующие
+                и завершённые предложения компании.
+            </p>
+        </header>
+
+        <section aria-labelledby="active-promocodes-title">
+            <h2 id="active-promocodes-title">
+                Действующие предложения
+            </h2>
+
+            <table>
+                <caption>
+                    Активные промокоды автомобильной парковки
+                </caption>
+
+                <thead>
+                    <tr>
+                        <th
+                            id="active-code"
+                            scope="col"
+                        >
+                            Код
+                        </th>
+
+                        <th
+                            id="active-discount"
+                            scope="col"
+                        >
+                            Скидка
+                        </th>
+
+                        <th
+                            id="active-period"
+                            scope="col"
+                        >
+                            Период действия
+                        </th>
+
+                        <th
+                            id="active-status"
+                            scope="col"
+                        >
+                            Статус
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for promo in active_promos %}
+                        <tr>
+                            <td headers="active-code">
+                                <code>{{ promo.code }}</code>
+                            </td>
+
+                            <td headers="active-discount">
+                                <data value="{{ promo.discount_percent }}">
+                                    {{ promo.discount_percent }}%
+                                </data>
+                            </td>
+
+                            <td headers="active-period">
+                                с
+                                <time
+                                    datetime="{{ promo.valid_from|date:'Y-m-d' }}"
+                                >
+                                    {{ promo.valid_from|date:"d.m.Y" }}
+                                </time>
+
+                                по
+
+                                <time
+                                    datetime="{{ promo.valid_until|date:'Y-m-d' }}"
+                                >
+                                    {{ promo.valid_until|date:"d.m.Y" }}
+                                </time>
+                            </td>
+
+                            <td headers="active-status">
+                                <strong>Активен</strong>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4">
+                                Действующих промокодов сейчас нет.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <section aria-labelledby="archived-promocodes-title">
+            <h2 id="archived-promocodes-title">
+                Архив купонов
+            </h2>
+
+            <table>
+                <caption>
+                    Завершённые предложения автомобильной парковки
+                </caption>
+
+                <thead>
+                    <tr>
+                        <th
+                            id="archived-code"
+                            scope="col"
+                        >
+                            Код
+                        </th>
+
+                        <th
+                            id="archived-discount"
+                            scope="col"
+                        >
+                            Скидка
+                        </th>
+
+                        <th
+                            id="archived-end-date"
+                            scope="col"
+                        >
+                            Дата завершения
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for promo in archived_promos %}
+                        <tr>
+                            <td headers="archived-code">
+                                <del>
+                                    <code>{{ promo.code }}</code>
+                                </del>
+                            </td>
+
+                            <td headers="archived-discount">
+                                <data value="{{ promo.discount_percent }}">
+                                    {{ promo.discount_percent }}%
+                                </data>
+                            </td>
+
+                            <td headers="archived-end-date">
+                                <time
+                                    datetime="{{ promo.valid_until|date:'Y-m-d' }}"
+                                >
+                                    {{ promo.valid_until|date:"d.m.Y" }}
+                                </time>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="3">
+                                Архив промокодов пока пуст.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <aside aria-labelledby="promocode-help-title">
+            <h2 id="promocode-help-title">
+                Как использовать промокод
+            </h2>
+
+            <ol>
+                <li>
+                    Выберите услугу в
+                    <a href="{% url 'services_catalog' %}">
+                        каталоге
+                    </a>.
+                </li>
+
+                <li>
+                    Добавьте выбранную услугу в корзину.
+                </li>
+
+                <li>
+                    Проверьте срок действия промокода.
+                </li>
+
+                <li>
+                    Сообщите код сотруднику при оформлении услуги.
+                </li>
+            </ol>
+        </aside>
+    </section>
+{% endblock %}

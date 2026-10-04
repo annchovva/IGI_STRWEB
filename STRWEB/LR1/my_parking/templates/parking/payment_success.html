@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Заказ оплачен —
+    {{ company_global.name|default:"Автопарковка" }}
+{% endblock %}
+
+{% block meta_description %}
+    Подтверждение успешной учебной оплаты заказа
+{% endblock %}
+
+{% block content %}
+        <section aria-labelledby="payment-success-title">
+            <h1 id="payment-success-title">
+                Заказ успешно оплачен
+            </h1>
+
+            <p role="status">
+                Учебная оплата выполнена успешно.
+            </p>
+
+            <p>
+                Сумма заказа:
+                <strong>
+                    {{ paid_total }} руб.
+                </strong>
+            </p>
+
+            <nav aria-label="Действия после оплаты">
+                <ul>
+                    <li>
+                        <a href="{% url 'services_catalog' %}">
+                            Вернуться к услугам
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{% url 'home' %}">
+                            Перейти на главную страницу
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </section>
+{% endblock %}
