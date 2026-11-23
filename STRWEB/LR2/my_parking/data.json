@@ -1,0 +1,1648 @@
+[
+{
+  "model": "parking.customuser",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$NQFXyCJwpTcfhoGJyf6OHi$cIIWyyObNl+pQZaUp9UCROoqkm2Iz9kykTA9l9lDT+k=",
+    "last_login": "2026-05-18T22:21:18.776Z",
+    "is_superuser": true,
+    "username": "anna",
+    "first_name": "",
+    "last_name": "",
+    "email": "ann@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-05-14T19:24:01Z",
+    "phone_number": "+375 (29) 540-43-28",
+    "birth_date": "2006-11-30",
+    "role": "admin",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "parking.customuser",
+  "pk": 8,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$p8JEJulGfDzSos70k4dTNc$zD68Z7Br+IGtOBP7+QvrlaRA+Q9fpYfYaaZ7GfN3dxA=",
+    "last_login": "2026-05-18T19:38:28.641Z",
+    "is_superuser": false,
+    "username": "alex_manager",
+    "first_name": "",
+    "last_name": "",
+    "email": "a.volkov@parkingsystem.ru",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-05-17T20:21:42Z",
+    "phone_number": "+375 (33) 657-19-88",
+    "birth_date": "1985-03-28",
+    "role": "staff",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "parking.customuser",
+  "pk": 9,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$IwcGJdZ9WVKeyuxW3eDnPI$lHdo3rzCpCODsJYgWU5LOEx5r9k9Px66IqZyhm7QQh8=",
+    "last_login": "2026-05-18T06:30:55.966Z",
+    "is_superuser": false,
+    "username": "elena_manager",
+    "first_name": "",
+    "last_name": "",
+    "email": "e.sokolova@parkingsystem.ru",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-05-17T20:22:39Z",
+    "phone_number": "+375 (29) 654-00-98",
+    "birth_date": "1996-09-15",
+    "role": "staff",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "parking.customuser",
+  "pk": 10,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$qDCtttPqzEDBFX4dDCBgAl$t29kvszETzYI4VLxRHJx1JJL3N2w8HTd8whO4BhCy5M=",
+    "last_login": "2026-05-17T21:09:32.230Z",
+    "is_superuser": false,
+    "username": "alex",
+    "first_name": "",
+    "last_name": "",
+    "email": "alex@mail.ru",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-05-17T20:24:25.900Z",
+    "phone_number": "+375 (33) 564-99-00",
+    "birth_date": "2000-06-07",
+    "role": "client",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "parking.customuser",
+  "pk": 11,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$uNNAhvm1Vn3GhVOtYVWYpU$5rqxfEJh/fxD6uOsvgHhSTNkdojcb06GvVtlQo52qVU=",
+    "last_login": "2026-05-17T21:10:00.936Z",
+    "is_superuser": false,
+    "username": "elena",
+    "first_name": "",
+    "last_name": "",
+    "email": "elena@mail.ru",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-05-17T20:25:16.598Z",
+    "phone_number": "+375 (29) 900-44-55",
+    "birth_date": "2002-08-12",
+    "role": "client",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "parking.customuser",
+  "pk": 12,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$HH6knQMmxkQodCsZJTtKSP$/TzloemwnA8o94fWH6OZG3tAKAgxJ9Nr/nMC4lGX+Z0=",
+    "last_login": "2026-05-17T21:10:22.869Z",
+    "is_superuser": false,
+    "username": "ivan",
+    "first_name": "",
+    "last_name": "",
+    "email": "ivan@mail.ru",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-05-17T20:26:11.642Z",
+    "phone_number": "+375 (29) 674-99-90",
+    "birth_date": "1986-05-27",
+    "role": "client",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "parking.customuser",
+  "pk": 13,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$zeSpndylpRLDbq2GjH2y7U$UIEoFUxognHScgoy0715FmgsUvU69zWS3tJi15seCVE=",
+    "last_login": "2026-05-17T20:54:31.331Z",
+    "is_superuser": false,
+    "username": "marina",
+    "first_name": "",
+    "last_name": "",
+    "email": "marina@mail.ru",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-05-17T20:27:31.618Z",
+    "phone_number": "+375 (29) 123-12-45",
+    "birth_date": "2008-05-17",
+    "role": "client",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "parking.customuser",
+  "pk": 14,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$oe4ysRps82IMVLfOMNhZEg$7u0zkaEugkKrM3AztBpuy9NjudW9idvV8LfWjV4fLJY=",
+    "last_login": "2026-05-17T21:12:10.775Z",
+    "is_superuser": false,
+    "username": "sergey",
+    "first_name": "",
+    "last_name": "",
+    "email": "sergey@mail.ru",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-05-17T20:28:21.046Z",
+    "phone_number": "+375 (29) 654-65-64",
+    "birth_date": "2001-12-16",
+    "role": "client",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "parking.customuser",
+  "pk": 15,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$7Qkj4Ubx74nlMEAsMmHL18$wLGdXRp1JbG/NYtPGG17y7L1qiSpTs+s28ppR9tCGdM=",
+    "last_login": "2026-05-17T20:56:12.772Z",
+    "is_superuser": false,
+    "username": "olga",
+    "first_name": "",
+    "last_name": "",
+    "email": "olga@mail.ru",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-05-17T20:29:10.436Z",
+    "phone_number": "+375 (29) 374-92-00",
+    "birth_date": "2007-04-12",
+    "role": "client",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "parking.customuser",
+  "pk": 16,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$qcJJMw5F1VxtE8X2w2uadx$Lnzg0UwASICbRQOF4l+xG7XqQ8PntzU/EgmBk+72LSE=",
+    "last_login": "2026-05-17T21:09:19.850Z",
+    "is_superuser": false,
+    "username": "dmitry",
+    "first_name": "",
+    "last_name": "",
+    "email": "dmitry@mail.ru",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-05-17T20:29:51.410Z",
+    "phone_number": "+375 (33) 875-00-00",
+    "birth_date": "1989-09-17",
+    "role": "client",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "parking.customuser",
+  "pk": 17,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$MyVZhWaDEZvQl6EOK4XXQ1$A8XM9KXC56dMfHf7YG9kcEO0gCXyJtPhd8NvoyzS570=",
+    "last_login": "2026-05-18T19:31:11.871Z",
+    "is_superuser": false,
+    "username": "arimark",
+    "first_name": "",
+    "last_name": "",
+    "email": "arimark@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-05-18T06:30:51.496Z",
+    "phone_number": "+375 (29) 746-29-00",
+    "birth_date": "2005-04-14",
+    "role": "client",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "parking.parkingspot",
+  "pk": 4,
+  "fields": {
+    "number": 1,
+    "price": "300.00",
+    "is_occupied": false
+  }
+},
+{
+  "model": "parking.parkingspot",
+  "pk": 5,
+  "fields": {
+    "number": 2,
+    "price": "300.00",
+    "is_occupied": false
+  }
+},
+{
+  "model": "parking.parkingspot",
+  "pk": 6,
+  "fields": {
+    "number": 3,
+    "price": "300.00",
+    "is_occupied": false
+  }
+},
+{
+  "model": "parking.parkingspot",
+  "pk": 7,
+  "fields": {
+    "number": 4,
+    "price": "300.00",
+    "is_occupied": false
+  }
+},
+{
+  "model": "parking.parkingspot",
+  "pk": 8,
+  "fields": {
+    "number": 5,
+    "price": "300.00",
+    "is_occupied": false
+  }
+},
+{
+  "model": "parking.parkingspot",
+  "pk": 9,
+  "fields": {
+    "number": 6,
+    "price": "300.00",
+    "is_occupied": true
+  }
+},
+{
+  "model": "parking.parkingspot",
+  "pk": 10,
+  "fields": {
+    "number": 7,
+    "price": "300.00",
+    "is_occupied": false
+  }
+},
+{
+  "model": "parking.parkingspot",
+  "pk": 11,
+  "fields": {
+    "number": 8,
+    "price": "300.00",
+    "is_occupied": true
+  }
+},
+{
+  "model": "parking.parkingspot",
+  "pk": 12,
+  "fields": {
+    "number": 9,
+    "price": "300.00",
+    "is_occupied": true
+  }
+},
+{
+  "model": "parking.parkingspot",
+  "pk": 13,
+  "fields": {
+    "number": 10,
+    "price": "300.00",
+    "is_occupied": false
+  }
+},
+{
+  "model": "parking.parkingspot",
+  "pk": 14,
+  "fields": {
+    "number": 11,
+    "price": "350.00",
+    "is_occupied": false
+  }
+},
+{
+  "model": "parking.parkingspot",
+  "pk": 15,
+  "fields": {
+    "number": 12,
+    "price": "350.00",
+    "is_occupied": true
+  }
+},
+{
+  "model": "parking.parkingspot",
+  "pk": 16,
+  "fields": {
+    "number": 13,
+    "price": "350.00",
+    "is_occupied": true
+  }
+},
+{
+  "model": "parking.parkingspot",
+  "pk": 17,
+  "fields": {
+    "number": 14,
+    "price": "400.00",
+    "is_occupied": true
+  }
+},
+{
+  "model": "parking.parkingspot",
+  "pk": 18,
+  "fields": {
+    "number": 15,
+    "price": "600.00",
+    "is_occupied": false
+  }
+},
+{
+  "model": "parking.parkingspot",
+  "pk": 19,
+  "fields": {
+    "number": 16,
+    "price": "600.00",
+    "is_occupied": true
+  }
+},
+{
+  "model": "parking.parkingspot",
+  "pk": 20,
+  "fields": {
+    "number": 17,
+    "price": "600.00",
+    "is_occupied": true
+  }
+},
+{
+  "model": "parking.parkingspot",
+  "pk": 21,
+  "fields": {
+    "number": 18,
+    "price": "450.00",
+    "is_occupied": true
+  }
+},
+{
+  "model": "parking.parkingspot",
+  "pk": 22,
+  "fields": {
+    "number": 19,
+    "price": "500.00",
+    "is_occupied": true
+  }
+},
+{
+  "model": "parking.parkingspot",
+  "pk": 23,
+  "fields": {
+    "number": 20,
+    "price": "500.00",
+    "is_occupied": false
+  }
+},
+{
+  "model": "parking.parkingspot",
+  "pk": 24,
+  "fields": {
+    "number": 67,
+    "price": "50.00",
+    "is_occupied": true
+  }
+},
+{
+  "model": "parking.car",
+  "pk": 18,
+  "fields": {
+    "brand": "Rolls-Royce",
+    "model_name": "Phantom",
+    "license_plate": "R001AA",
+    "current_spot": 12,
+    "owners": [
+      10
+    ]
+  }
+},
+{
+  "model": "parking.car",
+  "pk": 19,
+  "fields": {
+    "brand": "Ferrari",
+    "model_name": "SF90 Stradale",
+    "license_plate": "F003CC",
+    "current_spot": 22,
+    "owners": [
+      10,
+      13
+    ]
+  }
+},
+{
+  "model": "parking.car",
+  "pk": 20,
+  "fields": {
+    "brand": "Bentley",
+    "model_name": "Continental GT",
+    "license_plate": "B002BB",
+    "current_spot": 16,
+    "owners": [
+      11
+    ]
+  }
+},
+{
+  "model": "parking.car",
+  "pk": 21,
+  "fields": {
+    "brand": "Lamborghini",
+    "model_name": "Urus",
+    "license_plate": "L004DD",
+    "current_spot": 15,
+    "owners": [
+      11,
+      12
+    ]
+  }
+},
+{
+  "model": "parking.car",
+  "pk": 22,
+  "fields": {
+    "brand": "Porsche",
+    "model_name": "911 Turbo S",
+    "license_plate": "P005EE",
+    "current_spot": 21,
+    "owners": [
+      13
+    ]
+  }
+},
+{
+  "model": "parking.car",
+  "pk": 23,
+  "fields": {
+    "brand": "Aston Martin",
+    "model_name": "DBS Superleggera",
+    "license_plate": "A006FF",
+    "current_spot": 17,
+    "owners": [
+      15
+    ]
+  }
+},
+{
+  "model": "parking.car",
+  "pk": 24,
+  "fields": {
+    "brand": "Maserati",
+    "model_name": "Levante",
+    "license_plate": "M007GG",
+    "current_spot": 11,
+    "owners": [
+      16
+    ]
+  }
+},
+{
+  "model": "parking.car",
+  "pk": 25,
+  "fields": {
+    "brand": "McLaren",
+    "model_name": "720S",
+    "license_plate": "M008HH",
+    "current_spot": 9,
+    "owners": [
+      14
+    ]
+  }
+},
+{
+  "model": "parking.car",
+  "pk": 26,
+  "fields": {
+    "brand": "Mercedes-Maybach",
+    "model_name": "S600",
+    "license_plate": "M009II",
+    "current_spot": 19,
+    "owners": [
+      15
+    ]
+  }
+},
+{
+  "model": "parking.car",
+  "pk": 27,
+  "fields": {
+    "brand": "Lexus",
+    "model_name": "LC500",
+    "license_plate": "L010JJ",
+    "current_spot": 20,
+    "owners": [
+      13,
+      15
+    ]
+  }
+},
+{
+  "model": "parking.car",
+  "pk": 28,
+  "fields": {
+    "brand": "MAKSIM",
+    "model_name": "samokat",
+    "license_plate": "D9665",
+    "current_spot": 24,
+    "owners": [
+      17
+    ]
+  }
+},
+{
+  "model": "parking.accrual",
+  "pk": 5,
+  "fields": {
+    "car": 18,
+    "amount": "300.00",
+    "date": "2026-05-17",
+    "month": 3,
+    "year": 2026
+  }
+},
+{
+  "model": "parking.accrual",
+  "pk": 6,
+  "fields": {
+    "car": 19,
+    "amount": "550.00",
+    "date": "2026-05-17",
+    "month": 3,
+    "year": 2026
+  }
+},
+{
+  "model": "parking.accrual",
+  "pk": 7,
+  "fields": {
+    "car": 23,
+    "amount": "400.00",
+    "date": "2026-05-17",
+    "month": 2,
+    "year": 2026
+  }
+},
+{
+  "model": "parking.accrual",
+  "pk": 8,
+  "fields": {
+    "car": 21,
+    "amount": "350.00",
+    "date": "2026-05-17",
+    "month": 4,
+    "year": 2026
+  }
+},
+{
+  "model": "parking.accrual",
+  "pk": 9,
+  "fields": {
+    "car": 18,
+    "amount": "300.00",
+    "date": "2026-05-17",
+    "month": 5,
+    "year": 2026
+  }
+},
+{
+  "model": "parking.accrual",
+  "pk": 10,
+  "fields": {
+    "car": 19,
+    "amount": "500.00",
+    "date": "2026-05-17",
+    "month": 5,
+    "year": 2026
+  }
+},
+{
+  "model": "parking.accrual",
+  "pk": 11,
+  "fields": {
+    "car": 20,
+    "amount": "350.00",
+    "date": "2026-05-17",
+    "month": 5,
+    "year": 2026
+  }
+},
+{
+  "model": "parking.accrual",
+  "pk": 12,
+  "fields": {
+    "car": 21,
+    "amount": "400.00",
+    "date": "2026-05-17",
+    "month": 5,
+    "year": 2026
+  }
+},
+{
+  "model": "parking.accrual",
+  "pk": 13,
+  "fields": {
+    "car": 22,
+    "amount": "500.00",
+    "date": "2026-05-17",
+    "month": 5,
+    "year": 2026
+  }
+},
+{
+  "model": "parking.accrual",
+  "pk": 14,
+  "fields": {
+    "car": 24,
+    "amount": "200.00",
+    "date": "2026-05-17",
+    "month": 5,
+    "year": 2026
+  }
+},
+{
+  "model": "parking.accrual",
+  "pk": 15,
+  "fields": {
+    "car": 25,
+    "amount": "300.00",
+    "date": "2026-05-17",
+    "month": 5,
+    "year": 2026
+  }
+},
+{
+  "model": "parking.accrual",
+  "pk": 16,
+  "fields": {
+    "car": 26,
+    "amount": "700.00",
+    "date": "2026-05-17",
+    "month": 5,
+    "year": 2026
+  }
+},
+{
+  "model": "parking.accrual",
+  "pk": 17,
+  "fields": {
+    "car": 27,
+    "amount": "600.00",
+    "date": "2026-05-17",
+    "month": 5,
+    "year": 2026
+  }
+},
+{
+  "model": "parking.accrual",
+  "pk": 18,
+  "fields": {
+    "car": 28,
+    "amount": "50.00",
+    "date": "2026-05-18",
+    "month": 4,
+    "year": 2026
+  }
+},
+{
+  "model": "parking.accrual",
+  "pk": 19,
+  "fields": {
+    "car": 28,
+    "amount": "75.00",
+    "date": "2026-05-18",
+    "month": 5,
+    "year": 2026
+  }
+},
+{
+  "model": "parking.payment",
+  "pk": 5,
+  "fields": {
+    "car": 18,
+    "amount": "600.00",
+    "date": "2026-05-17"
+  }
+},
+{
+  "model": "parking.payment",
+  "pk": 6,
+  "fields": {
+    "car": 19,
+    "amount": "1000.00",
+    "date": "2026-05-17"
+  }
+},
+{
+  "model": "parking.payment",
+  "pk": 7,
+  "fields": {
+    "car": 24,
+    "amount": "250.00",
+    "date": "2026-05-17"
+  }
+},
+{
+  "model": "parking.payment",
+  "pk": 8,
+  "fields": {
+    "car": 20,
+    "amount": "200.00",
+    "date": "2026-05-17"
+  }
+},
+{
+  "model": "parking.payment",
+  "pk": 9,
+  "fields": {
+    "car": 20,
+    "amount": "300.00",
+    "date": "2026-05-17"
+  }
+},
+{
+  "model": "parking.payment",
+  "pk": 10,
+  "fields": {
+    "car": 21,
+    "amount": "700.00",
+    "date": "2026-05-17"
+  }
+},
+{
+  "model": "parking.payment",
+  "pk": 11,
+  "fields": {
+    "car": 23,
+    "amount": "400.00",
+    "date": "2026-05-17"
+  }
+},
+{
+  "model": "parking.payment",
+  "pk": 12,
+  "fields": {
+    "car": 26,
+    "amount": "500.00",
+    "date": "2026-05-17"
+  }
+},
+{
+  "model": "parking.payment",
+  "pk": 13,
+  "fields": {
+    "car": 26,
+    "amount": "500.00",
+    "date": "2026-05-17"
+  }
+},
+{
+  "model": "parking.payment",
+  "pk": 14,
+  "fields": {
+    "car": 27,
+    "amount": "500.00",
+    "date": "2026-05-17"
+  }
+},
+{
+  "model": "parking.payment",
+  "pk": 15,
+  "fields": {
+    "car": 27,
+    "amount": "100.00",
+    "date": "2026-05-17"
+  }
+},
+{
+  "model": "parking.payment",
+  "pk": 16,
+  "fields": {
+    "car": 22,
+    "amount": "600.00",
+    "date": "2026-05-17"
+  }
+},
+{
+  "model": "parking.payment",
+  "pk": 17,
+  "fields": {
+    "car": 25,
+    "amount": "600.00",
+    "date": "2026-05-17"
+  }
+},
+{
+  "model": "parking.payment",
+  "pk": 18,
+  "fields": {
+    "car": 23,
+    "amount": "100.00",
+    "date": "2026-05-17"
+  }
+},
+{
+  "model": "parking.payment",
+  "pk": 19,
+  "fields": {
+    "car": 28,
+    "amount": "100.00",
+    "date": "2026-05-18"
+  }
+},
+{
+  "model": "parking.companyinfo",
+  "pk": 1,
+  "fields": {
+    "name": "ООО «SmartParking Solutions»",
+    "description": "Добро пожаловать в SmartParking Solutions — инновационную сеть современных парковочных пространств. Мы работаем с 2018 года и за это время превратили обычную стоянку в высокотехнологичный сервис.\r\n\r\nНаша миссия — сделать процесс парковки в мегаполисе максимально простым, быстрым и безопасным. Мы используем передовые системы распознавания номеров, интеллектуальное видеонаблюдение и автоматизированную систему оплаты, чтобы вы не тратили ни одной лишней минуты своего времени.\r\n\r\nНаши преимущества:\r\n— Более 500 охраняемых парковочных мест в центре города.\r\n— Круглосуточная поддержка и физическая охрана 24/7.\r\n— Теплые боксы и современные системы вентиляции.\r\n— Станции быстрой зарядки для электромобилей на каждом уровне.\r\n— Прозрачная система начислений через личный кабинет.\r\n\r\nМы заботимся о вашем автомобиле так же, как и вы, обеспечивая идеальный климат и абсолютную безопасность вашего имущества.",
+    "main_logo": "company/загруженное_oi42lJO.png",
+    "logo": "company/лого_квадрат_с_фоном.png",
+    "address": "г. Минск, пр-т Победителей, 9",
+    "email": "info@smartparking.by"
+  }
+},
+{
+  "model": "parking.news",
+  "pk": 6,
+  "fields": {
+    "title": "Открытие новой современной парковки «SmartParking Solutions»!",
+    "content": "Рады сообщить, что с 1 июня 2025 года начала работу новая отапливаемая крытая парковка «AutoCar».\r\nМы предоставляем полный спектр услуг по хранению вашего автомобиля.\r\nНа территории парковки установлена система видеонаблюдения 24/7, работает круглосуточная охрана.\r\nДля клиентов действуют специальные тарифы при долгосрочной аренде мест.\r\nПриезжайте, будем рады видеть!",
+    "image": "news/загруженное_2.png",
+    "published_at": "2026-05-18T21:56:51.934Z",
+    "created_at": "2026-05-18T21:56:51.934Z",
+    "updated_at": "2026-05-18T21:56:51.934Z"
+  }
+},
+{
+  "model": "parking.news",
+  "pk": 7,
+  "fields": {
+    "title": "Акция для новых клиентов: первый месяц парковки в подарок!",
+    "content": "Только до 31 мая 2026 года при заключении договора на 6 месяцев первый месяц аренды парковочного места — абсолютно бесплатно.\r\nАкция распространяется на все типы мест.\r\nДля участия достаточно заключить договор и внести оплату за последующие 5 месяцев.\r\nКоличество мест ограничено!",
+    "image": "news/загруженное_1.png",
+    "published_at": "2026-05-18T21:59:45.065Z",
+    "created_at": "2026-05-18T21:59:45.065Z",
+    "updated_at": "2026-05-18T21:59:45.065Z"
+  }
+},
+{
+  "model": "parking.news",
+  "pk": 8,
+  "fields": {
+    "title": "Спецпредложение для владельцев электромобилей: скидка 15%!",
+    "content": "Мы запускаем специальный тариф для владельцев электромобилей.\r\nПри предъявлении свидетельства о регистрации транспортного средства с отметкой об электротяге, вы получаете скидку 15% на месячную аренду места.\r\nНа территории парковки оборудованы зарядные станции для вашего удобства.",
+    "image": "news/загруженное_3.png",
+    "published_at": "2026-05-18T22:00:52.975Z",
+    "created_at": "2026-05-18T22:00:52.975Z",
+    "updated_at": "2026-05-18T22:01:17.937Z"
+  }
+},
+{
+  "model": "parking.news",
+  "pk": 9,
+  "fields": {
+    "title": "На парковке появились зарядные станции для электромобилей",
+    "content": "Уважаемые клиенты! Сообщаем вам, что на территории парковки «AutoCar» установлены зарядные станции для электромобилей.\r\nТеперь вы можете не только безопасно хранить свой автомобиль, но и заряжать его.\r\nЗарядка предоставляется бесплатно для всех клиентов парковки.\r\nСпешите занять места рядом со станциями!",
+    "image": "news/загруженное_4.png",
+    "published_at": "2026-05-18T22:02:22.274Z",
+    "created_at": "2026-05-18T22:02:22.274Z",
+    "updated_at": "2026-05-18T22:02:22.274Z"
+  }
+},
+{
+  "model": "parking.news",
+  "pk": 10,
+  "fields": {
+    "title": "График работы парковки в праздничные дни",
+    "content": "Уважаемые клиенты! Обращаем ваше внимание на режим работы парковки в праздничные дни:\r\n📍 1-7 мая — парковка работает круглосуточно, въезд и выезд свободный\r\n📍 9 мая — въезд и выезд осуществляются через центральный пост\r\n📍 Остальные праздничные дни — в обычном режиме\r\nПо всем вопросам обращайтесь к администратору по телефону +375 (29) 123-45-67.",
+    "image": "news/загруженное_5.png",
+    "published_at": "2026-05-18T22:03:25.010Z",
+    "created_at": "2026-05-18T22:03:25.010Z",
+    "updated_at": "2026-05-18T22:03:25.010Z"
+  }
+},
+{
+  "model": "parking.news",
+  "pk": 11,
+  "fields": {
+    "title": "Введена программа лояльности для постоянных клиентов!",
+    "content": "Дорогие клиенты, мы запускаем накопительную систему скидок.\r\nПри оплате парковки на 3 месяца вперёд — скидка 5%.\r\nПри оплате на 6 месяцев — скидка 10%.\r\nПри оплате на 12 месяцев — скидка 15% + бесплатный шиномонтаж в подарок!\r\nПодробности у администратора.",
+    "image": "news/загруженное_6.png",
+    "published_at": "2026-05-18T22:03:58.899Z",
+    "created_at": "2026-05-18T22:03:58.899Z",
+    "updated_at": "2026-05-18T22:05:25.071Z"
+  }
+},
+{
+  "model": "parking.news",
+  "pk": 12,
+  "fields": {
+    "title": "Обновление системы видеонаблюдения",
+    "content": "Мы продолжаем улучшать качество обслуживания.\r\nНа парковке «SmartParking Solutions» установлены новые камеры видеонаблюдения высокого разрешения, обеспечивающие полный контроль по периметру.\r\nТеперь каждый уголок парковки находится под круглосуточным наблюдением.\r\nВаш автомобиль в безопасности!",
+    "image": "news/загруженное_7.png",
+    "published_at": "2026-05-18T22:04:13.763Z",
+    "created_at": "2026-05-18T22:04:13.763Z",
+    "updated_at": "2026-05-18T22:05:52.312Z"
+  }
+},
+{
+  "model": "parking.news",
+  "pk": 13,
+  "fields": {
+    "title": "Ограничение въезда для высоких автомобилей",
+    "content": "Уважаемые автовладельцы! Обращаем ваше внимание, что максимальная высота въезда на парковку составляет 2.5 метра.\r\nПросим учитывать этот параметр при выборе парковочного места.\r\nЕсли у вас высокий автомобиль (например, Ford Transit, Mercedes Sprinter), пожалуйста, свяжитесь с администратором для выбора подходящего места.",
+    "image": "news/загруженное_8.png",
+    "published_at": "2026-05-18T22:07:42.712Z",
+    "created_at": "2026-05-18T22:07:42.712Z",
+    "updated_at": "2026-05-18T22:07:42.712Z"
+  }
+},
+{
+  "model": "parking.news",
+  "pk": 14,
+  "fields": {
+    "title": "Бесплатная проверка давления в шинах для клиентов!",
+    "content": "Для наших клиентов мы запускаем новую бесплатную услугу — ежемесячная проверка давления в шинах.\r\nПросто оставьте заявку администратору, и наш сотрудник проверит давление и при необходимости подкачает шины.\r\nУслуга предоставляется бесплатно при условии аренды места на 1 месяц и более.",
+    "image": "news/загруженное_9.png",
+    "published_at": "2026-05-18T22:08:53.811Z",
+    "created_at": "2026-05-18T22:08:53.811Z",
+    "updated_at": "2026-05-18T22:08:53.811Z"
+  }
+},
+{
+  "model": "parking.news",
+  "pk": 15,
+  "fields": {
+    "title": "Конкурс среди клиентов: выиграй месяц бесплатной парковки!",
+    "content": "Условия конкурса просты:\r\n\r\nБыть клиентом нашей парковки.\r\n\r\nОпубликовать пост в Instagram о нашем сервисе с хештегом #SmartParkingSolutions.\r\n\r\nОтметить аккаунт @SmartParking_Solutions.\r\n\r\nВ конце каждого месяца выбираем одного победителя — месяц парковки бесплатно!\r\nУдачи!\r\nУслуга предоставляется бесплатно при условии аренды места на 1 месяц и более.",
+    "image": "news/загруженное_10.png",
+    "published_at": "2026-05-18T22:10:02.741Z",
+    "created_at": "2026-05-18T22:10:02.741Z",
+    "updated_at": "2026-05-18T22:10:02.741Z"
+  }
+},
+{
+  "model": "parking.term",
+  "pk": 1,
+  "fields": {
+    "term": "Система LPR (License Plate Recognition)",
+    "definition": "Это интеллектуальная технология распознавания государственных регистрационных знаков автомобилей с помощью камер высокого разрешения. Система автоматически считывает номер при подъезде к шлагбауму. Если у вас есть активная бронь или абонемент, шлагбаум откроется автоматически — вам не нужно выходить из машины или прикладывать карту.",
+    "added_at": "2026-05-15"
+  }
+},
+{
+  "model": "parking.term",
+  "pk": 2,
+  "fields": {
+    "term": "Льготный период (Grace Period)",
+    "definition": "Бесплатный временной интервал, предоставляемый пользователю с момента въезда на парковку (обычно 15 минут) или после совершения оплаты. Этот период предназначен для того, чтобы вы могли найти место для парковки, высадить пассажиров или спокойно доехать до выезда после оплаты услуг через терминал, не оплачивая лишнее время.",
+    "added_at": "2026-05-15"
+  }
+},
+{
+  "model": "parking.term",
+  "pk": 3,
+  "fields": {
+    "term": "Динамическое бронирование",
+    "definition": "Услуга предварительного резервирования машино-места через мобильное приложение или сайт компании. При динамическом бронировании за пользователем закрепляется конкретная зона на паркинге. Если вы задерживаетесь более чем на 30 минут от указанного времени заезда, бронь автоматически аннулируется, чтобы место стало доступным для других водителей.",
+    "added_at": "2026-05-15"
+  }
+},
+{
+  "model": "parking.term",
+  "pk": 4,
+  "fields": {
+    "term": "Автоматизированная система парковки (АСП)",
+    "definition": "Комплекс программно-аппаратных средств, обеспечивающий автоматический учёт въезжающих и выезжающих автомобилей, расчёт стоимости парковки и приём оплаты без участия оператора.",
+    "added_at": "2026-05-19"
+  }
+},
+{
+  "model": "parking.term",
+  "pk": 5,
+  "fields": {
+    "term": "Парковочное место для маломобильных групп населения",
+    "definition": "Специально оборудованное парковочное место увеличенной ширины (не менее 3,6 м), расположенное вблизи входа в здание. Предназначено для транспортных средств, перевозящих инвалидов. Занимать такие места запрещено без соответствующего разрешения.",
+    "added_at": "2026-05-19"
+  }
+},
+{
+  "model": "parking.term",
+  "pk": 6,
+  "fields": {
+    "term": "Шлагбаум с автоматическим распознаванием номеров",
+    "definition": "Устройство для контроля доступа на парковку, которое автоматически открывает въезд при считывании госномера автомобиля из базы данных разрешённых транспортных средств. Исключает необходимость использования магнитных карт или брелоков.",
+    "added_at": "2026-05-19"
+  }
+},
+{
+  "model": "parking.term",
+  "pk": 7,
+  "fields": {
+    "term": "Абонемент на парковку",
+    "definition": "Документ (электронный или бумажный), предоставляющий право на размещение автомобиля на парковке в течение определённого периода времени (месяц, квартал, год) по фиксированной стоимости, как правило, ниже разовой почасовой оплаты.",
+    "added_at": "2026-05-19"
+  }
+},
+{
+  "model": "parking.term",
+  "pk": 8,
+  "fields": {
+    "term": "Зарядная станция для электромобилей (EVSE)",
+    "definition": "Оборудование, предназначенное для безопасной зарядки аккумуляторов электромобилей. Может быть медленной (переменный ток, до 22 кВт) или быстрой (постоянный ток, более 50 кВт). На нашей парковке установлены станции Type 2 и CCS.",
+    "added_at": "2026-05-19"
+  }
+},
+{
+  "model": "parking.term",
+  "pk": 9,
+  "fields": {
+    "term": "Парковочная сессия",
+    "definition": "Период времени с момента въезда автомобиля на парковку до момента выезда. Для каждой сессии система фиксирует время начала, окончания и рассчитывает стоимость на основе действующего тарифа.",
+    "added_at": "2026-05-19"
+  }
+},
+{
+  "model": "parking.term",
+  "pk": 10,
+  "fields": {
+    "term": "Месячная аренда парковочного места",
+    "definition": "Долгосрочный договор, по которому клиент закрепляет за собой конкретное парковочное место на месяц. Оплата производится единовременно за весь месяц независимо от фактического использования. Начисление происходит автоматически 1-го числа каждого месяца.",
+    "added_at": "2026-05-19"
+  }
+},
+{
+  "model": "parking.employee",
+  "pk": 1,
+  "fields": {
+    "photo": "employees/сотрудник_1.png",
+    "name": "Александр Викторович Волков",
+    "position": "Управляющий объектами",
+    "phone": "+375 (29) 123-45-67",
+    "email": "a.volkov@parkingsystem.by"
+  }
+},
+{
+  "model": "parking.employee",
+  "pk": 2,
+  "fields": {
+    "photo": "employees/сотрудник_2.png",
+    "name": "Елена Игоревна Соколова",
+    "position": "Ведущий инженер техподдержки",
+    "phone": "+375 (29) 765-43-21",
+    "email": "support@parkingsystem.by"
+  }
+},
+{
+  "model": "parking.employee",
+  "pk": 3,
+  "fields": {
+    "photo": "employees/миха.png",
+    "name": "Михаил Дмитриевич Ковалёв",
+    "position": "Начальник службы охраны",
+    "phone": "+375 (29) 345-67-89",
+    "email": "m.kovalev@parkingsystem.by"
+  }
+},
+{
+  "model": "parking.employee",
+  "pk": 4,
+  "fields": {
+    "photo": "employees/анна.png",
+    "name": "Анна Сергеевна Петрова",
+    "position": "Руководитель отдела по работе с клиентами",
+    "phone": "+375 (29) 456-78-90",
+    "email": "a.petrova@parkingsystem.by"
+  }
+},
+{
+  "model": "parking.employee",
+  "pk": 5,
+  "fields": {
+    "photo": "employees/денчик.png",
+    "name": "Денис Алексеевич Смирнов",
+    "position": "Системный администратор",
+    "phone": "+375 (29) 567-89-01",
+    "email": "d.smirnov@parkingsystem.by"
+  }
+},
+{
+  "model": "parking.employee",
+  "pk": 6,
+  "fields": {
+    "photo": "employees/машка.png",
+    "name": "Мария Владимировна Кузнецова",
+    "position": "Бухгалтер по расчётам с клиентами",
+    "phone": "+375 (29) 678-90-12",
+    "email": "m.kuznetsova@parkingsystem.by"
+  }
+},
+{
+  "model": "parking.employee",
+  "pk": 7,
+  "fields": {
+    "photo": "employees/пашка.png",
+    "name": "Павел Андреевич Морозов",
+    "position": "Старший оператор call-центра",
+    "phone": "+375 (29) 789-01-23",
+    "email": "p.morozov@parkingsystem.by"
+  }
+},
+{
+  "model": "parking.employee",
+  "pk": 8,
+  "fields": {
+    "photo": "employees/таня.png",
+    "name": "Татьяна Евгеньевна Новикова",
+    "position": "Специалист по маркетингу и рекламе",
+    "phone": "+375 (29) 890-12-34",
+    "email": "t.novikova@parkingsystem.by"
+  }
+},
+{
+  "model": "parking.employee",
+  "pk": 9,
+  "fields": {
+    "photo": "employees/игорь.png",
+    "name": "Игорь Викторович Соловьёв",
+    "position": "Инженер по оборудованию",
+    "phone": "+375 (29) 901-23-45",
+    "email": "i.soloviev@parkingsystem.by"
+  }
+},
+{
+  "model": "parking.employee",
+  "pk": 10,
+  "fields": {
+    "photo": "employees/оля.png",
+    "name": "Ольга Петровна Григорьева",
+    "position": "Диспетчер парковки",
+    "phone": "+375 (29) 012-34-56",
+    "email": "o.grigorieva@parkingsystem.by"
+  }
+},
+{
+  "model": "parking.vacancy",
+  "pk": 1,
+  "fields": {
+    "title": "Оператор парковочного комплекса",
+    "description": "Мониторинг работы автоматизированной системы въезда/выезда.\r\nКонсультирование клиентов по вопросам оплаты через терминалы.\r\nУдаленное управление шлагбаумами в случае возникновения проблем у водителей.\r\nВедение отчетности по смене.",
+    "requirements": "Базовые навыки работы с компьютером.\r\nВежливость и стрессоустойчивость.\r\nГотовность к сменному графику (сутки через трое).",
+    "salary": "2000 — 2500 руб"
+  }
+},
+{
+  "model": "parking.vacancy",
+  "pk": 2,
+  "fields": {
+    "title": "Техник по обслуживанию оборудования",
+    "description": "Плановое техническое обслуживание шлагбаумов, паркоматов и камер распознавания номеров.\r\nДиагностика и оперативное устранение неисправностей на объектах.\r\nЗамена расходных материалов (чековая лента, карты доступа).\r\nВзаимодействие с IT-отделом при настройке ПО.",
+    "requirements": "Техническое образование (средне-специальное или высшее).\r\nПонимание принципов работы электромеханических устройств.\r\nНаличие водительского удостоверения категории B.",
+    "salary": "от 3500 руб"
+  }
+},
+{
+  "model": "parking.vacancy",
+  "pk": 3,
+  "fields": {
+    "title": "Менеджер по работе с корпоративными клиентами",
+    "description": "Поиск и привлечение новых партнеров (бизнес-центры, ТРЦ, жилые комплексы).\r\nПроведение презентаций системы «Умная парковка».\r\nПодготовка коммерческих предложений и заключение договоров на обслуживание.\r\nКонтроль качества предоставляемого сервиса на закрепленных объектах.",
+    "requirements": "Опыт в продажах или работе с клиентами от 1 года.\r\nГрамотная устная и письменная речь.\r\nУмение вести переговоры и работать с возражениями.",
+    "salary": "3000 руб + бонус за объекты"
+  }
+},
+{
+  "model": "parking.vacancy",
+  "pk": 4,
+  "fields": {
+    "title": "Старший смены парковочного комплекса",
+    "description": "Организация работы смены операторов парковки.\r\nКонтроль соблюдения трудовой дисциплины.\r\nРешение конфликтных ситуаций с клиентами.\r\nПроверка работоспособности оборудования (шлагбаумы, камеры, терминалы оплаты).\r\nВзаимодействие с охраной и технической службой.\r\nПодготовка отчётов по итогам смены.",
+    "requirements": "Опыт работы на аналогичной должности от 1 года.\r\nУверенное владение компьютером (MS Office).\r\nНавыки управления коллективом.\r\nОтветственность, стрессоустойчивость.\r\nГрафик 2/2 (день/ночь).",
+    "salary": "2000 — 2500 руб."
+  }
+},
+{
+  "model": "parking.vacancy",
+  "pk": 5,
+  "fields": {
+    "title": "Инженер по обслуживанию систем видеонаблюдения",
+    "description": "Плановое и аварийное обслуживание системы видеонаблюдения парковки.\r\nНастройка камер и регистраторов.\r\nПроверка работоспособности оборудования по графику.\r\nВедение технической документации.\r\nОперативное устранение неисправностей.\r\nВзаимодействие с подрядными организациями при необходимости.",
+    "requirements": "Опыт работы с системами видеонаблюдения от 1 года.\r\nЗнание принципов построения IP-видеонаблюдения.\r\nУмение читать техническую документацию.\r\nНавыки работы с ПК.\r\nГрафик 5/2, с 9:00 до 18:00.",
+    "salary": "3000 — 4000 руб."
+  }
+},
+{
+  "model": "parking.vacancy",
+  "pk": 6,
+  "fields": {
+    "title": "Уборщик производственных помещений",
+    "description": "Ежедневная влажная уборка помещений парковки (въездная зона, кассы, коридоры).\r\nУборка санитарных комнат.\r\nСбор и вынос мусора.\r\nЗаправка диспенсеров с мылом и бумажными полотенцами.\r\nКонтроль чистоты в течение рабочей смены.\r\nСоблюдение правил безопасности.",
+    "requirements": "Опыт работы не требуется.\r\nОтветственность, аккуратность, пунктуальность.\r\nФизическая выносливость.\r\nГрафик утренний или вечерний (по договорённости).",
+    "salary": "1500 руб."
+  }
+},
+{
+  "model": "parking.vacancy",
+  "pk": 7,
+  "fields": {
+    "title": "Менеджер по работе с клиентами",
+    "description": "Консультирование клиентов по вопросам заключения договоров.\r\nОформление долгосрочных абонементов на парковочные места.\r\nРабота с рекламациями и обращениями клиентов.\r\nПодготовка ежемесячных счетов на оплату.\r\nФормирование отчётов по загрузке парковки.\r\nПомощь в выборе подходящего места для клиента.",
+    "requirements": "Опыт работы в сфере обслуживания клиентов от 1 года.\r\nГрамотная устная и письменная речь.\r\nНавыки работы с компьютером (Word, Excel, электронная почта).\r\nУмение работать с возражениями.\r\nГрафик 5/2, с 10:00 до 19:00.",
+    "salary": "2000 - 2500 руб."
+  }
+},
+{
+  "model": "parking.vacancy",
+  "pk": 8,
+  "fields": {
+    "title": "Техник по обслуживанию шлагбаумов",
+    "description": "Плановое обслуживание и ремонт шлагбаумов и автоматических ворот.\r\nПроверка электрики и механики.\r\nОперативное устранение заклиниваний и неполадок.\r\nНастройка систем дистанционного управления.\r\nСвоевременное информирование руководства о поломках.\r\nВедение журнала ремонтов.",
+    "requirements": "Опыт работы с подобным оборудованием.\r\nБазовые знания в электрике и механике.\r\nУмение пользоваться мультиметром.\r\nФизическая выносливость.\r\nГрафик 5/2, возможны экстренные вызовы.",
+    "salary": "2500 - 3000 руб."
+  }
+},
+{
+  "model": "parking.vacancy",
+  "pk": 9,
+  "fields": {
+    "title": "Администратор call-центра",
+    "description": "Приём входящих звонков от клиентов.\r\nКонсультация по тарифам, услугам, режиму работы парковки.\r\nПомощь в дистанционном бронировании мест.\r\nФиксация обращений в CRM-системе.\r\nПереадресация сложных вопросов профильным специалистам.\r\nРабота без активных продаж (только информирование).",
+    "requirements": "Грамотная речь (устная и письменная).\r\nУмение работать в многозадачном режиме.\r\nДоброжелательность и стрессоустойчивость.\r\nНавыки работы с компьютером.\r\nГрафик сменный 2/2.",
+    "salary": "2000 руб."
+  }
+},
+{
+  "model": "parking.vacancy",
+  "pk": 10,
+  "fields": {
+    "title": "Бухгалтер по учёту парковочных абонементов",
+    "description": "Ведение учёта поступлений от абонементов и разовых посещений.\r\nСверка данных с терминалами оплаты и кассами.\r\nПодготовка ежемесячных отчётов для руководства.\r\nКонтроль дебиторской задолженности клиентов.\r\nУчастие в инвентаризации.\r\nВзаимодействие с отделом продаж.",
+    "requirements": "Высшее или среднее специальное бухгалтерское образование.\r\nОпыт работы от 2 лет.\r\nЗнание 1С (хотя бы начальный уровень).\r\nВнимательность, аккуратность.\r\nГрафик 5/2, с 9:00 до 18:00.",
+    "salary": "3000 - 3500 руб."
+  }
+},
+{
+  "model": "parking.review",
+  "pk": 6,
+  "fields": {
+    "author": 10,
+    "rating": 5,
+    "text": "Отличная парковка! Всегда есть свободные места, персонал вежливый. Цены адекватные.",
+    "created_at": "2026-05-17T20:40:27.412Z"
+  }
+},
+{
+  "model": "parking.review",
+  "pk": 7,
+  "fields": {
+    "author": 11,
+    "rating": 4,
+    "text": "Хорошая охрана, видеонаблюдение. Машина всегда под присмотром. Единственное — хотелось бы больше мест для электромобилей.",
+    "created_at": "2026-05-17T20:40:54.557Z"
+  }
+},
+{
+  "model": "parking.review",
+  "pk": 8,
+  "fields": {
+    "author": 12,
+    "rating": 5,
+    "text": "Паркуюсь здесь уже год. Никаких проблем, всё чётко. Онлайн-оплата удобная, спасибо!",
+    "created_at": "2026-05-17T20:41:15.021Z"
+  }
+},
+{
+  "model": "parking.review",
+  "pk": 9,
+  "fields": {
+    "author": 17,
+    "rating": 2,
+    "text": "Очень жаль, что нет парковки для самокатов.",
+    "created_at": "2026-05-18T06:34:39.555Z"
+  }
+},
+{
+  "model": "parking.review",
+  "pk": 10,
+  "fields": {
+    "author": 17,
+    "rating": 5,
+    "text": "Спасибо, что сделали места для самокатов, лучшая парковка!!",
+    "created_at": "2026-05-18T06:34:58.551Z"
+  }
+},
+{
+  "model": "parking.review",
+  "pk": 11,
+  "fields": {
+    "author": 16,
+    "rating": 5,
+    "text": "Парковка супер! Очень удобное расположение, прямо в центре. Всегда есть свободные места, даже в час пик. Цены ниже, чем на соседних парковках. Рад, что нашёл это место. Советую всем!",
+    "created_at": "2026-05-18T22:25:23.412Z"
+  }
+},
+{
+  "model": "parking.review",
+  "pk": 12,
+  "fields": {
+    "author": 13,
+    "rating": 5,
+    "text": "Пользуюсь парковкой около трёх месяцев. Очень нравится система онлайн-бронирования места через приложение. Приезжаешь — место уже ждёт. Персонал всегда на связи, быстро решают вопросы. Спасибо!",
+    "created_at": "2026-05-18T22:25:40.655Z"
+  }
+},
+{
+  "model": "parking.review",
+  "pk": 13,
+  "fields": {
+    "author": 12,
+    "rating": 4,
+    "text": "Неплохая парковка, но есть моменты. Шлагбаум иногда глючит, приходится ждать оператора. В остальном — чисто, камеры работают, машину не царапают. Почините автоматику — будет идеально.",
+    "created_at": "2026-05-18T22:25:56.442Z"
+  }
+},
+{
+  "model": "parking.review",
+  "pk": 14,
+  "fields": {
+    "author": 15,
+    "rating": 5,
+    "text": "Оставляю машину здесь уже полтора года. Ни одной проблемы! Персонал внимательный, на парковке чисто, камеры по всему периметру. Отдельное спасибо за вежливых охранников. Цены приемлемые. Всем рекомендую.",
+    "created_at": "2026-05-18T22:26:10.543Z"
+  }
+},
+{
+  "model": "parking.review",
+  "pk": 15,
+  "fields": {
+    "author": 11,
+    "rating": 5,
+    "text": "Отличный сервис! Помимо самой парковки, здесь есть мойка и шиномонтаж — очень удобно. Оставил машину на хранение на зиму, заодно и шины переобул. Всё сделали быстро и качественно. Спасибо ребятам!",
+    "created_at": "2026-05-18T22:26:29.597Z"
+  }
+},
+{
+  "model": "parking.promocode",
+  "pk": 1,
+  "fields": {
+    "code": "START50",
+    "discount_percent": 50,
+    "valid_from": "2026-01-01",
+    "valid_until": "2026-12-31",
+    "is_active": true
+  }
+},
+{
+  "model": "parking.promocode",
+  "pk": 2,
+  "fields": {
+    "code": "SPRING2026",
+    "discount_percent": 20,
+    "valid_from": "2026-03-01",
+    "valid_until": "2026-05-31",
+    "is_active": true
+  }
+},
+{
+  "model": "parking.promocode",
+  "pk": 3,
+  "fields": {
+    "code": "FREEPARK",
+    "discount_percent": 100,
+    "valid_from": "2026-01-01",
+    "valid_until": "2026-03-01",
+    "is_active": false
+  }
+},
+{
+  "model": "parking.promocode",
+  "pk": 4,
+  "fields": {
+    "code": "SUMMER15",
+    "discount_percent": 15,
+    "valid_from": "2026-06-01",
+    "valid_until": "2026-08-31",
+    "is_active": true
+  }
+},
+{
+  "model": "parking.promocode",
+  "pk": 5,
+  "fields": {
+    "code": "WINTER25",
+    "discount_percent": 25,
+    "valid_from": "2026-12-01",
+    "valid_until": "2027-02-28",
+    "is_active": true
+  }
+},
+{
+  "model": "parking.promocode",
+  "pk": 6,
+  "fields": {
+    "code": "ELECTRO10",
+    "discount_percent": 10,
+    "valid_from": "2026-01-01",
+    "valid_until": "2026-12-31",
+    "is_active": true
+  }
+},
+{
+  "model": "parking.promocode",
+  "pk": 7,
+  "fields": {
+    "code": "LOYALTY20",
+    "discount_percent": 20,
+    "valid_from": "2026-03-01",
+    "valid_until": "2026-06-30",
+    "is_active": true
+  }
+},
+{
+  "model": "parking.promocode",
+  "pk": 8,
+  "fields": {
+    "code": "AUTUMN10",
+    "discount_percent": 10,
+    "valid_from": "2026-09-01",
+    "valid_until": "2026-11-30",
+    "is_active": true
+  }
+},
+{
+  "model": "parking.promocode",
+  "pk": 9,
+  "fields": {
+    "code": "NEWYEAR30",
+    "discount_percent": 30,
+    "valid_from": "2026-12-20",
+    "valid_until": "2027-01-15",
+    "is_active": true
+  }
+},
+{
+  "model": "parking.promocode",
+  "pk": 10,
+  "fields": {
+    "code": "FIRSTMONTH50",
+    "discount_percent": 50,
+    "valid_from": "2026-01-01",
+    "valid_until": "2026-12-31",
+    "is_active": true
+  }
+},
+{
+  "model": "parking.category",
+  "pk": 1,
+  "fields": {
+    "name": "Основная парковка"
+  }
+},
+{
+  "model": "parking.category",
+  "pk": 2,
+  "fields": {
+    "name": "Уход за автомобилем"
+  }
+},
+{
+  "model": "parking.category",
+  "pk": 3,
+  "fields": {
+    "name": "Сезонные услуги"
+  }
+},
+{
+  "model": "parking.category",
+  "pk": 4,
+  "fields": {
+    "name": "Дополнительные сервисы для бизнеса"
+  }
+},
+{
+  "model": "parking.service",
+  "pk": 1,
+  "fields": {
+    "category": 1,
+    "name": "Стандартное место",
+    "description": "Открытая площадка с видеонаблюдением 24/7",
+    "price": "300.00",
+    "is_additional": false
+  }
+},
+{
+  "model": "parking.service",
+  "pk": 2,
+  "fields": {
+    "category": 1,
+    "name": "Крытый бокс",
+    "description": "Место в отапливаемом боксе под охраной",
+    "price": "600.00",
+    "is_additional": false
+  }
+},
+{
+  "model": "parking.service",
+  "pk": 3,
+  "fields": {
+    "category": 2,
+    "name": "Комплексная мойка",
+    "description": "Мойка кузова, ковриков и влажная уборка салона",
+    "price": "1200.00",
+    "is_additional": true
+  }
+},
+{
+  "model": "parking.service",
+  "pk": 4,
+  "fields": {
+    "category": 2,
+    "name": "Зарядка электромобиля",
+    "description": "Полная зарядка на станции (Type 2 / CCS)",
+    "price": "500.00",
+    "is_additional": true
+  }
+},
+{
+  "model": "parking.service",
+  "pk": 5,
+  "fields": {
+    "category": 2,
+    "name": "Подкачка шин",
+    "description": "Проверка давления и подкачка всех колес",
+    "price": "100.00",
+    "is_additional": true
+  }
+},
+{
+  "model": "parking.service",
+  "pk": 6,
+  "fields": {
+    "category": 3,
+    "name": "Хранение шин",
+    "description": "Ответственное хранение комплекта колес (6 мес)",
+    "price": "2500.00",
+    "is_additional": true
+  }
+},
+{
+  "model": "parking.service",
+  "pk": 7,
+  "fields": {
+    "category": 4,
+    "name": "Аренда переговорной комнаты",
+    "description": "Предоставление оборудованной комнаты для встреч с клиентами на территории парковки. В комнате: стол, стулья, Wi-Fi, розетки, возможность подключить ноутбук. Идеально для менеджеров по продажам и переговорщикам.",
+    "price": "250.00",
+    "is_additional": true
+  }
+},
+{
+  "model": "parking.service",
+  "pk": 8,
+  "fields": {
+    "category": 4,
+    "name": "Круглосуточный консьерж-сервис",
+    "description": "Личный помощник для корпоративных клиентов. Встреча гостей, сопровождение до автомобиля, помощь с багажом, заказ такси, бронирование столиков в ресторане. Доступно для клиентов, арендующих 3+ места.",
+    "price": "400.00",
+    "is_additional": true
+  }
+},
+{
+  "model": "parking.service",
+  "pk": 9,
+  "fields": {
+    "category": 4,
+    "name": "Услуги шиномонтажа (выездные)",
+    "description": "Выездная бригада шиномонтажа прямо на парковке. Замена шин, балансировка, ремонт проколов. Без необходимости уезжать с места. Работаем по предварительной записи.",
+    "price": "350.00",
+    "is_additional": true
+  }
+},
+{
+  "model": "parking.service",
+  "pk": 10,
+  "fields": {
+    "category": 4,
+    "name": "Автохимчистка салона",
+    "description": "Глубокая чистка салона автомобиля на территории парковки. Обработка обивки сидений, ковров и потолка. Удаление пятен и запахов. Применяем безопасные для кожи и ткани средства. Длительность — от 2 до 4 часов.",
+    "price": "1800.00",
+    "is_additional": true
+  }
+}
+]

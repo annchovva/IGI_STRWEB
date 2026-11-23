@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ company_global.name|default:"Parking System" }}{% endblock %}</title>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- ВЕРХНЯЯ ПАНЕЛЬ: Время и TZ -->
+    <div>
+        <div>
+            <div>
+                <div>
+                    <span>
+                        <strong>User TZ:</strong> {{ tz_user }} 
+                        <span>{{ date_local }} {{ time_local }}</span>
+                    </span>
+                    <span>
+                        <strong>UTC:</strong> 
+                        <span>{{ date_utc }} {{ time_utc }}</span>
+                    </span>
+                </div>
+                <div>
+                    <span>
+                        <i>Обновлено:</i> 
+                        <span>{{ last_data_update }}</span>
+                    </span>
+                    <details>
+                        <summary>📅 Календарь</summary>
+                        <div>
+                            <pre>{{ text_calendar_global }}</pre>
+                        </div>
+                    </details>
+                </div>    
+            </div>
+        </div>
+    </div>
+
+    <!-- ШАПКА: Логотип и Навигация -->
+    <header>
+        <div>
+            <div>
+                <a href="{% url 'home' %}">
+                    {% if company_global.logo %}
+                        <img src="{{ company_global.logo.url }}" alt="Logo" width="40" height="40">
+                    {% else %}
+                        <span>🅿️</span>
+                    {% endif %}
+                    {{ company_global.name|default:"Parking System" }}
+                </a>
+                
+                <div>
+                    <ul>
+                        <li><a href="{% url 'home' %}">Главная</a></li>
+                    </ul>
+                    
+                    {% if user.is_authenticated %}
+                        <div>
+                            <span>
+                                {{ user.username }}
+                            </span>
+                            <a href="{% url 'home' %}">На главную</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
+    <main>
+        {% block content %}
+        <!-- Здесь будет содержимое каждой страницы -->
+        {% endblock %}
+    </main>
+
+    <!-- ПОДВАЛ -->
+    <footer>
+        <div>
+            <span>
+                © 2026 {{ company_global.name|default:"Parking System" }} 
+                {% block footer_extra %}{% endblock %}
+            </span>
+        </div>
+    </footer>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,242 @@
+main {
+    width: min(
+        calc(100% - 2 * var(--page-padding)),
+        var(--page-width)
+    );
+    min-height: 50vh;
+    margin-inline: auto;
+    padding-block: clamp(2.5rem, 7vw, 6rem);
+}
+
+body > a[href="#main-content"] {
+    position: fixed;
+    z-index: 1000;
+    top: 1rem; 
+    left: 1rem;
+    padding: 0.7rem 1rem;
+    color: var(--color-bg); 
+    background: var(--color-gold-light);
+    border-radius: var(--radius);
+    font-weight: 700;
+    text-decoration: none;
+    transform: translateY(-200%);
+}
+
+body > a[href="#main-content"]:focus {
+    transform: translateY(0);
+}
+
+.utility-bar {
+    color: var(--color-muted);
+    background: #080a0c;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.75rem;
+}
+
+.utility-bar__content {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+
+    width: min(
+        calc(100% - 2 * var(--page-padding)),
+        var(--page-width)
+    );
+    margin-inline: auto;
+    padding-block: 0.55rem;
+}
+
+.utility-bar p {
+    margin: 0;
+}
+
+.utility-calendar {
+    margin-left: auto;
+}
+
+.utility-calendar summary {
+    color: var(--color-gold-light);
+    cursor: pointer;
+}
+
+.utility-calendar pre {
+    margin-block: 0.7rem 0;
+    color: var(--color-text);
+}
+
+.site-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+
+    width: min(
+        calc(100% - 2 * var(--page-padding)),
+        var(--page-width)
+    );
+
+    margin-inline: auto;
+    padding-block: 1.5rem;
+}
+
+.site-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+
+    color: var(--color-text);
+    text-decoration: none;
+}
+
+.site-brand__logo,
+.site-brand__icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+}
+
+.site-brand__logo {
+    object-fit: contain;
+}
+
+.site-brand__icon {
+    display: grid;
+    place-items: center;
+
+    color: var(--color-bg);
+    background: var(--color-gold);
+
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.site-brand__name {
+    font-family: var(--font-heading);
+    font-size: clamp(1.7rem, 4vw, 2.5rem);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+.site-header__welcome {
+    margin: 0;
+    color: var(--color-muted);
+}
+
+.site-nav {
+    position: sticky;
+    z-index: 100;
+    top: 0;
+
+    background: rgb(11 13 15 / 96%);
+    border-block: 1px solid var(--color-border);
+}
+
+.site-nav__list {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    gap: 0.25rem 1.5rem;
+
+    width: min(
+        calc(100% - 2 * var(--page-padding)),
+        var(--page-width)
+    );
+    margin: 0 auto;
+    padding: 0.8rem 0;
+
+    list-style: none;
+}
+
+.site-nav a {
+    display: block;
+    padding-block: 0.45rem;
+    color: var(--color-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.site-nav a:link,
+.site-nav a:visited {
+    color: var(--color-muted);
+}
+
+.site-nav a:hover {
+    color: var(--color-gold-light);
+}
+
+.site-nav a:active {
+    color: var(--color-text);
+    transform: translateY(1px);
+}
+
+.account-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+
+    width: min(
+        calc(100% - 2 * var(--page-padding)),
+        var(--page-width)
+    );
+    margin: 1rem auto 0;
+}
+
+.account-actions form {
+    margin: 0;
+}
+
+.account-actions a,
+.account-actions button {
+    display: inline-block;
+    padding: 0.65rem 1rem;
+
+    color: var(--color-text);
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.account-actions a:hover,
+.account-actions button:hover {
+    color: var(--color-bg);
+    background: var(--color-gold-light);
+    border-color: var(--color-gold-light);
+}
+
+body > footer {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 2rem;
+    width: min(
+        calc(100% - 2 * var(--page-padding)),
+        var(--page-width)
+    );
+    margin-inline: auto;
+    padding-block: 2rem;
+
+    color: var(--color-muted);
+    border-top: 1px solid var(--color-border);
+}
+
+body > footer address {
+    font-style: normal;
+}
+
+body > footer p {
+    margin: 0;
+}
+
+body > footer a {
+    color: var(--color-gold-light);
+}

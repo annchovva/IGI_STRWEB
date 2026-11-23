@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=parking_db
+      - POSTGRES_USER=parking_user
+      - POSTGRES_PASSWORD=parking_pass
+
+  web:
+    image: annchovva/my_parking-web
+    env_file:
+      - .env  
+    environment:
+      - DATABASE_URL=postgres://parking_user:parking_pass@db:5432/parking_db
+      - DEBUG=True
+      - SECRET_KEY=django-insecure-docker-secret-key-123456
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    volumes:
+      - ./media:/app/media
+      - ./staticfiles:/app/staticfiles
+    command: >
+      sh -c "
+        mkdir -p /app/media /app/staticfiles &&
+        chmod -R 777 /app/media /app/staticfiles &&
+        python manage.py collectstatic --noinput &&
+        python manage.py migrate &&
+        python manage.py loaddata data.json &&
+        gunicorn core.wsgi:application --bind 0.0.0.0:8000
+      "
+
+volumes:
+  postgres_data:

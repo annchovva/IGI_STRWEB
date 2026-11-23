@@ -1,0 +1,53 @@
+# Виртуальное окружение
+venv/
+env/
+ENV/
+
+# База данных
+db.sqlite3
+*.sqlite3
+
+# Логи
+logs/*.log
+logs/*.log.*
+
+# Миграции (опционально — лучше не игнорировать, но можно)
+# parking/migrations/
+# __pycache__/ — лучше игнорировать
+
+# Python кэш
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Файлы покрытия тестов
+.coverage
+.coverage.*
+htmlcov/
+
+# Файлы IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Файлы окружения
+.env
+.env.local
+
+# Файлы отчётов
+*.log
+coverage.xml
+
+# Временные файлы
+*.tmp
+*.temp
+
+# Файлы ОС
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Файлы, создаваемые при деплое
+runtime.txt
