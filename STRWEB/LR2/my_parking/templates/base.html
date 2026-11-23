@@ -1,0 +1,206 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}
+            {{ company_global.name|default:"Автопарковка" }}
+        {% endblock %}
+    </title>
+    <meta
+        name="description"
+        content="{% block meta_description %}Услуги современной автомобильной парковки в Минске{% endblock %}"
+    >
+    <meta
+        name="keywords"
+        content="{% block meta_keywords %}парковка, автомобиль, парковочные услуги, Минск{% endblock %}"
+    >
+    <meta
+        name="author"
+        content="Анна Горбачёва"
+    >
+    <meta
+        name="robots"
+        content="index, follow"
+    >
+    <meta
+        property="og:title"
+        content="{% block og_title %}{{ company_global.name|default:'Автопарковка' }}{% endblock %}"
+    >
+    <meta
+        property="og:description"
+        content="{% block og_description %}Услуги современной автомобильной парковки{% endblock %}"
+    >
+    <meta
+        property="og:type"
+        content="{% block og_type %}website{% endblock %}"
+    >
+    <meta
+        property="og:locale"
+        content="ru_RU"
+    >
+    <link
+        rel="icon"
+        href="{% static 'parking/images/favicon.png' %}"
+        type="image/png"
+    >
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'parking/css/styles.css' %}?v=20261013-1"
+    >
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <a href="#main-content">
+        Перейти к основному содержимому
+    </a>
+
+    <section
+        class="utility-bar"
+        aria-label="Служебная информация"
+    >
+        <div class="utility-bar__content">
+            <p>
+                <strong>Ваше время:</strong>
+                {{ date_local }} {{ time_local }}
+            </p>
+
+            <p>
+                <strong>UTC:</strong>
+                {{ date_utc }} {{ time_utc }}
+            </p>
+
+            <details class="utility-calendar">
+                <summary>Календарь</summary>
+                <pre>{{ text_calendar_global }}</pre>
+            </details>
+        </div>
+    </section>
+
+    <header class="site-header">
+        <a
+            class="site-brand"
+            href="{% url 'home' %}"
+            title="Перейти на главную страницу"
+        >
+            {% if company_global.logo %}
+                <img
+                    class="site-brand__logo"
+                    src="{{ company_global.logo.url }}"
+                    alt="Логотип компании {{ company_global.name }}"
+                    width="60"
+                    height="60"
+                >
+            {% else %}
+                <span
+                    class="site-brand__icon"
+                    aria-hidden="true"
+                >
+                P
+                </span>
+            {% endif %}
+
+            <span class="site-brand__name">
+                {{ company_global.name|default:"Parking System" }}
+            </span>
+        </a>
+
+        {% if user.is_authenticated %}
+            <p class="site-header__welcome">
+                Добро пожаловать,
+                <strong>{{ user.username }}</strong>
+            </p>
+        {% endif %}
+    </header>
+
+    <nav
+        class="site-nav" 
+        aria-label="Основная навигация"
+    >
+        <ul class="site-nav__list">
+            <li><a href="{% url 'home' %}">Главная</a></li>
+            <li><a href="{% url 'cart_detail' %}">Корзина</a></li>
+            <li><a href="{% url 'services_catalog' %}">Услуги</a></li>
+            <li><a href="{% url 'about' %}">О компании</a></li>
+            <li><a href="{% url 'news_list' %}">Новости</a></li>
+            <li><a href="{% url 'term_list' %}">Вопросы и термины</a></li>
+            <li><a href="{% url 'review_list' %}">Отзывы</a></li>
+            <li><a href="{% url 'employee_list' %}">Контакты</a></li>
+            <li><a href="{% url 'vacancy_list' %}">Вакансии</a></li>
+            <li><a href="{% url 'promo_list' %}">Промокоды</a></li>
+            <li><a href="{% url 'privacy_policy' %}">Политика конфиденциальности</a></li>
+
+            {% if user.is_authenticated %}
+                <li>
+                    <a href="{% url 'dashboard' %}">Личный кабинет</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <section 
+        class="account-actions"
+        aria-label="Управление учётной записью"
+    >
+        {% if user.is_authenticated %}
+            <form action="{% url 'logout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Выйти</button>
+            </form>
+        {% else %}
+            <a href="{% url 'login' %}">Войти</a>
+            <a href="{% url 'register' %}">Зарегистрироваться</a>
+        {% endif %}
+    </section>
+
+    <main id="main-content" tabindex="-1">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <address>
+            {% if company_global.address %}
+                <p>
+                    Адрес: {{ company_global.address }}
+                </p>
+            {% endif %}
+
+            {% if company_global.email %}
+                <p>
+                    Электронная почта:
+                        <a href="mailto:{{ company_global.email }}">
+                            {{ company_global.email }}
+                        </a>
+                </p>
+            {% endif %}
+        </address>
+
+        <p>
+            <small>
+                &#169 {% now "Y" %}
+                {{ company_global.name|default:"parking system" }}
+            </small>
+        </p>
+
+        <p>
+            <a href="{% url 'privacy_policy' %}">
+                Политика конфиденциальности
+            </a>
+        </p>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

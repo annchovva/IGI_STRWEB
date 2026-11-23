@@ -1,0 +1,17 @@
+[run]
+branch = True
+source = parking
+omit =
+    parking/migrations/*
+    parking/tests/*
+    parking/apps.py
+    parking/urls.py
+
+[report]
+fail_under = 70
+precision = 1
+show_missing = True
+skip_covered = False
+exclude_lines =
+    pragma: no cover
+    if __name__ == .__main__.:

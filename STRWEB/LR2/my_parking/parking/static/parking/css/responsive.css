@@ -1,0 +1,256 @@
+@media (max-width: 900px) {
+    .site-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    body > footer {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .checkout-page {
+        grid-template-columns: 1fr;
+    }
+
+    .checkout-page > header,
+    .checkout-back {
+        grid-column: auto;
+    }
+
+    .news-article__body {
+        column-count: 1;
+        column-rule: 0;
+    }
+
+    .company-contact-data {
+        grid-template-columns: 1fr;
+        gap: 0.35rem;
+    }
+
+    .company-contact-data dd + dt {
+        margin-top: 0.75rem;
+    }
+
+    .metrics-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .admin-filters .dashboard-form {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-filters .dashboard-form > p {
+        grid-column: auto;
+    }
+}
+
+/* Телефоны */
+
+@media (max-width: 680px) {
+    :root {
+        --page-padding: 1rem;
+    }
+
+    h1 {
+        font-size: clamp(2.25rem, 13vw, 3.5rem);
+    }
+
+    h2 {
+        font-size: clamp(1.75rem, 9vw, 2.5rem);
+    }
+
+    main {
+        padding-block: 2.5rem;
+    }
+
+    .utility-bar__content {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+
+    .utility-calendar {
+        margin-left: 0;
+    }
+
+    .site-header {
+        padding-block: 1rem;
+    }
+
+    .site-brand__logo,
+    .site-brand__icon {
+        width: 3rem;
+        height: 3rem;
+    }
+
+    .site-brand__name {
+        font-size: 1.5rem;
+    }
+
+    .site-nav__list {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        overflow-x: auto;
+        scrollbar-width: thin;
+    }
+
+    .site-nav li {
+        flex: 0 0 auto;
+    }
+
+    .account-actions {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+
+    body > footer {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .home-hero {
+        min-height: auto;
+        padding: 2rem 1.25rem;
+    }
+
+    .parking-animation {
+        min-height: 17rem;
+    }
+
+    .parking-animation__space {
+        top: 64%;
+        width: min(78%, 19rem);
+        height: 6rem;
+    }
+
+    .parking-car {
+        width: 8rem;
+        height: 3.7rem;
+    }
+
+    .parking-car__cabin {
+        top: 0.48rem;
+        left: 1.9rem;
+        width: 3.7rem;
+        height: 2.7rem;
+    }
+
+    .parking-animation__name {
+        top: 1.25rem;
+        font-size: clamp(1.15rem, 7vw, 1.65rem);
+        white-space: normal;
+    }
+
+    .home-actions,
+    .filter-form p:last-child,
+    .payment-success__actions ul,
+    .management-form > p:last-of-type {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .home-actions p {
+        flex-basis: auto;
+    }
+
+    .home-actions a {
+        text-align: center;
+    }
+
+    .weather-card,
+    .term-footer,
+    .about-footer,
+    .cart-actions {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .latest-news__card::before {
+        position: static;
+        display: inline-block;
+        margin-bottom: 1rem;
+    }
+
+    .employee-card dl,
+    .news-time dl {
+        grid-template-columns: 1fr;
+    }
+
+    .employee-card dd + dt,
+    .news-time dd + dt {
+        margin-top: 0.75rem;
+    }
+
+    .vacancy-list > li,
+    .vacancy-list > li:nth-child(odd),
+    .vacancy-list > li:nth-child(even) {
+        float: none;
+        width: 100%;
+        margin-inline: 0;
+    }
+
+    .about-section {
+        padding-block: 2rem;
+    }
+
+    .about-toc ul,
+    .dashboard-nav ul {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .certificate-card {
+        padding: 0.5rem;
+        border-width: 10px;
+    }
+
+    .privacy-toc ol {
+        grid-template-columns: 1fr;
+    }
+
+    :is(.management-form, .dashboard-form, .checkout-form) fieldset,
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .checkout-form fieldset {
+        padding: 1rem;
+    }
+
+    .payment-success__actions a {
+        display: block;
+        text-align: center;
+    }
+
+    .management-form > p:last-of-type a,
+    .management-form > p:last-of-type button {
+        text-align: center;
+    }
+
+}
+
+@media (max-height: 600px) {
+    .site-nav {
+        position: static;
+    }
+
+    .home-hero {
+        min-height: auto;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+}

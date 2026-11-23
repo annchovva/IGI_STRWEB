@@ -1,0 +1,20 @@
+:root {
+    --color-bg: #0b0d0f;
+    --color-surface: #171b20;
+    --color-text: #f5f1e8;
+    --color-muted: #a8abb0;
+    --color-gold: #c9a86a;
+    --color-gold-light: #e2c58c;
+    --color-border: rgb(201 168 106 / 28%);
+    --color-error: #791e1e;
+    --color-error-bg: #2b08087e;
+    --color-success: #0e361d;
+    --color-disabled: #555b61;
+
+    --font-main: "Manrope", Arial, sans-serif;
+    --font-heading: "Cormorant Garamond", Georgia, serif;
+
+    --page-width: 1200px;
+    --page-padding: clamp(1rem, 4vw, 3rem);
+    --radius: 0.6rem;
+}

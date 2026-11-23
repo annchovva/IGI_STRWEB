@@ -1,0 +1,85 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    min-width: 320px;
+    scroll-behavior: smooth;
+}
+
+body {
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    color: var(--color-text);
+    background: var(--color-bg);
+    font: 400 1rem/1.65 var(--font-main);
+}
+
+h1,
+h2,
+h3,
+h4 {
+    margin-block: 0 0.8em;
+    font-family: var(--font-heading);
+    line-height: 1.1;
+}
+
+h1 {
+    font-size: clamp(2.5rem, 7vw, 5.5rem);
+}
+
+h2 {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+}
+
+p {
+    margin-block: 0 1rem;
+}
+
+a {
+    color: var(--color-gold-light);
+    text-underline-offset: 0.2em;
+}
+
+a:hover {
+    color: var(--color-text);
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+img,
+video,
+iframe {
+    display: block;
+    max-width: 100%;
+}
+
+img {
+    height: auto;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--color-gold-light);
+    outline-offset: 3px;
+}
+
+::selection {
+    color: var(--color-bg);
+    background: var(--color-gold-light);
+}

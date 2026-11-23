@@ -1,0 +1,232 @@
+button,
+input[type="submit"],
+input[type="reset"] {
+    padding: 0.75rem 1.2rem;
+
+    color: var(--color-bg);
+    background: var(--color-gold);
+    border: 1px solid var(--color-gold);
+    border-radius: var(--radius);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+button:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover {
+    background: var(--color-gold-light);
+    border-color: var(--color-gold-light);
+    transform: translateY(-1px);
+}
+
+button:active,
+input[type="submit"]:active,
+input[type="reset"]:active {
+    transform: translateY(1px);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="number"],
+input[type="date"],
+input[type="month"],
+input[type="search"],
+select,
+textarea {
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+
+    color: var(--color-text);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+}
+
+textarea {
+    min-height: 8rem;
+    resize: vertical;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--color-muted);
+}
+
+input:enabled:hover,
+select:enabled:hover,
+textarea:enabled:hover {
+    border-color: var(--color-gold);
+}
+
+input:required,
+select:required,
+textarea:required {
+    border-left: 3px solid var(--color-gold);
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+    color: var(--color-muted);
+    background: var(--color-disabled);
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+input[type="number"]:out-of-range {
+    background: var(--color-error-bg);
+    border-color: var(--color-error);
+}
+
+input[type="number"]:out-of-range:focus-visible {
+    outline: none;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+    accent-color: var(--color-gold);
+}
+
+input[type="checkbox"]:checked,
+input[type="radio"]:checked {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+}
+
+form p {
+    margin-bottom: 1rem;
+}
+
+label {
+    color: var(--color-text);
+    font-weight: 600;
+}
+
+fieldset {
+    margin: 1.5rem 0;
+    padding: 1.25rem;
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+}
+
+legend {
+    padding-inline: 0.5rem;
+    color: var(--color-gold-light);
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+}
+
+form small,
+[id$="_help"],
+[id$="_helptext"] {
+    display: block;
+    margin-top: 0.4rem;
+    color: var(--color-muted);
+    font-size: 0.8rem;
+}
+
+[role="alert"] {
+    color: var(--color-error);
+}
+
+[role="alert"] ul {
+    margin-block: 0.5rem;
+    padding-left: 1.2rem;
+}
+
+:is(.management-form, .dashboard-form, .checkout-form) fieldset {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 0;
+}
+
+/* Повторно используемые компоненты страниц */
+
+.page-header > p {
+    max-width: 45rem;
+    color: var(--color-muted);
+}
+
+.surface-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+}
+
+.accent-panel {
+    background: var(--color-surface);
+    border-left: 3px solid var(--color-gold);
+}
+
+.status-panel {
+    margin-bottom: 2rem;
+    padding: 1rem 1.25rem;
+    color: var(--color-gold-light);
+    background: rgb(201 168 106 / 8%);
+    border-left: 3px solid var(--color-gold);
+}
+
+.status-panel p {
+    margin: 0;
+}
+
+.table-scroll {
+    overflow-x: auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+}
+
+.data-table {
+    width: 100%;
+    min-width: 42rem;
+    border-collapse: collapse;
+    empty-cells: show;
+    background: var(--color-surface);
+}
+
+.data-table caption {
+    padding: 1.25rem;
+    color: var(--color-gold-light);
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    text-align: left;
+    caption-side: top;
+}
+
+.data-table th,
+.data-table td {
+    padding: 1rem;
+    border: 1px solid var(--color-border);
+    text-align: left;
+    vertical-align: middle;
+}
+
+.data-table thead th {
+    color: var(--color-gold-light);
+    background: rgb(201 168 106 / 10%);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.data-table tbody tr:nth-child(even) {
+    background: rgb(255 255 255 / 3%);
+}
+
+.data-table tbody tr:hover {
+    background: rgb(201 168 106 / 7%);
+}
+
+.data-table td:empty {
+    background: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 0.4rem,
+        rgb(201 168 106 / 8%) 0.4rem,
+        rgb(201 168 106 / 8%) 0.8rem
+    );
+}

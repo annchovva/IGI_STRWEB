@@ -1,0 +1,11 @@
+{% if messages %}
+    <section class="status-panel" aria-label="Системные сообщения">
+        {% for message in messages %}
+            <p
+                role="{% if message.tags == 'error' %}alert{% else %}status{% endif %}"
+            >
+                {{ message }}
+            </p>
+        {% endfor %}
+    </section>
+{% endif %}
